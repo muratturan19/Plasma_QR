@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import streamlit as st
 
+from pathlib import Path
 from GuideManager import GuideManager
 from LLMAnalyzer import LLMAnalyzer
 from ReportGenerator import ReportGenerator
@@ -46,11 +47,13 @@ def main() -> None:
         st.subheader("Analysis")
         st.json(analysis)
 
+        pdf_name = Path(paths["pdf"]).name
         with open(paths["pdf"], "rb") as pdf_file:
-            st.download_button("Download PDF", pdf_file, file_name="report.pdf")
+            st.download_button("Download PDF", pdf_file, file_name=pdf_name)
 
+        excel_name = Path(paths["excel"]).name
         with open(paths["excel"], "rb") as excel_file:
-            st.download_button("Download Excel", excel_file, file_name="report.xlsx")
+            st.download_button("Download Excel", excel_file, file_name=excel_name)
 
         st.markdown(f"[PDF file]({paths['pdf']})")
         st.markdown(f"[Excel file]({paths['excel']})")

@@ -7,6 +7,7 @@ from pathlib import Path
 
 from fpdf import FPDF
 from openpyxl import Workbook
+from uuid import uuid4
 
 from GuideManager import GuideManager
 
@@ -48,8 +49,9 @@ class ReportGenerator:
         out_dir = Path(output_dir)
         out_dir.mkdir(parents=True, exist_ok=True)
 
-        pdf_path = out_dir / "report.pdf"
-        excel_path = out_dir / "report.xlsx"
+        unique_id = uuid4().hex
+        pdf_path = out_dir / f"report_{unique_id}.pdf"
+        excel_path = out_dir / f"report_{unique_id}.xlsx"
 
         # Create PDF
         pdf = FPDF()
