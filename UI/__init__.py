@@ -17,7 +17,7 @@ def run_cli(args: Optional[List[str]] = None) -> None:
 class UI:
     """Handles user interactions and supports quality-report methods."""
 
-    def start(self) -> Optional[bool]:
+    def start(self) -> None:
         """Start the CLI."""
         run_cli()
         return None
