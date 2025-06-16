@@ -60,6 +60,30 @@ class LLMAnalyzerTest(unittest.TestCase):
             analyzer = LLMAnalyzer()
         self.assertEqual(analyzer.model, "gpt-test")
 
+    def test_query_llm_logs_tokens(self) -> None:
+        """Successful calls should print start, token usage and end messages."""
+        mock_openai = types.ModuleType("openai")
+        usage = types.SimpleNamespace(total_tokens=5)
+        response = types.SimpleNamespace(
+            choices=[types.SimpleNamespace(message={"content": "ok"})],
+            usage=usage,
+        )
+        mock_chat = MagicMock()
+        mock_chat.create.return_value = response
+        mock_openai.ChatCompletion = mock_chat
+        with patch.dict("sys.modules", {"openai": mock_openai}):
+            with patch.dict("os.environ", {"OPENAI_API_KEY": "key"}):
+                with patch("builtins.print") as mock_print:
+                    result = self.analyzer._query_llm("prompt")
+        self.assertEqual(result, "ok")
+        expected = [
+            unittest.mock.call("LLMAnalyzer._query_llm start"),
+            unittest.mock.call("LLMAnalyzer tokens used: 5"),
+            unittest.mock.call("LLMAnalyzer._query_llm end"),
+        ]
+        mock_print.assert_has_calls(expected)
+        self.assertEqual(mock_print.call_count, 3)
+
 
 if __name__ == "__main__":
     unittest.main()

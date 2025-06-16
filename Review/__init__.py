@@ -28,6 +28,7 @@ class Review:
 
     def _query_llm(self, prompt: str) -> str:
         """Return the LLM response for the given prompt."""
+        print("Review._query_llm start")
         try:
             import openai  # type: ignore
         except ImportError as exc:  # pragma: no cover - optional dependency
@@ -43,10 +44,16 @@ class Review:
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
             )
-            return response.choices[0].message["content"].strip()
+            tokens = getattr(getattr(response, "usage", None), "total_tokens", None)
+            if tokens is not None:
+                print(f"Review tokens used: {tokens}")
+            result = response.choices[0].message["content"].strip()
+            print("Review._query_llm end")
+            return result
         except Exception as exc:  # pragma: no cover - network issues
             if "invalid" in str(exc).lower():
                 raise ReviewLLMError("Invalid OpenAI API key") from exc
+            print("Review._query_llm end")
             return f"LLM review placeholder for: {prompt[:50]}"
 
     def _build_prompt(self, text: str, **context: str) -> str:
