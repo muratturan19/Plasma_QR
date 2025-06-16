@@ -30,24 +30,24 @@ class Review:
         """Return the LLM response for the given prompt."""
         print("Review._query_llm start")
         try:
-            import openai  # type: ignore
+            from openai import OpenAI  # type: ignore
         except ImportError as exc:  # pragma: no cover - optional dependency
             raise ReviewLLMError("openai package is not installed") from exc
 
         api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
             raise ReviewLLMError("OPENAI_API_KEY not set")
-        openai.api_key = api_key
+        client = OpenAI(api_key=api_key)
 
         try:
-            response = openai.ChatCompletion.create(
+            response = client.chat.completions.create(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
             )
             tokens = getattr(getattr(response, "usage", None), "total_tokens", None)
             if tokens is not None:
                 print(f"Review tokens used: {tokens}")
-            result = response.choices[0].message["content"].strip()
+            result = response.choices[0].message.content.strip()
             print("Review._query_llm end")
             return result
         except Exception as exc:  # pragma: no cover - network issues

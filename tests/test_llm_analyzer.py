@@ -36,8 +36,9 @@ class LLMAnalyzerTest(unittest.TestCase):
     def test_query_llm_fallback(self) -> None:
         """``_query_llm`` should return a placeholder for non-auth errors."""
         mock_openai = types.ModuleType("openai")
-        mock_openai.ChatCompletion = MagicMock()
-        mock_openai.ChatCompletion.create.side_effect = Exception("network")
+        mock_client = MagicMock()
+        mock_client.chat.completions.create.side_effect = Exception("network")
+        mock_openai.OpenAI = MagicMock(return_value=mock_client)
         with patch.dict("sys.modules", {"openai": mock_openai}):
             with patch.dict("os.environ", {"OPENAI_API_KEY": "key"}):
                 result = self.analyzer._query_llm("prompt")
@@ -46,9 +47,10 @@ class LLMAnalyzerTest(unittest.TestCase):
     def test_query_llm_logs_error(self) -> None:
         """Network errors should be printed for easier debugging."""
         mock_openai = types.ModuleType("openai")
-        mock_openai.ChatCompletion = MagicMock()
+        mock_client = MagicMock()
         exc = Exception("timeout")
-        mock_openai.ChatCompletion.create.side_effect = exc
+        mock_client.chat.completions.create.side_effect = exc
+        mock_openai.OpenAI = MagicMock(return_value=mock_client)
         with patch.dict("sys.modules", {"openai": mock_openai}):
             with patch.dict("os.environ", {"OPENAI_API_KEY": "key"}):
                 with patch("builtins.print") as mock_print:
@@ -58,7 +60,7 @@ class LLMAnalyzerTest(unittest.TestCase):
     def test_missing_api_key_raises(self) -> None:
         """Missing ``OPENAI_API_KEY`` should raise ``OpenAIError``."""
         mock_openai = types.ModuleType("openai")
-        mock_openai.ChatCompletion = MagicMock()
+        mock_openai.OpenAI = MagicMock(return_value=MagicMock())
         with patch.dict("sys.modules", {"openai": mock_openai}):
             with patch.dict("os.environ", {}, clear=True):
                 with self.assertRaises(OpenAIError):
@@ -67,8 +69,9 @@ class LLMAnalyzerTest(unittest.TestCase):
     def test_invalid_api_key_raises(self) -> None:
         """Invalid API key should raise ``OpenAIError``."""
         mock_openai = types.ModuleType("openai")
-        mock_openai.ChatCompletion = MagicMock()
-        mock_openai.ChatCompletion.create.side_effect = Exception("invalid api key")
+        mock_client = MagicMock()
+        mock_client.chat.completions.create.side_effect = Exception("invalid api key")
+        mock_openai.OpenAI = MagicMock(return_value=mock_client)
         with patch.dict("sys.modules", {"openai": mock_openai}):
             with patch.dict("os.environ", {"OPENAI_API_KEY": "bad"}):
                 with self.assertRaises(OpenAIError):
@@ -85,12 +88,12 @@ class LLMAnalyzerTest(unittest.TestCase):
         mock_openai = types.ModuleType("openai")
         usage = types.SimpleNamespace(total_tokens=5)
         response = types.SimpleNamespace(
-            choices=[types.SimpleNamespace(message={"content": "ok"})],
+            choices=[types.SimpleNamespace(message=types.SimpleNamespace(content="ok"))],
             usage=usage,
         )
-        mock_chat = MagicMock()
-        mock_chat.create.return_value = response
-        mock_openai.ChatCompletion = mock_chat
+        mock_client = MagicMock()
+        mock_client.chat.completions.create.return_value = response
+        mock_openai.OpenAI = MagicMock(return_value=mock_client)
         with patch.dict("sys.modules", {"openai": mock_openai}):
             with patch.dict("os.environ", {"OPENAI_API_KEY": "key"}):
                 with patch("builtins.print") as mock_print:
