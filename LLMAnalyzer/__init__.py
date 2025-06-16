@@ -61,10 +61,10 @@ class LLMAnalyzer:
         part_code = details.get("part_code", "")
 
         results: Dict[str, Any] = {}
-        fields = guideline.get("fields", [])
+        fields = guideline.get("fields") or guideline.get("steps", [])
         for step in fields:
-            step_id = step.get("id", "unknown")
-            definition = step.get("definition", "")
+            step_id = step.get("id") or step.get("step", "unknown")
+            definition = step.get("definition") or step.get("detail", "")
             prompt = (
                 f"Analyze according to step '{step_id}'.\n"
                 f"Step definition: {definition}\n"
