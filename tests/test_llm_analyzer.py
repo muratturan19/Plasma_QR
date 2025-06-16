@@ -25,6 +25,14 @@ class LLMAnalyzerTest(unittest.TestCase):
         for value in result.values():
             self.assertIn("response", value)
 
+    @patch.object(LLMAnalyzer, "_query_llm", return_value="answer")
+    def test_analyze_handles_steps(self, mock_query) -> None:  # type: ignore
+        """Guidelines using 'steps' should be processed correctly."""
+        guideline = {"steps": [{"step": "D1"}, {"step": "D2"}]}
+        details = {"complaint": "c"}
+        result = self.analyzer.analyze(details, guideline)
+        self.assertEqual(set(result.keys()), {"D1", "D2"})
+
     def test_query_llm_fallback(self) -> None:
         """``_query_llm`` should return a placeholder for non-auth errors."""
         mock_openai = types.ModuleType("openai")
