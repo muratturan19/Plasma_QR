@@ -16,3 +16,4 @@ dist/
 
 # Misc
 *.log
+.pytest_cache/
