@@ -66,6 +66,22 @@ ui = UI()
 ui.start()
 ```
 
+## Streamlit Arayuzu
+
+Tarayici tabanli arayuzu calistirmak icin asagidaki komutu kullanabilirsiniz:
+
+```bash
+streamlit run -m UI.streamlit_app
+```
+
+Python kodu icinden `run_streamlit()` fonksiyonunu da cagirabilirsiniz:
+
+```python
+from UI import run_streamlit
+
+run_streamlit()
+```
+
 ## Minimal Ornek
 
 Asagidaki kod ornegi girdi akisini nasil kullanabileceginizi gosterir:

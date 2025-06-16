@@ -3,6 +3,13 @@
 from typing import List, Optional
 
 
+def run_streamlit() -> None:
+    """Run the Streamlit application."""
+    from . import streamlit_app
+
+    streamlit_app.main()
+
+
 def run_cli(args: Optional[List[str]] = None) -> None:
     """Run the CLI application with optional ``args``.
 
@@ -23,4 +30,4 @@ class UI:
         return None
 
 
-__all__ = ["UI", "run_cli"]
+__all__ = ["UI", "run_cli", "run_streamlit"]
