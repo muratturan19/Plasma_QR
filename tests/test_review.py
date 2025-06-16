@@ -1,5 +1,6 @@
+import types
 import unittest
-from unittest.mock import patch, mock_open
+from unittest.mock import patch, mock_open, MagicMock
 
 from Review import Review
 
@@ -20,8 +21,35 @@ class ReviewTest(unittest.TestCase):
             review = Review()
         with patch.object(Review, "_query_llm") as mock_query:
             mock_query.return_value = "ok"
-            review.perform(["data"]) 
+            review.perform(["data"])
             mock_query.assert_called_with("prefix data suffix")
+
+    def test_query_llm_logs_tokens(self) -> None:
+        """Ensure start and end messages as well as token usage are printed."""
+        template = "{initial_report_text}"
+        with patch("builtins.open", mock_open(read_data=template)):
+            review = Review()
+        mock_openai = types.ModuleType("openai")
+        usage = types.SimpleNamespace(total_tokens=3)
+        response = types.SimpleNamespace(
+            choices=[types.SimpleNamespace(message={"content": "rev"})],
+            usage=usage,
+        )
+        mock_chat = MagicMock()
+        mock_chat.create.return_value = response
+        mock_openai.ChatCompletion = mock_chat
+        with patch.dict("sys.modules", {"openai": mock_openai}):
+            with patch.dict("os.environ", {"OPENAI_API_KEY": "key"}):
+                with patch("builtins.print") as mock_print:
+                    result = review._query_llm("prompt")
+        self.assertEqual(result, "rev")
+        expected = [
+            unittest.mock.call("Review._query_llm start"),
+            unittest.mock.call("Review tokens used: 3"),
+            unittest.mock.call("Review._query_llm end"),
+        ]
+        mock_print.assert_has_calls(expected)
+        self.assertEqual(mock_print.call_count, 3)
 
 
 if __name__ == "__main__":
