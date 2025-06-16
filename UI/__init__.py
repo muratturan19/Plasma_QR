@@ -4,10 +4,11 @@ from typing import List, Optional
 
 
 def run_streamlit() -> None:
-    """Run the Streamlit application."""
+    """Start the Streamlit UI."""
     from . import streamlit_app
+    from streamlit.web import bootstrap
 
-    streamlit_app.main()
+    bootstrap.run(streamlit_app.main, "", [], [])
 
 
 def run_cli(args: Optional[List[str]] = None) -> None:
