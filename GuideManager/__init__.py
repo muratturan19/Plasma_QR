@@ -1,5 +1,5 @@
 class GuideManager:
-    """Manages the 8D guide steps and associated resources."""
+    """Manages guide steps and resources for generic quality-report methods."""
 
     def load_guide(self, path):
         """Load guide information from the given path."""
