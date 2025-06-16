@@ -21,6 +21,13 @@ class GuideManagerTest(unittest.TestCase):
                 result = self.manager.get_format(method)
                 self.assertEqual(result, expected)
 
+    def test_load_guide(self) -> None:
+        test_file = self.base_dir / "5N1K_Guide.json"
+        with open(test_file, "r", encoding="utf-8") as f:
+            expected = json.load(f)
+        result = self.manager.load_guide(str(test_file))
+        self.assertEqual(result, expected)
+
 
 if __name__ == "__main__":
     unittest.main()
