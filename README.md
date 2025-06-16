@@ -1,6 +1,7 @@
-# 8D_Reporter
+# Quality_Reporter
 
-Otomatik 8D raporlama ve analizi icin gelistirilen Python paketi.
+Otomatik kalite raporlama ve analizi icin gelistirilen Python paketi. 8D, A3,
+Ishikawa, 5N1K ve DMAIC rapor metodlarindan birini secerek calisabilir.
 
 ## Kurulum
 
@@ -23,20 +24,27 @@ pip install -r requirements.txt
 Proje asagidaki paketleri icermektedir:
 
 - `UI`: Kullanici arayuzu islemlerini yonetir.
-- `GuideManager`: 8D rehberi ve verileriyle ilgili islemleri saglar.
+- `GuideManager`: secilen rapor metodunun rehberini ve verilerini yonetir.
 - `LLMAnalyzer`: Metinleri buyuk dil modeli kullanarak analiz eder.
 - `Review`: Olusturulan rapor ya da analiz sonucunu gozden gecirir.
 - `Comparison`: Iki veri kumesini veya raporu karsilastirir.
-- `ReportGenerator`: Analiz sonucundan 8D raporu uretir.
+- `ReportGenerator`: Analiz sonucundan secilen metod icin rapor uretir.
 
 Her paket icerisinde beklenen davranisi aciklayan siniflar yer almaktadir.
+
+## Guidelines Klasoru
+
+`Guidelines/` klasorunde 8D, A3, Ishikawa, 5N1K ve DMAIC metodlari icin
+hazirlanmis JSON rehber dosyalari bulunur. `GuideManager.load_guide` fonksiyonuna
+bu dosyalardan birinin yolunu vererek calismak istediginiz metodu secersiniz.
+Ornegin `Guidelines/A3_Guide.json` yolunu kullanarak A3 metodunu secebilirsiniz.
 
 ## Kullanici Girdisi Akisi
 
 Kullanicidan alinan veriler uygulama icinde asagidaki yollari izler:
 
 1. **UI** kullanicidan metin veya dosya konumunu toplar.
-2. **GuideManager** bu veriyi 8D adimlariyla iliskilendirir.
+2. **GuideManager** bu veriyi secilen metodun adimlariyla iliskilendirir.
 3. **LLMAnalyzer** metni buyuk dil modeli araciligiyla yorumlar.
 4. **Review** veya **Comparison** ihtiyaca gore analizi gozden gecirir.
 5. **ReportGenerator** son raporu olusturarak diske yazar.
@@ -70,7 +78,7 @@ from ReportGenerator import ReportGenerator
 text = "musteri sikayet metni"
 
 guide = GuideManager()
-guide.load_guide("guide.xlsx")
+guide.load_guide("Guidelines/8D_Guide.json")
 
 analyzer = LLMAnalyzer()
 analysis = analyzer.analyze(text)
