@@ -8,7 +8,10 @@ def run_streamlit() -> None:
     from . import streamlit_app
     from streamlit.web import bootstrap
 
-    bootstrap.run(streamlit_app.main, "", [], [])
+    # ``bootstrap.run`` expects the path to the Streamlit application
+    # rather than the function object itself. Passing the path prevents
+    # ``TypeError`` issues when ``bootstrap`` tries to modify ``sys.path``.
+    bootstrap.run(streamlit_app.__file__, "", [], [])
 
 
 def run_cli(args: Optional[List[str]] = None) -> None:
