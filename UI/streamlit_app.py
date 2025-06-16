@@ -37,7 +37,7 @@ def main() -> None:
         }
         with st.spinner("Analyzing..."):
             analysis = analyzer.analyze(details, guideline)
-        with st.spinner("Rapor kontrol ediliyor..."):
+        with st.spinner("Rapor değerlendiriliyor..."):
             reviewer = Review()
             reviewed = reviewer.perform(
                 [v["response"] for v in analysis.values()],
