@@ -20,6 +20,9 @@ pip install -r requirements.txt
 ```
 
 Bu komut arayuz icin gerekli streamlit kutuphanesini de kurar.
+Unicode karakterleri iceren PDF ciktisi icin
+`/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf` yolunda bulunan DejaVu Sans
+TTF dosyasinin kurulmus olmasi gerekir.
 ## OpenAI Anahtari
 
 `LLMAnalyzer` sinifi OpenAI API'sini kullanir. Gercek bir sorgu icin
