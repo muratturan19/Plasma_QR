@@ -1,8 +1,17 @@
 """User interface utilities."""
 
-from typing import Optional
+from typing import List, Optional
 
-from .cli import main as run_cli
+
+def run_cli(args: Optional[List[str]] = None) -> None:
+    """Run the CLI application with optional ``args``.
+
+    The CLI module is imported lazily to avoid the overhead at package import
+    time.
+    """
+    from .cli import main
+
+    main(args)
 
 
 class UI:
