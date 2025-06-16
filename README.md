@@ -27,7 +27,9 @@ denenir.
 ## OpenAI Anahtari
 
 `LLMAnalyzer` sinifi OpenAI API'sini kullanir. Gercek bir sorgu icin
-`OPENAI_API_KEY` ortam degiskenini asagidaki gibi tanimlayin:
+`OPENAI_API_KEY` ortam degiskenini asagidaki gibi tanimlayin veya ayni
+isimli degiskeni `.env` dosyaniza ekleyin. Uygulama baslatildiginda dosya
+varsa otomatik olarak yuklenir:
 
 ```bash
 export OPENAI_API_KEY="sk-..."
