@@ -9,6 +9,7 @@ from typing import List, Optional
 from GuideManager import GuideManager
 from LLMAnalyzer import LLMAnalyzer
 from ReportGenerator import ReportGenerator
+from Review import Review
 
 
 METHODS = ["8D", "5N1K", "A3", "DMAIC", "Ishikawa"]
@@ -47,6 +48,11 @@ def main(args: Optional[List[str]] = None) -> None:
         "part_code": part_code,
     }
     analysis = analyzer.analyze(details, guideline)
+
+    reviewer = Review()
+    reviewed = reviewer.perform([value["response"] for value in analysis.values()])
+    for (key, value), new_resp in zip(analysis.items(), reviewed):
+        value["response"] = new_resp
 
     complaint_info = {
         "customer": customer,

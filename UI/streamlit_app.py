@@ -8,6 +8,7 @@ from pathlib import Path
 from GuideManager import GuideManager
 from LLMAnalyzer import LLMAnalyzer
 from ReportGenerator import ReportGenerator
+from Review import Review
 
 METHODS = ["8D", "5N1K", "A3", "DMAIC", "Ishikawa"]
 
@@ -35,6 +36,11 @@ def main() -> None:
         }
         with st.spinner("Analyzing..."):
             analysis = analyzer.analyze(details, guideline)
+        with st.spinner("Rapor kontrol ediliyor..."):
+            reviewer = Review()
+            reviewed = reviewer.perform([v["response"] for v in analysis.values()])
+            for (key, value), new_resp in zip(analysis.items(), reviewed):
+                value["response"] = new_resp
 
         complaint_info = {
             "customer": customer,
