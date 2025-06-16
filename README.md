@@ -90,6 +90,12 @@ Tarayici tabanli arayuzu calistirmak icin asagidaki komutu kullanabilirsiniz:
 streamlit run -m UI.streamlit_app
 ```
 
+Kok dizindeki ``run_app.py`` dosyasi ayni arayuzu kolayca acmanizi saglar:
+
+```bash
+python run_app.py
+```
+
 Python kodu icinden `run_streamlit()` fonksiyonunu da cagirabilirsiniz:
 
 ```python
