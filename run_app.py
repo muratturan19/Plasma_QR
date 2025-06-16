@@ -1,6 +1,12 @@
 """Convenience script to launch the Streamlit interface."""
 
+from __future__ import annotations
+
+from dotenv import load_dotenv
+
 from UI import run_streamlit
+
+load_dotenv()
 
 
 def main() -> None:
