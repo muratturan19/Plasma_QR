@@ -13,4 +13,5 @@ class UI:
         run_cli()
         return None
 
+
 __all__ = ["UI", "run_cli"]
