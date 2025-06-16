@@ -57,8 +57,10 @@ class ReportGenerator:
         pdf = FPDF()
         pdf.add_page()
         # Register a Unicode font for non-Latin characters
-        font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-        pdf.add_font("DejaVu", "", font_path, uni=True)
+        font_path = Path(__file__).resolve().parents[1] / "Fonts" / "DejaVuSans.ttf"
+        if not font_path.exists():
+            font_path = Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
+        pdf.add_font("DejaVu", "", str(font_path), uni=True)
         pdf.set_font("DejaVu", size=12)
         pdf.cell(0, 10, txt="Analysis Report", ln=1)
         customer = complaint_info.get("customer", "")
