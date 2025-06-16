@@ -84,7 +84,8 @@ analyzer = LLMAnalyzer()
 analysis = analyzer.analyze(text)
 
 reporter = ReportGenerator(guide)
-paths = reporter.generate(analysis, "raporlar")
+info = {"customer": "ACME", "subject": "Issue", "part_code": "X"}
+paths = reporter.generate(analysis, info, "raporlar")
 print("PDF yolu:", paths["pdf"])
 print("Excel yolu:", paths["excel"])
 ```
