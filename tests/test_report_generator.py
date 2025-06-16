@@ -1,6 +1,7 @@
 import tempfile
 from pathlib import Path
 import unittest
+from unittest.mock import patch
 
 from GuideManager import GuideManager
 from ReportGenerator import ReportGenerator
@@ -21,6 +22,16 @@ class ReportGeneratorTest(unittest.TestCase):
             excel_path = Path(paths["excel"])
             self.assertTrue(pdf_path.exists())
             self.assertTrue(excel_path.exists())
+
+    def test_generate_template_uses_manager(self) -> None:
+        """``generate_template`` should fetch the correct format via ``GuideManager``."""
+        expected = {"fields": []}
+        method = "8D"
+        with patch.object(GuideManager, "get_format", return_value=expected) as mock_get:
+            generator = ReportGenerator(self.manager)
+            result = generator.generate_template(method)
+            mock_get.assert_called_with(method)
+            self.assertEqual(result, expected)
 
 
 if __name__ == "__main__":

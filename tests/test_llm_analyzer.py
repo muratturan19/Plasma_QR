@@ -18,6 +18,11 @@ class LLMAnalyzerTest(unittest.TestCase):
         for value in result.values():
             self.assertIn("response", value)
 
+    def test_query_llm_fallback(self) -> None:
+        """``_query_llm`` should return a placeholder when OpenAI fails."""
+        result = self.analyzer._query_llm("prompt")
+        self.assertTrue(result.startswith("LLM response placeholder"))
+
 
 if __name__ == "__main__":
     unittest.main()
