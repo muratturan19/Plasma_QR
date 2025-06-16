@@ -6,6 +6,10 @@ import os
 from typing import Any, Dict
 
 
+class OpenAIError(RuntimeError):
+    """Raised when the OpenAI client cannot be used."""
+
+
 class LLMAnalyzer:
     """Analyzes text using a Large Language Model."""
 
@@ -17,19 +21,23 @@ class LLMAnalyzer:
         """Return the LLM response for the given prompt."""
         try:
             import openai  # type: ignore
+        except ImportError as exc:  # pragma: no cover - import errors not expected
+            raise OpenAIError("openai package is not installed") from exc
 
-            api_key = os.getenv("OPENAI_API_KEY")
-            if not api_key:
-                raise RuntimeError("OPENAI_API_KEY not set")
-            openai.api_key = api_key
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise OpenAIError("OPENAI_API_KEY not set")
+        openai.api_key = api_key
 
+        try:
             response = openai.ChatCompletion.create(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
             )
             return response.choices[0].message["content"].strip()
-        except Exception:
-            # Fallback for offline or missing API key
+        except Exception as exc:  # pragma: no cover - network issues
+            if "invalid" in str(exc).lower():
+                raise OpenAIError("Invalid OpenAI API key") from exc
             return f"LLM response placeholder for: {prompt[:50]}"
 
     def analyze(self, details: Dict[str, Any], guideline: Dict[str, Any]) -> Dict[str, Any]:
