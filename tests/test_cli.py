@@ -2,6 +2,8 @@ import io
 import unittest
 from contextlib import redirect_stdout
 from unittest.mock import patch
+import tempfile
+from pathlib import Path
 
 from UI import cli
 import json
@@ -25,22 +27,27 @@ class CLITest(unittest.TestCase):
             "excel": "file.xlsx",
         }
 
-        with io.StringIO() as buf, redirect_stdout(buf):
-            cli.main([
-                "--complaint",
-                "c",
-                "--method",
-                "8D",
-                "--output",
-                "out",
-                "--customer",
-                "cust",
-                "--subject",
-                "subject",
-                "--part-code",
-                "code",
-            ])
-            output = buf.getvalue()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            with io.StringIO() as buf, redirect_stdout(buf):
+                cli.main([
+                    "--complaint",
+                    "c",
+                    "--method",
+                    "8D",
+                    "--output",
+                    tmpdir,
+                    "--customer",
+                    "cust",
+                    "--subject",
+                    "subject",
+                    "--part-code",
+                    "code",
+                ])
+                output = buf.getvalue()
+            llm1 = Path(tmpdir) / "LLM1.txt"
+            llm2 = Path(tmpdir) / "LLM2.txt"
+            self.assertTrue(llm1.exists())
+            self.assertTrue(llm2.exists())
 
         self.assertIn("Step1", output)
         self.assertIn("file.pdf", output)
@@ -63,7 +70,7 @@ class CLITest(unittest.TestCase):
                 "subject": "subject",
                 "part_code": "code",
             },
-            "out",
+            tmpdir,
         )
 
 

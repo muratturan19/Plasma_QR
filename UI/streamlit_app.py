@@ -37,6 +37,10 @@ def main() -> None:
         }
         with st.spinner("Analyzing..."):
             analysis = analyzer.analyze(details, guideline)
+        out_dir = Path("reports")
+        out_dir.mkdir(parents=True, exist_ok=True)
+        with open(out_dir / "LLM1.txt", "w", encoding="utf-8") as f:
+            json.dump(analysis, f, ensure_ascii=False, indent=2)
         with st.spinner("Rapor değerlendiriliyor..."):
             reviewer = Review()
             reviewed = reviewer.perform(
@@ -49,6 +53,8 @@ def main() -> None:
             )
             for (key, value), new_resp in zip(analysis.items(), reviewed):
                 value["response"] = new_resp
+        with open(out_dir / "LLM2.txt", "w", encoding="utf-8") as f:
+            json.dump(analysis, f, ensure_ascii=False, indent=2)
 
         complaint_info = {
             "customer": customer,
