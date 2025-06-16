@@ -19,6 +19,18 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+## OpenAI Anahtari
+
+`LLMAnalyzer` sinifi OpenAI API'sini kullanir. Gercek bir sorgu icin
+`OPENAI_API_KEY` ortam degiskenini asagidaki gibi tanimlayin:
+
+```bash
+export OPENAI_API_KEY="sk-..."
+```
+
+Gecerli bir anahtar saglanmadiginda veya baglanti kurulamazsa analiz
+sonuclari icin yer tutucu metinler dondurulur.
+
 ## Modul Yapisi
 
 Proje asagidaki paketleri icermektedir:
