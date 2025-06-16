@@ -49,8 +49,11 @@ class RunStreamlitTest(unittest.TestCase):
             "streamlit.web": dummy_web,
             "streamlit.web.bootstrap": dummy_bootstrap,
         }), patch.object(module, "streamlit_app") as mock_app:
+            mock_app.__file__ = "app_file"
             module.run_streamlit()
-            dummy_bootstrap.run.assert_called_once_with(mock_app.main, "", [], [])
+            dummy_bootstrap.run.assert_called_once_with(
+                "app_file", "", [], []
+            )
 
 
 if __name__ == '__main__':
