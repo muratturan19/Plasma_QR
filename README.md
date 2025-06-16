@@ -19,6 +19,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+Bu komut arayuz icin gerekli streamlit kutuphanesini de kurar.
 ## OpenAI Anahtari
 
 `LLMAnalyzer` sinifi OpenAI API'sini kullanir. Gercek bir sorgu icin
@@ -84,6 +85,7 @@ ui.start()
 
 ## Streamlit Arayuzu
 
+Bu arayuz icin `streamlit` kutuphanesi gereklidir ve `requirements.txt` dosyasinda yer alir.
 Tarayici tabanli arayuzu calistirmak icin asagidaki komutu kullanabilirsiniz:
 
 ```bash
