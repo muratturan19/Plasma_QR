@@ -19,10 +19,11 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Bu komut arayuz icin gerekli streamlit kutuphanesini de kurar.
-Unicode karakterleri iceren PDF ciktisi icin
-`/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf` yolunda bulunan DejaVu Sans
-TTF dosyasinin kurulmus olmasi gerekir.
+Bu komut arayüz için gerekli ``streamlit`` kütüphanesini de kurar.
+Unicode karakterleri içeren PDF çıktısı alınabilmesi için depo kökünde bulunan
+``Fonts`` klasöründeki ``DejaVuSans.ttf`` dosyası kullanılır. Dosya mevcut
+değilse sistemdeki ``/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf`` yolu
+denenir.
 ## OpenAI Anahtari
 
 `LLMAnalyzer` sinifi OpenAI API'sini kullanir. Gercek bir sorgu icin
