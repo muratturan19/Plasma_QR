@@ -80,13 +80,13 @@ analyzer = LLMAnalyzer()
 analysis = analyzer.analyze(text)
 
 reporter = ReportGenerator(guide)
-report_path = reporter.generate(analysis)
-print("Rapor olusturuldu:", report_path)
+paths = reporter.generate(analysis, "raporlar")
+print("PDF yolu:", paths["pdf"])
+print("Excel yolu:", paths["excel"])
 ```
 
 ## Cikti Formatlari
 
-`ReportGenerator.generate` fonksiyonu olusturulan raporun yolunu dondurur.
-Raporun hangi formata sahip oldugu uygulamanin ilerleyen surumlerinde belirlenecektir.
+`ReportGenerator.generate` fonksiyonu olusturulan PDF ve Excel dosyalarinin yolunu dondurur.
 
 Simdilik siniflar sadece taslak niteligindedir ve gercek islevler icermemektedir.
