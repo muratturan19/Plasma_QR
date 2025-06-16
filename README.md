@@ -79,15 +79,14 @@ guide.load_guide("Guidelines/8D_Guide.json")
 analyzer = LLMAnalyzer()
 analysis = analyzer.analyze(text)
 
-reporter = ReportGenerator()
-pdf_path, excel_path = reporter.generate(analysis)
-print("PDF kaydedildi:", pdf_path)
-print("Excel kaydedildi:", excel_path)
+reporter = ReportGenerator(guide)
+report_path = reporter.generate(analysis)
+print("Rapor olusturuldu:", report_path)
 ```
 
 ## Cikti Formatlari
 
-`ReportGenerator.generate` fonksiyonunun PDF ve Excel dosya yollarini dondurmesi beklenir.
-Raporlar varsayilan olarak calisma dizininde `rapor.pdf` ve `rapor.xlsx` adiyla olusur.
+`ReportGenerator.generate` fonksiyonu olusturulan raporun yolunu dondurur.
+Raporun hangi formata sahip oldugu uygulamanin ilerleyen surumlerinde belirlenecektir.
 
 Simdilik siniflar sadece taslak niteligindedir ve gercek islevler icermemektedir.
