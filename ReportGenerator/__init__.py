@@ -25,7 +25,7 @@ class ReportGenerator:
     def generate(
         self,
         analysis: Dict[str, Any],
-        details: Dict[str, str],
+        complaint_info: Dict[str, str],
         output_dir: str | Path = ".",
     ) -> Dict[str, str]:
         """Create PDF and Excel reports from the analysis results.
@@ -34,8 +34,8 @@ class ReportGenerator:
         ----------
         analysis: Dict[str, Any]
             The analysis data returned from ``LLMAnalyzer``.
-        details: Dict[str, str]
-            Complaint details such as customer and subject.
+        complaint_info: Dict[str, str]
+            Information about the complaint such as customer, subject and part code.
         output_dir: str | Path, optional
             Directory in which to save the generated files.
 
@@ -56,9 +56,12 @@ class ReportGenerator:
         pdf.add_page()
         pdf.set_font("Arial", size=12)
         pdf.cell(0, 10, txt="Analysis Report", ln=1)
-        for key, value in details.items():
-            label = key.replace("_", " ").title()
-            pdf.cell(0, 10, txt=f"{label}: {value}", ln=1)
+        customer = complaint_info.get("customer", "")
+        subject = complaint_info.get("subject", "")
+        part_code = complaint_info.get("part_code", "")
+        pdf.cell(0, 10, txt=f"Customer: {customer}", ln=1)
+        pdf.cell(0, 10, txt=f"Subject: {subject}", ln=1)
+        pdf.cell(0, 10, txt=f"Part Code: {part_code}", ln=1)
         pdf.ln(5)
         for key, value in analysis.items():
             line = f"{key}: {value.get('response', '')}"
@@ -68,9 +71,9 @@ class ReportGenerator:
         # Create Excel
         wb = Workbook()
         ws = wb.active
-        for key, value in details.items():
-            label = key.replace("_", " ").title()
-            ws.append([label, value])
+        ws.append(["Customer", customer])
+        ws.append(["Subject", subject])
+        ws.append(["Part Code", part_code])
         ws.append([])
         ws.append(["Step", "Response"])
         for key, value in analysis.items():

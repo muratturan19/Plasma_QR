@@ -16,9 +16,9 @@ class ReportGeneratorTest(unittest.TestCase):
 
     def test_generate_creates_files(self) -> None:
         analysis = {"Step1": {"response": "foo"}, "Step2": {"response": "bar"}}
-        details = {"complaint": "c", "customer": "cust", "subject": "sub", "part_code": "code"}
+        info = {"customer": "cust", "subject": "sub", "part_code": "code"}
         with tempfile.TemporaryDirectory() as tmpdir:
-            paths = self.generator.generate(analysis, details, tmpdir)
+            paths = self.generator.generate(analysis, info, tmpdir)
             pdf_path = Path(paths["pdf"])
             excel_path = Path(paths["excel"])
             self.assertTrue(pdf_path.exists())

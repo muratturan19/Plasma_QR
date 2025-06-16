@@ -43,7 +43,17 @@ class CLITest(unittest.TestCase):
         self.assertIn("file.pdf", output)
         mock_manager.return_value.get_format.assert_called_with("8D")
         mock_analyzer.return_value.analyze.assert_called_once()
-        mock_report.return_value.generate.assert_called_once()
+        mock_report.return_value.generate.assert_called_with(
+            {
+                "Step1": {"response": "ok"},
+            },
+            {
+                "customer": "cust",
+                "subject": "subject",
+                "part_code": "code",
+            },
+            "out",
+        )
 
 
 if __name__ == "__main__":

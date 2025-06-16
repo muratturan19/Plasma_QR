@@ -48,8 +48,14 @@ def main(args: Optional[List[str]] = None) -> None:
     }
     analysis = analyzer.analyze(details, guideline)
 
+    complaint_info = {
+        "customer": customer,
+        "subject": subject,
+        "part_code": part_code,
+    }
+
     generator = ReportGenerator(manager)
-    paths = generator.generate(analysis, details, options.output)
+    paths = generator.generate(analysis, complaint_info, options.output)
 
     print(json.dumps(analysis, indent=2, ensure_ascii=False))
     print(f"PDF report: {paths['pdf']}")
