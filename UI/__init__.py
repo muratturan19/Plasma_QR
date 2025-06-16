@@ -11,7 +11,11 @@ def run_streamlit() -> None:
     # ``bootstrap.run`` expects the path to the Streamlit application
     # rather than the function object itself. Passing the path prevents
     # ``TypeError`` issues when ``bootstrap`` tries to modify ``sys.path``.
-    bootstrap.run(streamlit_app.__file__, "", [], [])
+    # ``bootstrap.run`` expects the path to the Streamlit application and a
+    # boolean ``is_hello`` flag in recent Streamlit versions. Passing ``False``
+    # avoids ``TypeError`` issues when the underlying implementation assumes a
+    # boolean value.
+    bootstrap.run(streamlit_app.__file__, False, [], [])
 
 
 def run_cli(args: Optional[List[str]] = None) -> None:
