@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from pathlib import Path
 from typing import Iterable, List
 
 
@@ -13,11 +14,17 @@ class ReviewLLMError(RuntimeError):
 class Review:
     """Reviews generated reports or analysis results."""
 
-    def __init__(self, model: str | None = None) -> None:
-        """Initialize with an optional LLM model name."""
+    def __init__(self, model: str | None = None, template_path: str | None = None) -> None:
+        """Initialize with optional LLM model name and prompt template."""
         if model is None:
             model = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
         self.model = model
+
+        if template_path is None:
+            base_dir = Path(__file__).resolve().parents[1] / "Prompts"
+            template_path = base_dir / "Fixer_General_Prompt.md"
+        with open(template_path, "r", encoding="utf-8") as file:
+            self.template = file.read()
 
     def _query_llm(self, prompt: str) -> str:
         """Return the LLM response for the given prompt."""
@@ -42,10 +49,22 @@ class Review:
                 raise ReviewLLMError("Invalid OpenAI API key") from exc
             return f"LLM review placeholder for: {prompt[:50]}"
 
-    def perform(self, data: Iterable[str]) -> List[str]:
+    def _build_prompt(self, text: str, **context: str) -> str:
+        """Return the review prompt filled with context and text."""
+        params = {
+            "method": context.get("method", ""),
+            "customer": context.get("customer", ""),
+            "subject": context.get("subject", ""),
+            "part_code": context.get("part_code", ""),
+            "initial_report_text": text,
+            "guideline_json": context.get("guideline_json", ""),
+        }
+        return self.template.format(**params)
+
+    def perform(self, data: Iterable[str], **context: str) -> List[str]:
         """Review the given data and return feedback for each item."""
         results: List[str] = []
         for text in data:
-            prompt = f"REVIEW PROMPT PLACEHOLDER\n{text}"
+            prompt = self._build_prompt(text, **context)
             results.append(self._query_llm(prompt))
         return results

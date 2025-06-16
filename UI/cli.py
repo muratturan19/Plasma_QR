@@ -50,7 +50,14 @@ def main(args: Optional[List[str]] = None) -> None:
     analysis = analyzer.analyze(details, guideline)
 
     reviewer = Review()
-    reviewed = reviewer.perform([value["response"] for value in analysis.values()])
+    reviewed = reviewer.perform(
+        [value["response"] for value in analysis.values()],
+        method=method,
+        customer=customer,
+        subject=subject,
+        part_code=part_code,
+        guideline_json=json.dumps(guideline, ensure_ascii=False),
+    )
     for (key, value), new_resp in zip(analysis.items(), reviewed):
         value["response"] = new_resp
 
