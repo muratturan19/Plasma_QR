@@ -1,0 +1,23 @@
+import unittest
+from unittest.mock import patch
+
+from LLMAnalyzer import LLMAnalyzer
+
+
+class LLMAnalyzerTest(unittest.TestCase):
+    """Tests for LLMAnalyzer.analyze."""
+
+    def setUp(self) -> None:
+        self.analyzer = LLMAnalyzer()
+        self.guideline = {"fields": [{"id": "Step1"}, {"id": "Step2"}]}
+
+    @patch.object(LLMAnalyzer, "_query_llm", return_value="answer")
+    def test_analyze_returns_keys(self, mock_query) -> None:  # type: ignore
+        result = self.analyzer.analyze("text", self.guideline)
+        self.assertEqual(set(result.keys()), {"Step1", "Step2"})
+        for value in result.values():
+            self.assertIn("response", value)
+
+
+if __name__ == "__main__":
+    unittest.main()
