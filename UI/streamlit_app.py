@@ -5,6 +5,7 @@ from __future__ import annotations
 import streamlit as st
 
 from pathlib import Path
+import json
 from GuideManager import GuideManager
 from LLMAnalyzer import LLMAnalyzer
 from ReportGenerator import ReportGenerator
@@ -38,7 +39,14 @@ def main() -> None:
             analysis = analyzer.analyze(details, guideline)
         with st.spinner("Rapor kontrol ediliyor..."):
             reviewer = Review()
-            reviewed = reviewer.perform([v["response"] for v in analysis.values()])
+            reviewed = reviewer.perform(
+                [v["response"] for v in analysis.values()],
+                method=method,
+                customer=customer,
+                subject=subject,
+                part_code=part_code,
+                guideline_json=json.dumps(guideline, ensure_ascii=False),
+            )
             for (key, value), new_resp in zip(analysis.items(), reviewed):
                 value["response"] = new_resp
 
