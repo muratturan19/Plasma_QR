@@ -30,9 +30,10 @@ class ReviewTest(unittest.TestCase):
         with patch("builtins.open", mock_open(read_data=template)):
             review = Review()
         mock_openai = types.ModuleType("openai")
-        mock_openai.ChatCompletion = MagicMock()
+        mock_client = MagicMock()
         exc = Exception("timeout")
-        mock_openai.ChatCompletion.create.side_effect = exc
+        mock_client.chat.completions.create.side_effect = exc
+        mock_openai.OpenAI = MagicMock(return_value=mock_client)
         with patch.dict("sys.modules", {"openai": mock_openai}):
             with patch.dict("os.environ", {"OPENAI_API_KEY": "key"}):
                 with patch("builtins.print") as mock_print:
@@ -47,12 +48,12 @@ class ReviewTest(unittest.TestCase):
         mock_openai = types.ModuleType("openai")
         usage = types.SimpleNamespace(total_tokens=3)
         response = types.SimpleNamespace(
-            choices=[types.SimpleNamespace(message={"content": "rev"})],
+            choices=[types.SimpleNamespace(message=types.SimpleNamespace(content="rev"))],
             usage=usage,
         )
-        mock_chat = MagicMock()
-        mock_chat.create.return_value = response
-        mock_openai.ChatCompletion = mock_chat
+        mock_client = MagicMock()
+        mock_client.chat.completions.create.return_value = response
+        mock_openai.OpenAI = MagicMock(return_value=mock_client)
         with patch.dict("sys.modules", {"openai": mock_openai}):
             with patch.dict("os.environ", {"OPENAI_API_KEY": "key"}):
                 with patch("builtins.print") as mock_print:
