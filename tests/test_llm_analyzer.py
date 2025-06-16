@@ -13,7 +13,13 @@ class LLMAnalyzerTest(unittest.TestCase):
 
     @patch.object(LLMAnalyzer, "_query_llm", return_value="answer")
     def test_analyze_returns_keys(self, mock_query) -> None:  # type: ignore
-        result = self.analyzer.analyze("text", self.guideline)
+        details = {
+            "complaint": "text",
+            "customer": "cust",
+            "subject": "subj",
+            "part_code": "code",
+        }
+        result = self.analyzer.analyze(details, self.guideline)
         self.assertEqual(set(result.keys()), {"Step1", "Step2"})
         for value in result.values():
             self.assertIn("response", value)

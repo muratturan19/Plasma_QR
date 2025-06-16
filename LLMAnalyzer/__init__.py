@@ -33,16 +33,25 @@ class LLMAnalyzer:
             # Fallback for offline or missing API key
             return f"LLM response placeholder for: {prompt[:50]}"
 
-    def analyze(self, complaint_text: str, guideline: Dict[str, Any]) -> Dict[str, Any]:
-        """Return analysis results per guideline step for the complaint text."""
+    def analyze(self, details: Dict[str, Any], guideline: Dict[str, Any]) -> Dict[str, Any]:
+        """Return analysis results per guideline step using complaint details."""
+        complaint_text = details.get("complaint", "")
+        customer = details.get("customer", "")
+        subject = details.get("subject", "")
+        part_code = details.get("part_code", "")
+
         results: Dict[str, Any] = {}
         fields = guideline.get("fields", [])
         for step in fields:
             step_id = step.get("id", "unknown")
             definition = step.get("definition", "")
             prompt = (
-                f"Analyze the following complaint according to step '{step_id}'.\n"
-                f"Step definition: {definition}\nComplaint: {complaint_text}"
+                f"Analyze according to step '{step_id}'.\n"
+                f"Step definition: {definition}\n"
+                f"Customer: {customer}\n"
+                f"Subject: {subject}\n"
+                f"Part code: {part_code}\n"
+                f"Complaint: {complaint_text}"
             )
             answer = self._query_llm(prompt)
             results[step_id] = {"response": answer}

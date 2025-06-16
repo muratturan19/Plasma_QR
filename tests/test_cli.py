@@ -23,7 +23,20 @@ class CLITest(unittest.TestCase):
         }
 
         with io.StringIO() as buf, redirect_stdout(buf):
-            cli.main(["--complaint", "c", "--method", "8D", "--output", "out"])
+            cli.main([
+                "--complaint",
+                "c",
+                "--method",
+                "8D",
+                "--output",
+                "out",
+                "--customer",
+                "cust",
+                "--subject",
+                "subject",
+                "--part-code",
+                "code",
+            ])
             output = buf.getvalue()
 
         self.assertIn("Step1", output)
