@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from pathlib import Path
 from typing import List, Optional
 
 from GuideManager import GuideManager
@@ -49,6 +50,11 @@ def main(args: Optional[List[str]] = None) -> None:
     }
     analysis = analyzer.analyze(details, guideline)
 
+    out_dir = Path(options.output)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    with open(out_dir / "LLM1.txt", "w", encoding="utf-8") as f:
+        json.dump(analysis, f, ensure_ascii=False, indent=2)
+
     reviewer = Review()
     reviewed = reviewer.perform(
         [value["response"] for value in analysis.values()],
@@ -60,6 +66,9 @@ def main(args: Optional[List[str]] = None) -> None:
     )
     for (key, value), new_resp in zip(analysis.items(), reviewed):
         value["response"] = new_resp
+
+    with open(out_dir / "LLM2.txt", "w", encoding="utf-8") as f:
+        json.dump(analysis, f, ensure_ascii=False, indent=2)
 
     complaint_info = {
         "customer": customer,

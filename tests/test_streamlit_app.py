@@ -5,6 +5,7 @@ import types
 import unittest
 from contextlib import contextmanager
 from unittest.mock import MagicMock, patch, mock_open
+from pathlib import Path
 
 
 class StreamlitAppTest(unittest.TestCase):
@@ -35,11 +36,12 @@ class StreamlitAppTest(unittest.TestCase):
 
     def test_main_pipeline(self) -> None:
         module = importlib.import_module("UI.streamlit_app")
+        m_open = mock_open(read_data=b"data")
         with patch.object(module, "GuideManager") as mock_manager, \
              patch.object(module, "LLMAnalyzer") as mock_analyzer, \
              patch.object(module, "ReportGenerator") as mock_report, \
              patch.object(module, "Review") as mock_review, \
-             patch("builtins.open", mock_open(read_data=b"data")):
+             patch("builtins.open", m_open):
             mock_manager.return_value.get_format.return_value = {"fields": []}
             mock_analyzer.return_value.analyze.return_value = {
                 "Step1": {"response": "ok"}
@@ -51,6 +53,9 @@ class StreamlitAppTest(unittest.TestCase):
             }
 
             module.main()
+
+            m_open.assert_any_call(Path("reports") / "LLM1.txt", "w", encoding="utf-8")
+            m_open.assert_any_call(Path("reports") / "LLM2.txt", "w", encoding="utf-8")
 
             mock_manager.return_value.get_format.assert_called_with("8D")
             mock_analyzer.return_value.analyze.assert_called_once()
