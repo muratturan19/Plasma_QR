@@ -78,10 +78,11 @@ from ReportGenerator import ReportGenerator
 text = "musteri sikayet metni"
 
 guide = GuideManager()
-guide.load_guide("Guidelines/8D_Guide.json")
+guideline = guide.get_format("8D")
 
 analyzer = LLMAnalyzer()
-analysis = analyzer.analyze(text)
+details = {"complaint": text}
+analysis = analyzer.analyze(details, guideline)
 
 reporter = ReportGenerator(guide)
 info = {"customer": "ACME", "subject": "Issue", "part_code": "X"}
