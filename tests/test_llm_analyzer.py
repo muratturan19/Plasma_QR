@@ -43,6 +43,18 @@ class LLMAnalyzerTest(unittest.TestCase):
                 result = self.analyzer._query_llm("prompt")
         self.assertTrue(result.startswith("LLM response placeholder"))
 
+    def test_query_llm_logs_error(self) -> None:
+        """Network errors should be printed for easier debugging."""
+        mock_openai = types.ModuleType("openai")
+        mock_openai.ChatCompletion = MagicMock()
+        exc = Exception("timeout")
+        mock_openai.ChatCompletion.create.side_effect = exc
+        with patch.dict("sys.modules", {"openai": mock_openai}):
+            with patch.dict("os.environ", {"OPENAI_API_KEY": "key"}):
+                with patch("builtins.print") as mock_print:
+                    self.analyzer._query_llm("prompt")
+        mock_print.assert_any_call(f"LLMAnalyzer error: {exc}")
+
     def test_missing_api_key_raises(self) -> None:
         """Missing ``OPENAI_API_KEY`` should raise ``OpenAIError``."""
         mock_openai = types.ModuleType("openai")

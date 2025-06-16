@@ -48,8 +48,9 @@ class LLMAnalyzer:
             print("LLMAnalyzer._query_llm end")
             return result
         except Exception as exc:  # pragma: no cover - network issues
-            if "invalid" in str(exc).lower():
+            if "invalid" in str(exc).lower() or "incorrect" in str(exc).lower():
                 raise OpenAIError("Invalid OpenAI API key") from exc
+            print(f"LLMAnalyzer error: {exc}")
             print("LLMAnalyzer._query_llm end")
             return f"LLM response placeholder for: {prompt[:50]}"
 

@@ -51,8 +51,9 @@ class Review:
             print("Review._query_llm end")
             return result
         except Exception as exc:  # pragma: no cover - network issues
-            if "invalid" in str(exc).lower():
+            if "invalid" in str(exc).lower() or "incorrect" in str(exc).lower():
                 raise ReviewLLMError("Invalid OpenAI API key") from exc
+            print(f"Review error: {exc}")
             print("Review._query_llm end")
             return f"LLM review placeholder for: {prompt[:50]}"
 
