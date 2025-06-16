@@ -24,6 +24,16 @@ class ReportGeneratorTest(unittest.TestCase):
             self.assertTrue(pdf_path.exists())
             self.assertTrue(excel_path.exists())
 
+    def test_generate_unique_paths(self) -> None:
+        """Consecutive calls should produce different file names."""
+        analysis = {"Step1": {"response": "foo"}}
+        info = {"customer": "c"}
+        with tempfile.TemporaryDirectory() as tmpdir:
+            first = self.generator.generate(analysis, info, tmpdir)
+            second = self.generator.generate(analysis, info, tmpdir)
+            self.assertNotEqual(first["pdf"], second["pdf"])
+            self.assertNotEqual(first["excel"], second["excel"])
+
     def test_generate_template_uses_manager(self) -> None:
         """``generate_template`` should fetch the correct format via ``GuideManager``."""
         expected = {"fields": []}
