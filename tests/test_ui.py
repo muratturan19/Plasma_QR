@@ -52,7 +52,7 @@ class RunStreamlitTest(unittest.TestCase):
             mock_app.__file__ = "app_file"
             module.run_streamlit()
             dummy_bootstrap.run.assert_called_once_with(
-                "app_file", "", [], []
+                "app_file", False, [], []
             )
 
 
