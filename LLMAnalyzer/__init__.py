@@ -6,7 +6,6 @@ import os
 from typing import Any, Dict
 
 
-
 class LLMAnalyzer:
     """Analyzes text using a Large Language Model."""
 
