@@ -13,11 +13,7 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-3. Gerekli bagimliliklari kurun (simdilik harici bagimlilik yoktur):
-
-```bash
-pip install -r requirements.txt
-```
+3. Simdilik harici bir bagimlilik bulunmamaktadir, bu adimi atlayabilirsiniz.
 
 ## Modul Yapisi
 
