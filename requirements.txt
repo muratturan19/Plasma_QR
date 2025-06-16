@@ -1,4 +1,4 @@
 fpdf
 openpyxl
 openai
-streamlit
+streamlit>=1.0

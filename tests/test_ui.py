@@ -31,5 +31,27 @@ class UILazyImportTest(unittest.TestCase):
             mock_run.assert_called_once()
 
 
+class RunStreamlitTest(unittest.TestCase):
+    """Tests for ``run_streamlit``."""
+
+    def test_run_streamlit_invokes_bootstrap(self) -> None:
+        module = importlib.import_module("UI")
+
+        dummy_bootstrap = types.ModuleType("streamlit.web.bootstrap")
+        dummy_bootstrap.run = MagicMock()
+        dummy_web = types.ModuleType("streamlit.web")
+        dummy_web.bootstrap = dummy_bootstrap
+        dummy_streamlit = types.ModuleType("streamlit")
+        dummy_streamlit.web = dummy_web
+
+        with patch.dict(sys.modules, {
+            "streamlit": dummy_streamlit,
+            "streamlit.web": dummy_web,
+            "streamlit.web.bootstrap": dummy_bootstrap,
+        }), patch.object(module, "streamlit_app") as mock_app:
+            module.run_streamlit()
+            dummy_bootstrap.run.assert_called_once_with(mock_app.main, "", [], [])
+
+
 if __name__ == '__main__':
     unittest.main()
