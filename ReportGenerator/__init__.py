@@ -22,13 +22,20 @@ class ReportGenerator:
         """Return a report template for the given method."""
         return self.guide_manager.get_format(method)
 
-    def generate(self, analysis: Dict[str, Any], output_dir: str | Path = ".") -> Dict[str, str]:
+    def generate(
+        self,
+        analysis: Dict[str, Any],
+        details: Dict[str, str],
+        output_dir: str | Path = ".",
+    ) -> Dict[str, str]:
         """Create PDF and Excel reports from the analysis results.
 
         Parameters
         ----------
         analysis: Dict[str, Any]
             The analysis data returned from ``LLMAnalyzer``.
+        details: Dict[str, str]
+            Complaint details such as customer and subject.
         output_dir: str | Path, optional
             Directory in which to save the generated files.
 
@@ -49,6 +56,10 @@ class ReportGenerator:
         pdf.add_page()
         pdf.set_font("Arial", size=12)
         pdf.cell(0, 10, txt="Analysis Report", ln=1)
+        for key, value in details.items():
+            label = key.replace("_", " ").title()
+            pdf.cell(0, 10, txt=f"{label}: {value}", ln=1)
+        pdf.ln(5)
         for key, value in analysis.items():
             line = f"{key}: {value.get('response', '')}"
             pdf.multi_cell(0, 10, txt=line)
@@ -57,6 +68,10 @@ class ReportGenerator:
         # Create Excel
         wb = Workbook()
         ws = wb.active
+        for key, value in details.items():
+            label = key.replace("_", " ").title()
+            ws.append([label, value])
+        ws.append([])
         ws.append(["Step", "Response"])
         for key, value in analysis.items():
             ws.append([key, value.get("response", "")])
