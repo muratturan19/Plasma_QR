@@ -34,6 +34,15 @@ class ReportGeneratorTest(unittest.TestCase):
             self.assertNotEqual(first["pdf"], second["pdf"])
             self.assertNotEqual(first["excel"], second["excel"])
 
+    def test_generate_handles_unicode(self) -> None:
+        """PDF creation should not fail with non-Latin characters."""
+        analysis = {"Adım1": {"response": "İşlem tamam"}}
+        info = {"customer": "Müşteri", "subject": "Konu", "part_code": "K001"}
+        with tempfile.TemporaryDirectory() as tmpdir:
+            paths = self.generator.generate(analysis, info, tmpdir)
+            self.assertTrue(Path(paths["pdf"]).exists())
+            self.assertTrue(Path(paths["excel"]).exists())
+
     def test_generate_template_uses_manager(self) -> None:
         """``generate_template`` should fetch the correct format via ``GuideManager``."""
         expected = {"fields": []}
