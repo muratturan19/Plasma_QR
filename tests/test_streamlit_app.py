@@ -37,11 +37,13 @@ class StreamlitAppTest(unittest.TestCase):
         with patch.object(module, "GuideManager") as mock_manager, \
              patch.object(module, "LLMAnalyzer") as mock_analyzer, \
              patch.object(module, "ReportGenerator") as mock_report, \
+             patch.object(module, "Review") as mock_review, \
              patch("builtins.open", mock_open(read_data=b"data")):
             mock_manager.return_value.get_format.return_value = {"fields": []}
             mock_analyzer.return_value.analyze.return_value = {
                 "Step1": {"response": "ok"}
             }
+            mock_review.return_value.perform.return_value = ["checked"]
             mock_report.return_value.generate.return_value = {
                 "pdf": "file.pdf",
                 "excel": "file.xlsx",
@@ -51,7 +53,12 @@ class StreamlitAppTest(unittest.TestCase):
 
             mock_manager.return_value.get_format.assert_called_with("8D")
             mock_analyzer.return_value.analyze.assert_called_once()
-            mock_report.return_value.generate.assert_called_once()
+            mock_review.return_value.perform.assert_called_with(["ok"])
+            mock_report.return_value.generate.assert_called_with(
+                {"Step1": {"response": "checked"}},
+                {"customer": "cust", "subject": "subject", "part_code": "code"},
+                "reports",
+            )
             self.assertTrue(self.dummy_st.download_button.called)
 
 
