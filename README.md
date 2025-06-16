@@ -31,6 +31,10 @@ export OPENAI_API_KEY="sk-..."
 Gecerli bir anahtar saglanmadiginda veya baglanti kurulamazsa analiz
 sonuclari icin yer tutucu metinler dondurulur.
 
+`OPENAI_MODEL` degiskenini `.env` dosyanizda ya da dogrudan ortamda
+tanimlayarak kullanilacak model adini belirleyebilirsiniz. Deger
+verilmezse varsayilan `gpt-3.5-turbo` kullanilir.
+
 ## Modul Yapisi
 
 Proje asagidaki paketleri icermektedir:

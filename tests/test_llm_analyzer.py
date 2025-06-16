@@ -54,6 +54,12 @@ class LLMAnalyzerTest(unittest.TestCase):
                 with self.assertRaises(OpenAIError):
                     self.analyzer._query_llm("prompt")
 
+    def test_init_uses_openai_model_env(self) -> None:
+        """Default model should come from ``OPENAI_MODEL`` env variable."""
+        with patch.dict("os.environ", {"OPENAI_MODEL": "gpt-test"}):
+            analyzer = LLMAnalyzer()
+        self.assertEqual(analyzer.model, "gpt-test")
+
 
 if __name__ == "__main__":
     unittest.main()

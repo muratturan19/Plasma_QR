@@ -13,8 +13,14 @@ class OpenAIError(RuntimeError):
 class LLMAnalyzer:
     """Analyzes text using a Large Language Model."""
 
-    def __init__(self, model: str = "gpt-3.5-turbo") -> None:
-        """Initialize the analyzer with an optional LLM model name."""
+    def __init__(self, model: str | None = None) -> None:
+        """Initialize the analyzer with an optional LLM model name.
+
+        If ``model`` is ``None``, ``OPENAI_MODEL`` environment variable is used.
+        When the variable is not set, ``"gpt-3.5-turbo"`` becomes the default.
+        """
+        if model is None:
+            model = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
         self.model = model
 
     def _query_llm(self, prompt: str) -> str:
