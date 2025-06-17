@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import logging
 from typing import Any, Dict
 
 from PromptManager import PromptManager
@@ -24,10 +25,11 @@ class LLMAnalyzer:
         if model is None:
             model = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
         self.model = model
+        self.logger = logging.getLogger(__name__)
 
     def _query_llm(self, system_prompt: str, user_prompt: str) -> str:
         """Return the LLM response for the given prompt pair."""
-        print("LLMAnalyzer._query_llm start")
+        self.logger.debug("LLMAnalyzer._query_llm start")
         try:
             from openai import OpenAI  # type: ignore
         except ImportError as exc:  # pragma: no cover - import errors not expected
@@ -48,15 +50,15 @@ class LLMAnalyzer:
             )
             tokens = getattr(getattr(response, "usage", None), "total_tokens", None)
             if tokens is not None:
-                print(f"LLMAnalyzer tokens used: {tokens}")
+                self.logger.debug("LLMAnalyzer tokens used: %s", tokens)
             result = response.choices[0].message.content.strip()
-            print("LLMAnalyzer._query_llm end")
+            self.logger.debug("LLMAnalyzer._query_llm end")
             return result
         except Exception as exc:  # pragma: no cover - network issues
             if "invalid" in str(exc).lower() or "incorrect" in str(exc).lower():
                 raise OpenAIError("Invalid OpenAI API key") from exc
-            print(f"LLMAnalyzer error: {exc}")
-            print("LLMAnalyzer._query_llm end")
+            self.logger.error("LLMAnalyzer error: %s", exc)
+            self.logger.debug("LLMAnalyzer._query_llm end")
             return f"LLM response placeholder for: {user_prompt[:50]}"
 
     def analyze(self, details: Dict[str, Any], guideline: Dict[str, Any]) -> Dict[str, Any]:

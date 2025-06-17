@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import logging
 from pathlib import Path
 
 
@@ -18,6 +19,7 @@ class Review:
         if model is None:
             model = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
         self.model = model
+        self.logger = logging.getLogger(__name__)
 
         if template_path is None:
             base_dir = Path(__file__).resolve().parents[1] / "Prompts"
@@ -27,7 +29,7 @@ class Review:
 
     def _query_llm(self, prompt: str) -> str:
         """Return the LLM response for the given prompt."""
-        print("Review._query_llm start")
+        self.logger.debug("Review._query_llm start")
         try:
             from openai import OpenAI  # type: ignore
         except ImportError as exc:  # pragma: no cover - optional dependency
@@ -45,15 +47,15 @@ class Review:
             )
             tokens = getattr(getattr(response, "usage", None), "total_tokens", None)
             if tokens is not None:
-                print(f"Review tokens used: {tokens}")
+                self.logger.debug("Review tokens used: %s", tokens)
             result = response.choices[0].message.content.strip()
-            print("Review._query_llm end")
+            self.logger.debug("Review._query_llm end")
             return result
         except Exception as exc:  # pragma: no cover - network issues
             if "invalid" in str(exc).lower() or "incorrect" in str(exc).lower():
                 raise ReviewLLMError("Invalid OpenAI API key") from exc
-            print(f"Review error: {exc}")
-            print("Review._query_llm end")
+            self.logger.error("Review error: %s", exc)
+            self.logger.debug("Review._query_llm end")
             return f"LLM review placeholder for: {prompt[:50]}"
 
     def _build_prompt(self, text: str, **context: str) -> str:
