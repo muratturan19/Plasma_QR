@@ -8,6 +8,11 @@ from typing import Any, Dict
 
 from PromptManager import PromptManager
 
+# Default prompt used for 8D analyses when no template is loaded.
+DEFAULT_8D_PROMPT = (
+    "Sen deneyimli bir kalite mühendisisin..."
+)
+
 
 class OpenAIError(RuntimeError):
     """Raised when the OpenAI client cannot be used."""
@@ -72,7 +77,7 @@ class LLMAnalyzer:
         method = method_field.split()[0] if method_field else ""
         prompt_manager = PromptManager()
         template = {"system": "", "steps": {}}
-        if method:
+        if method and method != "8D":
             template = prompt_manager.get_template(method)
         system_tmpl = template.get("system", "")
         step_templates = template.get("steps", {})
@@ -104,9 +109,8 @@ class LLMAnalyzer:
                     user_prompt += f"\n{step_tmpl.format(**values)}"
             else:
                 if method == "8D":
-                    system_prompt, user_prompt = prompt_manager.get_8d_step_prompt(
-                        step_id, values, accumulated
-                    )
+                    system_prompt = DEFAULT_8D_PROMPT
+                    user_prompt = DEFAULT_8D_PROMPT
                 else:
                     step_entry = template.get(step_id, {})
                     system_prompt = step_entry.get("system", "").format(**values)
