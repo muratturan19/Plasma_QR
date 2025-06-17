@@ -89,30 +89,24 @@ ornegin `Guidelines/A3_Guide.json` dosyasi yoksa ayni fonksiyon
 
 ## Prompts Klasoru
 
-`Prompts/` klasorunde farkli rapor metodlari icin hazirlanmis JSON istem
-sablonlari bulunur. Cogu dosya `*_Prompt.json` adini tasir ve iki ana bolum
-icerir:
+`Prompts/` klasorunde her rapor metodu icin hazirlanmis duz metin sablonlari
+bulunur. Bu dosyalar `*_Prompt.txt` adini tasir ve icerisinde buyuk dil
+modeline gonderilecek tum metinler yer alir. Degiskenler cift suslu parantez
+(`{{...}}`) seklinde belirtilir ve calisma sirasinda verilen bilgilerle
+degistirilir.
 
-1. **system**: LLM'e gonderilecek genel sistem mesajini tanimlar.
-2. **steps**: Her adim icin baslik ve kullanilacak metin sablonlarini icerir.
+Uygulamada `PromptManager.get_text_prompt("A3")` gibi bir cagriyla ilgili
+sablon dosyasi okunur ve `LLMAnalyzer` tarafindan kullanilir. `8D` metodunda
+ayni klasorden `8D_Prompt.txt` dosyasi dogrudan okunur.
 
-Bazi sablon dosyalari ise (ornegin `8D_Prompt.json`) her adim icin ayri
-`system` ve `user_template` alanlari barindirir. Bu yapinin ornek bir parcasi
-asagidaki gibidir:
+### Sablonlari Ozellestirme
 
-```json
-{
-  "D1": { "system": "...", "user_template": "..." },
-  "D2": { "system": "...", "user_template": "..." }
-}
-```
-
-Uygulama icerisinde `PromptManager.get_template()` fonksiyonu metod adini
-parametre olarak alir ve ilgili JSON dosyasini bu klasorden okuyup dondurur.
-`LLMAnalyzer` sinifi bu sablonlari kullanarak her adim icin hazirlanan mesajlari
-LLM'e iletir. `8D` metodunda ise bu adimlar atlanir ve tek seferde
-`DEFAULT_8D_PROMPT` kullanilarak tam rapor uretilir. Bu durumda
-`analyze` fonksiyonu `{"full_text": "..."}` biciminde sonuc dondurur.
+Sistemin urettigi ciktilari degistirmek icin bu metin dosyalarini dilediginiz
+metin duzenleyiciyle acip icerigi guncelleyebilirsiniz. Gerekirse kendi metot
+adinizla yeni bir `*_Prompt.txt` dosyasi ekleyip `PromptManager.get_text_prompt`
+fonksiyonuna bu adi verebilirsiniz. Yer tutuculari korudugunuz surece metin
+icerigini serbestce degistirerek rapor formatini ihtiyaciniza gore ozellestire
+bilirsiniz.
 
 ## Kullanici Girdisi Akisi
 
