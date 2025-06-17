@@ -45,8 +45,9 @@ class LLMAnalyzerTest(unittest.TestCase):
         details = {"complaint": "issue"}
         self.analyzer.analyze(details, guideline)
         system_prompt, user_prompt = mock_query.call_args[0]
-        self.assertEqual(system_prompt, DEFAULT_8D_PROMPT)
-        self.assertEqual(user_prompt, DEFAULT_8D_PROMPT)
+        self.assertIn("D1", system_prompt)
+        self.assertIn("Müşteri Şikayeti: issue", user_prompt)
+        self.assertIn("Açıklama: issue", user_prompt)
 
     @patch.object(LLMAnalyzer, "_query_llm", return_value="ok")
     def test_analyze_uses_prompt_template(self, mock_query) -> None:  # type: ignore
@@ -61,8 +62,9 @@ class LLMAnalyzerTest(unittest.TestCase):
         }
         self.analyzer.analyze(details, guideline)
         system_prompt, user_prompt = mock_query.call_args_list[0][0]
-        self.assertEqual(system_prompt, DEFAULT_8D_PROMPT)
-        self.assertEqual(user_prompt, DEFAULT_8D_PROMPT)
+        self.assertIn("D1", system_prompt)
+        self.assertIn("c", user_prompt)
+        self.assertIn("code", user_prompt)
 
     @patch.object(LLMAnalyzer, "_query_llm")
     def test_previous_results_included(self, mock_query) -> None:  # type: ignore
@@ -79,10 +81,10 @@ class LLMAnalyzerTest(unittest.TestCase):
         first_call = mock_query.call_args_list[0][0]
         second_call = mock_query.call_args_list[1][0]
 
-        self.assertEqual(first_call[0], DEFAULT_8D_PROMPT)
-        self.assertEqual(first_call[1], DEFAULT_8D_PROMPT)
-        self.assertEqual(second_call[0], DEFAULT_8D_PROMPT)
-        self.assertEqual(second_call[1], DEFAULT_8D_PROMPT)
+        self.assertIn("D1", first_call[0])
+        self.assertIn("D2", second_call[0])
+        self.assertIn("Previous step results", second_call[1])
+        self.assertIn("first", second_call[1])
 
     def test_query_llm_fallback(self) -> None:
         """``_query_llm`` should return a placeholder for non-auth errors."""

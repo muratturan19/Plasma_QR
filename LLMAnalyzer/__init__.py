@@ -141,8 +141,9 @@ class LLMAnalyzer:
                     user_prompt += f"\n{step_tmpl.format(**values)}"
             else:
                 if method == "8D":
-                    system_prompt = DEFAULT_8D_PROMPT
-                    user_prompt = DEFAULT_8D_PROMPT
+                    system_prompt, user_prompt = prompt_manager.get_8d_step_prompt(
+                        step_id, values, accumulated
+                    )
                 else:
                     step_entry = template.get(step_id, {})
                     system_prompt = step_entry.get("system", "").format(**values)
