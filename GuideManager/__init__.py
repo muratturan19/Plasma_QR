@@ -7,6 +7,10 @@ from pathlib import Path
 from typing import Any, Dict
 
 
+class GuideNotFoundError(FileNotFoundError):
+    """Raised when the requested guide file cannot be found."""
+
+
 DEFAULT_8D_GUIDE: Dict[str, Any] = {
     "method": "8D",
     "description": (
@@ -100,8 +104,11 @@ class GuideManager:
 
     def load_guide(self, path: str) -> Dict[str, Any]:
         """Load guide information from the given path."""
-        with open(path, "r", encoding="utf-8") as file:
-            return json.load(file)
+        try:
+            with open(path, "r", encoding="utf-8") as file:
+                return json.load(file)
+        except FileNotFoundError as exc:
+            raise GuideNotFoundError(path) from exc
 
     def get_format(self, method: str) -> Dict[str, Any]:
         """Return the guide dictionary for the given method."""
@@ -110,7 +117,7 @@ class GuideManager:
             guide_path = base_dir / f"{method}_Guide.json"
             try:
                 self._cache[method] = self.load_guide(str(guide_path))
-            except FileNotFoundError:
+            except GuideNotFoundError:
                 if method == "8D":
                     self._cache[method] = DEFAULT_8D_GUIDE
                 else:
