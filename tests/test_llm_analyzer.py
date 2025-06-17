@@ -46,7 +46,7 @@ class LLMAnalyzerTest(unittest.TestCase):
         self.analyzer.analyze(details, guideline)
         system_prompt, user_prompt = mock_query.call_args[0]
         self.assertIn("D1", system_prompt)
-        self.assertIn("yaln", system_prompt)
+        self.assertIn("SADECE", system_prompt)
 
     @patch.object(LLMAnalyzer, "_query_llm", return_value="ok")
     def test_analyze_uses_prompt_template(self, mock_query) -> None:  # type: ignore
