@@ -6,6 +6,7 @@ import argparse
 import json
 from pathlib import Path
 from typing import List, Optional
+import logging
 
 from GuideManager import GuideManager
 from LLMAnalyzer import LLMAnalyzer
@@ -30,6 +31,7 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
 
 def main(args: Optional[List[str]] = None) -> None:
     """Run the CLI application."""
+    logging.basicConfig(level=logging.INFO)
     options = parse_args(args)
 
     complaint = options.complaint or input("Complaint text: ")

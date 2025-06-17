@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 from dotenv import load_dotenv
+import logging
 
 from UI import run_streamlit
 
 def main() -> None:
     """Execute the Streamlit UI."""
+    logging.basicConfig(level=logging.INFO)
     load_dotenv()
     run_streamlit()
 

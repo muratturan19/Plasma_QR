@@ -61,7 +61,7 @@ class ReviewTest(unittest.TestCase):
         self.assertEqual(result, "rev")
         messages = "\n".join(log.output)
         self.assertIn("Review._query_llm start", messages)
-        self.assertIn("Review tokens used: 3", messages)
+        self.assertIn("INFO:Review:Review tokens used: 3", messages)
         self.assertIn("Review._query_llm end", messages)
 
 
