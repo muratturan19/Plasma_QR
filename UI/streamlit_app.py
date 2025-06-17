@@ -43,7 +43,10 @@ def main() -> None:
             json.dump(analysis, f, ensure_ascii=False, indent=2)
         with st.spinner("Rapor değerlendiriliyor..."):
             reviewer = Review()
-            combined = "\n".join(v["response"] for v in analysis.values())
+            if method == "8D" and "full_text" in analysis:
+                combined = analysis["full_text"]
+            else:
+                combined = "\n".join(v["response"] for v in analysis.values())
             full_report = reviewer.perform(
                 combined,
                 method=method,

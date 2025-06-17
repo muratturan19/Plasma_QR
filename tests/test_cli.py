@@ -19,7 +19,7 @@ class CLITest(unittest.TestCase):
     def test_main_pipeline(self, mock_manager, mock_analyzer, mock_review, mock_report):
         mock_manager.return_value.get_format.return_value = {"fields": []}
         mock_analyzer.return_value.analyze.return_value = {
-            "Step1": {"response": "ok"}
+            "full_text": "ok"
         }
         mock_review.return_value.perform.return_value = "checked"
         mock_report.return_value.generate.return_value = {
@@ -49,7 +49,7 @@ class CLITest(unittest.TestCase):
             self.assertTrue(llm1.exists())
             self.assertTrue(llm2.exists())
 
-        self.assertIn("Step1", output)
+        self.assertIn("full_text", output)
         self.assertIn("file.pdf", output)
         mock_manager.return_value.get_format.assert_called_with("8D")
         mock_analyzer.return_value.analyze.assert_called_once()
@@ -63,7 +63,7 @@ class CLITest(unittest.TestCase):
         )
         mock_report.return_value.generate.assert_called_with(
             {
-                "Step1": {"response": "ok"},
+                "full_text": "ok",
                 "full_report": {"response": "checked"},
             },
             {

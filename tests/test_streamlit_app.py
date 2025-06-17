@@ -44,7 +44,7 @@ class StreamlitAppTest(unittest.TestCase):
              patch("builtins.open", m_open):
             mock_manager.return_value.get_format.return_value = {"fields": []}
             mock_analyzer.return_value.analyze.return_value = {
-                "Step1": {"response": "ok"}
+                "full_text": "ok"
             }
             mock_review.return_value.perform.return_value = "checked"
             mock_report.return_value.generate.return_value = {
@@ -69,7 +69,7 @@ class StreamlitAppTest(unittest.TestCase):
             )
             mock_report.return_value.generate.assert_called_with(
                 {
-                    "Step1": {"response": "ok"},
+                    "full_text": "ok",
                     "full_report": {"response": "checked"},
                 },
                 {"customer": "cust", "subject": "subject", "part_code": "code"},

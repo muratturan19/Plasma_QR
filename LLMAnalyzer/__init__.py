@@ -107,16 +107,26 @@ class LLMAnalyzer:
 
         method_field = guideline.get("method", "")
         method = method_field.split()[0] if method_field else ""
+
+        # ``8D`` method now uses a single LLM call with a dedicated prompt.
+        if method == "8D":
+            user_prompt = (
+                f"Müşteri Şikayeti: {complaint_text}\n"
+                f"Parça Kodu: {part_code}\n"
+                f"Problem Açıklaması: {subject or complaint_text}"
+            )
+            answer = self._query_llm(DEFAULT_8D_PROMPT, user_prompt)
+            return {"full_text": answer}
+
         prompt_manager = PromptManager()
         template = {"system": "", "steps": {}}
-        if method and method != "8D":
+        if method:
             template = prompt_manager.get_template(method)
         system_tmpl = template.get("system", "")
         step_templates = template.get("steps", {})
         template_has_steps = bool(step_templates)
 
         results: Dict[str, Any] = {}
-        accumulated: Dict[str, str] = {}
         fields = guideline.get("fields") or guideline.get("steps", [])
         for step in fields:
             step_id = step.get("id") or step.get("step", "unknown")
@@ -140,18 +150,12 @@ class LLMAnalyzer:
                 if step_tmpl:
                     user_prompt += f"\n{step_tmpl.format(**values)}"
             else:
-                if method == "8D":
-                    system_prompt, user_prompt = prompt_manager.get_8d_step_prompt(
-                        step_id, values, accumulated
-                    )
-                else:
-                    step_entry = template.get(step_id, {})
-                    system_prompt = step_entry.get("system", "").format(**values)
-                    user_prompt = step_entry.get("user_template", "").format(**values)
+                step_entry = template.get(step_id, {})
+                system_prompt = step_entry.get("system", "").format(**values)
+                user_prompt = step_entry.get("user_template", "").format(**values)
 
             answer = self._query_llm(system_prompt, user_prompt)
             results[step_id] = {"response": answer}
-            accumulated[step_id] = answer
 
         return results
 
