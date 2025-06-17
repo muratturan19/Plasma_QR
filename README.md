@@ -62,6 +62,19 @@ hazirlanmis JSON rehber dosyalari bulunur. `GuideManager.load_guide` fonksiyonun
 bu dosyalardan birinin yolunu vererek calismak istediginiz metodu secersiniz.
 Ornegin `Guidelines/A3_Guide.json` yolunu kullanarak A3 metodunu secebilirsiniz.
 
+## Prompts Klasoru
+
+`Prompts/` klasorunde farkli rapor metodlari icin hazirlanmis JSON istem sablonlari bulunur.
+Her dosya `*_Prompt.json` adini tasir ve iki ana bolumden olusur:
+
+1. **system**: LLM'e gonderilecek genel sistem mesajini tanimlar.
+2. **steps**: Her adim icin baslik ve kullanilacak metin sablonlarini icerir.
+
+Uygulama icerisinde `PromptManager.get_template()` fonksiyonu metod adini
+parametre olarak alir ve ilgili JSON dosyasini bu klasorden okuyup dondurur.
+`LLMAnalyzer` sinifi bu sablonlari kullanarak her adim icin hazirlanan
+mesajlari LLM'e iletir.
+
 ## Kullanici Girdisi Akisi
 
 Kullanicidan alinan veriler uygulama icinde asagidaki yollari izler:
