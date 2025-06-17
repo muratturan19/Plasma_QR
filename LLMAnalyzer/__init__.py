@@ -119,6 +119,16 @@ class LLMAnalyzer:
             return {"full_text": answer}
 
         prompt_manager = PromptManager()
+        text_template = prompt_manager.get_text_prompt(method)
+        if text_template:
+            user_prompt = (
+                text_template.replace("{{musteri_sikayeti}}", complaint_text)
+                .replace("{{parca_kodu}}", part_code)
+                .replace("{{problem_aciklamasi}}", subject or complaint_text)
+            )
+            answer = self._query_llm("", user_prompt)
+            return {"full_text": answer}
+
         template = {"system": "", "steps": {}}
         if method:
             template = prompt_manager.get_template(method)

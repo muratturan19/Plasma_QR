@@ -33,7 +33,7 @@ class CLITest(unittest.TestCase):
                     "--complaint",
                     "c",
                     "--method",
-                    "8D",
+                    "A3",
                     "--output",
                     tmpdir,
                     "--customer",
@@ -51,11 +51,11 @@ class CLITest(unittest.TestCase):
 
         self.assertIn("full_text", output)
         self.assertIn("file.pdf", output)
-        mock_manager.return_value.get_format.assert_called_with("8D")
+        mock_manager.return_value.get_format.assert_called_with("A3")
         mock_analyzer.return_value.analyze.assert_called_once()
         mock_review.return_value.perform.assert_called_with(
             "ok",
-            method="8D",
+            method="A3",
             customer="cust",
             subject="subject",
             part_code="code",
