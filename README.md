@@ -64,16 +64,28 @@ Ornegin `Guidelines/A3_Guide.json` yolunu kullanarak A3 metodunu secebilirsiniz.
 
 ## Prompts Klasoru
 
-`Prompts/` klasorunde farkli rapor metodlari icin hazirlanmis JSON istem sablonlari bulunur.
-Her dosya `*_Prompt.json` adini tasir ve iki ana bolumden olusur:
+`Prompts/` klasorunde farkli rapor metodlari icin hazirlanmis JSON istem
+sablonlari bulunur. Cogu dosya `*_Prompt.json` adini tasir ve iki ana bolum
+icerir:
 
 1. **system**: LLM'e gonderilecek genel sistem mesajini tanimlar.
 2. **steps**: Her adim icin baslik ve kullanilacak metin sablonlarini icerir.
 
+Bazi sablon dosyalari ise (ornegin `8D_Prompt.json`) her adim icin ayri
+`system` ve `user_template` alanlari barindirir. Bu yapinin ornek bir parcasi
+asagidaki gibidir:
+
+```json
+{
+  "D1": { "system": "...", "user_template": "..." },
+  "D2": { "system": "...", "user_template": "..." }
+}
+```
+
 Uygulama icerisinde `PromptManager.get_template()` fonksiyonu metod adini
 parametre olarak alir ve ilgili JSON dosyasini bu klasorden okuyup dondurur.
-`LLMAnalyzer` sinifi bu sablonlari kullanarak her adim icin hazirlanan
-mesajlari LLM'e iletir.
+`LLMAnalyzer` sinifi bu sablonlari kullanarak her adim icin hazirlanan mesajlari
+LLM'e iletir.
 
 ## Kullanici Girdisi Akisi
 
