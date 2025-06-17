@@ -46,6 +46,18 @@ class LLMAnalyzerTest(unittest.TestCase):
         call_args = mock_query.call_args[0]
         self.assertEqual(call_args[0], DEFAULT_8D_PROMPT)
 
+    @patch.object(LLMAnalyzer, "_query_llm", return_value="text")
+    def test_text_prompt_returns_full_text(self, mock_query) -> None:  # type: ignore
+        """Methods with text prompts should return ``full_text``."""
+        guideline = {"method": "A3", "fields": []}
+        details = {"complaint": "comp", "subject": "sub", "part_code": "p"}
+        result = self.analyzer.analyze(details, guideline)
+        self.assertEqual(result, {"full_text": "text"})
+        mock_query.assert_called_once()
+        call_args = mock_query.call_args[0]
+        self.assertEqual(call_args[0], "")
+        self.assertIn("comp", call_args[1])
+
     def test_query_llm_fallback(self) -> None:
         """``_query_llm`` should return a placeholder for non-auth errors."""
         mock_openai = types.ModuleType("openai")
