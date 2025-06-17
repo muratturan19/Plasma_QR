@@ -35,7 +35,6 @@ class UI:
     def start(self) -> None:
         """Start the CLI."""
         run_cli()
-        return None
 
 
 __all__ = ["UI", "run_cli", "run_streamlit"]
