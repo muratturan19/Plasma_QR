@@ -114,7 +114,7 @@ class LLMAnalyzerTest(unittest.TestCase):
         self.assertEqual(result, "ok")
         messages = "\n".join(log.output)
         self.assertIn("LLMAnalyzer._query_llm start", messages)
-        self.assertIn("LLMAnalyzer tokens used: 5", messages)
+        self.assertIn("INFO:LLMAnalyzer:LLMAnalyzer tokens used: 5", messages)
         self.assertIn("LLMAnalyzer._query_llm end", messages)
 
 

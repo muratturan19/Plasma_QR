@@ -47,7 +47,7 @@ class Review:
             )
             tokens = getattr(getattr(response, "usage", None), "total_tokens", None)
             if tokens is not None:
-                self.logger.debug("Review tokens used: %s", tokens)
+                self.logger.info("Review tokens used: %s", tokens)
             result = response.choices[0].message.content.strip()
             self.logger.debug("Review._query_llm end")
             return result

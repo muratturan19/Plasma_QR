@@ -87,7 +87,7 @@ class LLMAnalyzer:
             )
             tokens = getattr(getattr(response, "usage", None), "total_tokens", None)
             if tokens is not None:
-                self.logger.debug("LLMAnalyzer tokens used: %s", tokens)
+                self.logger.info("LLMAnalyzer tokens used: %s", tokens)
             result = response.choices[0].message.content.strip()
             self.logger.debug("LLMAnalyzer._query_llm end")
             return result
