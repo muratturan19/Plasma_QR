@@ -3,6 +3,7 @@ import sys
 import types
 import unittest
 from unittest.mock import MagicMock, patch
+from pathlib import Path
 
 
 class UILazyImportTest(unittest.TestCase):
@@ -34,26 +35,15 @@ class UILazyImportTest(unittest.TestCase):
 class RunStreamlitTest(unittest.TestCase):
     """Tests for ``run_streamlit``."""
 
-    def test_run_streamlit_invokes_bootstrap(self) -> None:
+    def test_run_streamlit_invokes_subprocess(self) -> None:
         module = importlib.import_module("UI")
 
-        dummy_bootstrap = types.ModuleType("streamlit.web.bootstrap")
-        dummy_bootstrap.run = MagicMock()
-        dummy_web = types.ModuleType("streamlit.web")
-        dummy_web.bootstrap = dummy_bootstrap
-        dummy_streamlit = types.ModuleType("streamlit")
-        dummy_streamlit.web = dummy_web
-
-        with patch.dict(sys.modules, {
-            "streamlit": dummy_streamlit,
-            "streamlit.web": dummy_web,
-            "streamlit.web.bootstrap": dummy_bootstrap,
-        }), patch("UI.streamlit_app", create=True) as mock_app:
+        with patch("subprocess.run") as mock_run, \
+                patch("UI.streamlit_app", create=True) as mock_app:
             mock_app.__file__ = "app_file"
             module.run_streamlit()
-            dummy_bootstrap.run.assert_called_once_with(
-                "app_file", False, [], []
-            )
+            expected = ["streamlit", "run", str(Path("app_file").resolve())]
+            mock_run.assert_called_once_with(expected, check=True)
 
 
 if __name__ == '__main__':
