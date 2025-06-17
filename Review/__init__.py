@@ -74,3 +74,6 @@ class Review:
         """Return a reviewed version of the provided ``text``."""
         prompt = self._build_prompt(text, **context)
         return self._query_llm(prompt)
+
+
+__all__ = ["Review", "ReviewLLMError"]

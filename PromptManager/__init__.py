@@ -64,3 +64,6 @@ class PromptManager:
             user_prompt = f"{user_prompt}\n\nPrevious step results:\n{joined}"
 
         return system_prompt, user_prompt
+
+
+__all__ = ["PromptManager"]

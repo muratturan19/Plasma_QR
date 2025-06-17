@@ -34,3 +34,6 @@ class Comparison:
                 removed.append(line[1:])
 
         return {"added": added, "removed": removed}
+
+
+__all__ = ["Comparison"]
