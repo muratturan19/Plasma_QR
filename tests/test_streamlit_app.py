@@ -14,6 +14,7 @@ class StreamlitAppTest(unittest.TestCase):
     def setUp(self) -> None:
         dummy_st = types.ModuleType("streamlit")
         dummy_st.title = MagicMock()
+        dummy_st.set_page_config = MagicMock()
         dummy_st.text_area = MagicMock(return_value="c")
         dummy_st.selectbox = MagicMock(return_value="8D")
         dummy_st.text_input = MagicMock(side_effect=["cust", "subject", "code"])
@@ -22,6 +23,11 @@ class StreamlitAppTest(unittest.TestCase):
         dummy_st.json = MagicMock()
         dummy_st.download_button = MagicMock()
         dummy_st.markdown = MagicMock()
+
+        def columns(num: int):
+            return [dummy_st for _ in range(num)]
+
+        dummy_st.columns = MagicMock(side_effect=columns)
 
         @contextmanager
         def spinner(*args, **kwargs):
@@ -53,6 +59,9 @@ class StreamlitAppTest(unittest.TestCase):
             }
 
             module.main()
+
+            self.dummy_st.set_page_config.assert_called_once()
+            self.dummy_st.columns.assert_called()
 
             m_open.assert_any_call(Path("reports") / "LLM1.txt", "w", encoding="utf-8")
             m_open.assert_any_call(Path("reports") / "LLM2.txt", "w", encoding="utf-8")

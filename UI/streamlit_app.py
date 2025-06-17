@@ -11,18 +11,43 @@ from LLMAnalyzer import LLMAnalyzer
 from ReportGenerator import ReportGenerator
 from Review import Review
 
+st.set_page_config(
+    page_title="Quality Reporter",
+    page_icon=":memo:",
+    layout="centered",
+)
+
+st.markdown(
+    """
+    <style>
+        h1 {
+            color: #4E79A7;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 METHODS = ["8D", "5N1K", "A3", "DMAIC", "Ishikawa"]
 
 
 def main() -> None:
     """Run the Streamlit application."""
-    st.title("Quality Reporter")
 
-    complaint = st.text_area("Complaint")
-    method = st.selectbox("Method", METHODS)
-    customer = st.text_input("Customer")
-    subject = st.text_input("Subject")
-    part_code = st.text_input("Part code")
+    st.title("Quality Reporter")
+    st.markdown("---")
+
+    col1, col2 = st.columns(2)
+    col1.markdown("### Details")
+    complaint = col1.text_area("Complaint")
+    method = col1.selectbox("Method", METHODS)
+
+    col2.markdown("### Meta")
+    customer = col2.text_input("Customer")
+    subject = col2.text_input("Subject")
+    part_code = col2.text_input("Part code")
+
+    st.markdown("---")
 
     if st.button("Analyze"):
         manager = GuideManager()
@@ -75,12 +100,17 @@ def main() -> None:
             st.write("No final report available.")
 
         pdf_name = Path(paths["pdf"]).name
-        with open(paths["pdf"], "rb") as pdf_file:
-            st.download_button("Download PDF", pdf_file, file_name=pdf_name)
-
         excel_name = Path(paths["excel"]).name
+
+        col_dl1, col_dl2 = st.columns(2)
+        with open(paths["pdf"], "rb") as pdf_file:
+            col_dl1.download_button("Download PDF", pdf_file, file_name=pdf_name)
         with open(paths["excel"], "rb") as excel_file:
-            st.download_button("Download Excel", excel_file, file_name=excel_name)
+            col_dl2.download_button(
+                "Download Excel",
+                excel_file,
+                file_name=excel_name,
+            )
 
         st.markdown(f"[PDF file]({paths['pdf']})")
         st.markdown(f"[Excel file]({paths['excel']})")
