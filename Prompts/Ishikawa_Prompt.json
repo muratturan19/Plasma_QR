@@ -1,0 +1,11 @@
+{
+  "system": "You are a root-cause analyst using Ishikawa.\\n\\nInputs:\\n- Structured problem statement.\\n- Selected fishbone category.\\n\\nTask:\\nList plausible causes only within the chosen category.",
+  "steps": {
+    "Man":        { "title": "İnsan",      "prompt": "List human-related potential causes." },
+    "Machine":    { "title": "Makine",     "prompt": "List machine/equipment-related causes." },
+    "Method":     { "title": "Yöntem",     "prompt": "List process/procedure-related causes." },
+    "Material":   { "title": "Malzeme",    "prompt": "List material/consumable-related causes." },
+    "Measurement":{ "title": "Ölçüm",      "prompt": "List measurement/data-collection causes." },
+    "Environment":{ "title": "Ortam",      "prompt": "List environmental/workplace causes." }
+  }
+}
