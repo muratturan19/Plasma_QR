@@ -84,7 +84,8 @@ class ReportGenerator:
         pdf.ln(5)
         for key, value in analysis.items():
             line = f"{key}: {value.get('response', '')}"
-            pdf.multi_cell(0, 10, txt=line)
+            width = getattr(pdf, "epw", 0)
+            pdf.multi_cell(width, 10, txt=line)
         pdf.output(str(pdf_path))
 
         # Create Excel
