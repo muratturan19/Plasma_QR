@@ -28,6 +28,24 @@ class PromptManagerTest(unittest.TestCase):
         result = self.manager.load_prompt(str(test_file))
         self.assertEqual(result, expected)
 
+    def test_get_8d_step_prompt_truncates_previous(self) -> None:
+        """Long previous results should be truncated in the user prompt."""
+        long_text = "x" * 350
+        details = {
+            "complaint": "c",
+            "part_code": "p",
+            "description": "d",
+        }
+        _, user_prompt = self.manager.get_8d_step_prompt(
+            "D2",
+            details,
+            {"D1": long_text},
+        )
+
+        self.assertIn("Previous step results", user_prompt)
+        self.assertIn("x" * 300 + "...", user_prompt)
+        self.assertNotIn(long_text, user_prompt)
+
 
 if __name__ == "__main__":
     unittest.main()

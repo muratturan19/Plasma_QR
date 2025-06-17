@@ -37,7 +37,9 @@ class PromptManager:
             Complaint details used to fill the prompt template.
         previous_results:
             Mapping of earlier step ids to their LLM responses. These are
-            appended to the user prompt to provide context.
+            appended to the user prompt to provide context. Each response is
+            truncated to the first 300 characters and an ellipsis is appended
+            if truncation occurs.
         """
 
         template = self.get_template("8D")
@@ -47,8 +49,11 @@ class PromptManager:
         user_prompt = step_template.get("user_template", "").format(**details)
 
         if previous_results:
+            def _shorten(text: str, limit: int = 300) -> str:
+                return text[:limit] + ("..." if len(text) > limit else "")
+
             joined = "\n".join(
-                f"{sid}: {resp}" for sid, resp in previous_results.items()
+                f"{sid}: {_shorten(resp)}" for sid, resp in previous_results.items()
             )
             user_prompt = f"{user_prompt}\n\nPrevious step results:\n{joined}"
 
