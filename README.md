@@ -81,6 +81,12 @@ hazirlanmis JSON rehber dosyalari bulunur. `GuideManager.load_guide` fonksiyonun
 bu dosyalardan birinin yolunu vererek calismak istediginiz metodu secersiniz.
 Ornegin `Guidelines/A3_Guide.json` yolunu kullanarak A3 metodunu secebilirsiniz.
 
+`8D_Guide.json` dosyasi uygulamaya gomulu varsayilan rehber verisiyle eslenmistir.
+Bu dosyayi silerseniz `GuideManager.get_format("8D")` yine calisir ve dahili
+veriyi kullanir. Diger rehber dosyalari gomulu olmadigindan yerinde kalmalidir;
+ornegin `Guidelines/A3_Guide.json` dosyasi yoksa ayni fonksiyon
+`GuideNotFoundError` hatasi verir.
+
 ## Prompts Klasoru
 
 `Prompts/` klasorunde farkli rapor metodlari icin hazirlanmis JSON istem
