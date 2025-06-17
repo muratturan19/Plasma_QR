@@ -25,7 +25,7 @@ class ReviewTest(unittest.TestCase):
             mock_query.assert_called_with("prefix data suffix")
 
     def test_query_llm_logs_error(self) -> None:
-        """Ensure network errors are printed for debugging."""
+        """Ensure network errors are logged for debugging."""
         template = "{initial_report_text}"
         with patch("builtins.open", mock_open(read_data=template)):
             review = Review()
@@ -36,12 +36,12 @@ class ReviewTest(unittest.TestCase):
         mock_openai.OpenAI = MagicMock(return_value=mock_client)
         with patch.dict("sys.modules", {"openai": mock_openai}):
             with patch.dict("os.environ", {"OPENAI_API_KEY": "key"}):
-                with patch("builtins.print") as mock_print:
+                with self.assertLogs("Review", level="ERROR") as log:
                     review._query_llm("prompt")
-        mock_print.assert_any_call(f"Review error: {exc}")
+        self.assertIn(f"Review error: {exc}", "\n".join(log.output))
 
     def test_query_llm_logs_tokens(self) -> None:
-        """Ensure start and end messages as well as token usage are printed."""
+        """Ensure start, end and token usage messages are logged."""
         template = "{initial_report_text}"
         with patch("builtins.open", mock_open(read_data=template)):
             review = Review()
@@ -56,16 +56,13 @@ class ReviewTest(unittest.TestCase):
         mock_openai.OpenAI = MagicMock(return_value=mock_client)
         with patch.dict("sys.modules", {"openai": mock_openai}):
             with patch.dict("os.environ", {"OPENAI_API_KEY": "key"}):
-                with patch("builtins.print") as mock_print:
+                with self.assertLogs("Review", level="DEBUG") as log:
                     result = review._query_llm("prompt")
         self.assertEqual(result, "rev")
-        expected = [
-            unittest.mock.call("Review._query_llm start"),
-            unittest.mock.call("Review tokens used: 3"),
-            unittest.mock.call("Review._query_llm end"),
-        ]
-        mock_print.assert_has_calls(expected)
-        self.assertEqual(mock_print.call_count, 3)
+        messages = "\n".join(log.output)
+        self.assertIn("Review._query_llm start", messages)
+        self.assertIn("Review tokens used: 3", messages)
+        self.assertIn("Review._query_llm end", messages)
 
 
 if __name__ == "__main__":

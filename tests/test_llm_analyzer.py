@@ -78,7 +78,7 @@ class LLMAnalyzerTest(unittest.TestCase):
         self.assertTrue(result.startswith("LLM response placeholder"))
 
     def test_query_llm_logs_error(self) -> None:
-        """Network errors should be printed for easier debugging."""
+        """Network errors should be logged for easier debugging."""
         mock_openai = types.ModuleType("openai")
         mock_client = MagicMock()
         exc = Exception("timeout")
@@ -86,9 +86,9 @@ class LLMAnalyzerTest(unittest.TestCase):
         mock_openai.OpenAI = MagicMock(return_value=mock_client)
         with patch.dict("sys.modules", {"openai": mock_openai}):
             with patch.dict("os.environ", {"OPENAI_API_KEY": "key"}):
-                with patch("builtins.print") as mock_print:
+                with self.assertLogs("LLMAnalyzer", level="ERROR") as log:
                     self.analyzer._query_llm("sys", "prompt")
-        mock_print.assert_any_call(f"LLMAnalyzer error: {exc}")
+        self.assertIn(f"LLMAnalyzer error: {exc}", "\n".join(log.output))
 
     def test_missing_api_key_raises(self) -> None:
         """Missing ``OPENAI_API_KEY`` should raise ``OpenAIError``."""
@@ -117,7 +117,7 @@ class LLMAnalyzerTest(unittest.TestCase):
         self.assertEqual(analyzer.model, "gpt-test")
 
     def test_query_llm_logs_tokens(self) -> None:
-        """Successful calls should print start, token usage and end messages."""
+        """Successful calls should log start, token usage and end messages."""
         mock_openai = types.ModuleType("openai")
         usage = types.SimpleNamespace(total_tokens=5)
         response = types.SimpleNamespace(
@@ -129,16 +129,13 @@ class LLMAnalyzerTest(unittest.TestCase):
         mock_openai.OpenAI = MagicMock(return_value=mock_client)
         with patch.dict("sys.modules", {"openai": mock_openai}):
             with patch.dict("os.environ", {"OPENAI_API_KEY": "key"}):
-                with patch("builtins.print") as mock_print:
+                with self.assertLogs("LLMAnalyzer", level="DEBUG") as log:
                     result = self.analyzer._query_llm("sys", "prompt")
         self.assertEqual(result, "ok")
-        expected = [
-            unittest.mock.call("LLMAnalyzer._query_llm start"),
-            unittest.mock.call("LLMAnalyzer tokens used: 5"),
-            unittest.mock.call("LLMAnalyzer._query_llm end"),
-        ]
-        mock_print.assert_has_calls(expected)
-        self.assertEqual(mock_print.call_count, 3)
+        messages = "\n".join(log.output)
+        self.assertIn("LLMAnalyzer._query_llm start", messages)
+        self.assertIn("LLMAnalyzer tokens used: 5", messages)
+        self.assertIn("LLMAnalyzer._query_llm end", messages)
 
 
 if __name__ == "__main__":
