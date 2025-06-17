@@ -6,11 +6,9 @@ from dotenv import load_dotenv
 
 from UI import run_streamlit
 
-load_dotenv()
-
-
 def main() -> None:
     """Execute the Streamlit UI."""
+    load_dotenv()
     run_streamlit()
 
 
