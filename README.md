@@ -203,7 +203,7 @@ Simdilik siniflar sadece taslak niteligindedir ve gercek islevler icermemektedir
 
 Testler `fpdf`, `openpyxl` ve `python-dotenv` gibi ek paketlere baglidir.
 Bu kutuphaneler `requirements.txt` dosyasinda listelenmistir.
-Testleri calistirmadan once tum bagimliliklari kurdugunuzdan emin olun:
+Katkida bulunacak gelistiriciler, testleri calistirmadan once asagidaki komutla tum bagimliliklari kurmalidir:
 
 ```bash
 pip install -r requirements.txt
