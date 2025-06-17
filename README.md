@@ -139,7 +139,7 @@ Bu arayuz icin `streamlit` kutuphanesi gereklidir ve `requirements.txt` dosyasin
 Tarayici tabanli arayuzu calistirmak icin asagidaki komutu kullanabilirsiniz:
 
 ```bash
-streamlit run -m UI.streamlit_app
+streamlit run UI/streamlit_app.py
 ```
 
 Kok dizindeki ``run_app.py`` dosyasi ayni arayuzu kolayca ve uyarisiz sekilde acmanizi saglar:
