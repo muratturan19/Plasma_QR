@@ -111,6 +111,15 @@ class ReportGeneratorTest(unittest.TestCase):
 
         self.assertIn(dummy.epw, dummy.logged_widths)
 
+    def test_generate_accepts_string_values(self) -> None:
+        """String values in analysis should be handled gracefully."""
+        analysis = {"summary": "ok", "Step": {"response": "foo"}}
+        info = {"customer": "c"}
+        with tempfile.TemporaryDirectory() as tmpdir:
+            paths = self.generator.generate(analysis, info, tmpdir)
+            self.assertTrue(Path(paths["pdf"]).exists())
+            self.assertTrue(Path(paths["excel"]).exists())
+
 
 if __name__ == "__main__":
     unittest.main()
