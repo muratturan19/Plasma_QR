@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 import unittest
+import unittest.mock
 
 from GuideManager import GuideManager
 
@@ -27,6 +28,21 @@ class GuideManagerTest(unittest.TestCase):
             expected = json.load(f)
         result = self.manager.load_guide(str(test_file))
         self.assertEqual(result, expected)
+
+    def test_get_format_caches_result(self) -> None:
+        """Repeated calls should not reopen the guideline file."""
+        test_file = self.base_dir / "8D_Guide.json"
+        with open(test_file, "r", encoding="utf-8") as f:
+            data = f.read()
+
+        with unittest.mock.patch(
+            "builtins.open", unittest.mock.mock_open(read_data=data)
+        ) as mocked_open:
+            first = self.manager.get_format("8D")
+            second = self.manager.get_format("8D")
+
+            self.assertEqual(mocked_open.call_count, 1)
+            self.assertIs(first, second)
 
 
 if __name__ == "__main__":
