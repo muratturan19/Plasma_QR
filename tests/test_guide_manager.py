@@ -3,7 +3,7 @@ from pathlib import Path
 import unittest
 import unittest.mock
 
-from GuideManager import GuideManager
+from GuideManager import DEFAULT_8D_GUIDE, GuideManager
 
 
 class GuideManagerTest(unittest.TestCase):
@@ -43,6 +43,17 @@ class GuideManagerTest(unittest.TestCase):
 
             self.assertEqual(mocked_open.call_count, 1)
             self.assertIs(first, second)
+
+    def test_get_format_fallback_default_8d(self) -> None:
+        """Return the default guide when the file is missing."""
+        target = self.base_dir / "8D_Guide.json"
+        backup = target.with_suffix(".json.bak")
+        target.rename(backup)
+        try:
+            result = self.manager.get_format("8D")
+            self.assertEqual(result, DEFAULT_8D_GUIDE)
+        finally:
+            backup.rename(target)
 
 
 if __name__ == "__main__":
