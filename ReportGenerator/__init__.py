@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Dict
 from pathlib import Path
+import os
 
 from fpdf import FPDF
 from openpyxl import Workbook
@@ -57,9 +58,20 @@ class ReportGenerator:
         pdf = FPDF()
         pdf.add_page()
         # Register a Unicode font for non-Latin characters
-        font_path = Path(__file__).resolve().parents[1] / "Fonts" / "DejaVuSans.ttf"
+        env_font = os.getenv("FONT_PATH")
+        if env_font:
+            font_path = Path(env_font)
+        else:
+            font_path = Path(__file__).resolve().parents[1] / "Fonts" / "DejaVuSans.ttf"
         if not font_path.exists():
-            font_path = Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
+            fallback = Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
+            if fallback.exists():
+                font_path = fallback
+            else:
+                raise FileNotFoundError(
+                    "Font file not found. Checked "
+                    f"{font_path} and {fallback}. Set FONT_PATH to override."
+                )
         pdf.add_font("DejaVu", "", str(font_path), uni=True)
         pdf.set_font("DejaVu", size=12)
         pdf.cell(0, 10, txt="Analysis Report", ln=1)

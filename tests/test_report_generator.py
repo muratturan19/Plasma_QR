@@ -2,6 +2,8 @@ import tempfile
 from pathlib import Path
 import unittest
 from unittest.mock import patch
+import os
+from fpdf import FPDF
 
 from GuideManager import GuideManager
 from ReportGenerator import ReportGenerator
@@ -52,6 +54,35 @@ class ReportGeneratorTest(unittest.TestCase):
             result = generator.generate_template(method)
             mock_get.assert_called_with(method)
             self.assertEqual(result, expected)
+
+    def test_generate_missing_font_raises(self) -> None:
+        """An informative error should be raised when font files are absent."""
+        analysis = {"Step": {"response": "foo"}}
+        info = {"customer": "c"}
+        with tempfile.TemporaryDirectory() as tmpdir, \
+             patch.object(Path, "exists", return_value=False):
+            with self.assertRaises(FileNotFoundError):
+                self.generator.generate(analysis, info, tmpdir)
+
+    def test_generate_uses_env_font(self) -> None:
+        """``FONT_PATH`` should override the default font location."""
+        analysis = {"Step": {"response": "foo"}}
+        info = {"customer": "c"}
+        font = Path(__file__).resolve().parents[1] / "Fonts" / "DejaVuSans.ttf"
+        called = []
+
+        original_add_font = FPDF.add_font
+
+        def wrapped_add_font(self, family, style="", fname="", uni=False):
+            called.append(fname)
+            return original_add_font(self, family, style, fname, uni)
+
+        with tempfile.TemporaryDirectory() as tmpdir, \
+             patch.dict(os.environ, {"FONT_PATH": str(font)}, clear=False), \
+             patch.object(FPDF, "add_font", new=wrapped_add_font):
+            self.generator.generate(analysis, info, tmpdir)
+
+        self.assertEqual(Path(called[0]), font)
 
 
 if __name__ == "__main__":
