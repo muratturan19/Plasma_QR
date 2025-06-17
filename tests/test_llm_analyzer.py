@@ -33,6 +33,15 @@ class LLMAnalyzerTest(unittest.TestCase):
         result = self.analyzer.analyze(details, guideline)
         self.assertEqual(set(result.keys()), {"D1", "D2"})
 
+    @patch.object(LLMAnalyzer, "_query_llm", return_value="answer")
+    def test_prompt_focuses_on_single_step(self, mock_query) -> None:  # type: ignore
+        """Prompt should instruct the model to analyze only the current step."""
+        guideline = {"fields": [{"id": "D1", "definition": "desc"}]}
+        details = {"complaint": "issue"}
+        self.analyzer.analyze(details, guideline)
+        args, _ = mock_query.call_args
+        self.assertIn("Ignore other steps", args[0])
+
     def test_query_llm_fallback(self) -> None:
         """``_query_llm`` should return a placeholder for non-auth errors."""
         mock_openai = types.ModuleType("openai")

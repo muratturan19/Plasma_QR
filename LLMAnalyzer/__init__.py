@@ -67,7 +67,8 @@ class LLMAnalyzer:
             step_id = step.get("id") or step.get("step", "unknown")
             definition = step.get("definition") or step.get("detail", "")
             prompt = (
-                f"Analyze according to step '{step_id}'.\n"
+                f"You are preparing content for step '{step_id}' only.\n"
+                f"Ignore other steps and analyze solely this one.\n"
                 f"Step definition: {definition}\n"
                 f"Customer: {customer}\n"
                 f"Subject: {subject}\n"
