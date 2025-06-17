@@ -84,6 +84,33 @@ class ReportGeneratorTest(unittest.TestCase):
 
         self.assertEqual(Path(called[0]), font)
 
+    def test_generate_uses_epw_if_available(self) -> None:
+        """``epw`` attribute should control cell width when present."""
+        analysis = {"Step": {"response": "foo"}}
+        info = {"customer": "c"}
+
+        class DummyPDF(FPDF):
+            def __init__(self) -> None:
+                super().__init__()
+                self.logged_widths = []
+
+            @property
+            def epw(self) -> int:
+                return 42
+
+            def multi_cell(self, w, h, text='', *args, **kwargs):
+                self.logged_widths.append(w)
+                kwargs.setdefault('txt', text)
+                return super().multi_cell(w, h, **kwargs)
+
+        dummy = DummyPDF()
+
+        with tempfile.TemporaryDirectory() as tmpdir, \
+             patch('ReportGenerator.FPDF', return_value=dummy):
+            self.generator.generate(analysis, info, tmpdir)
+
+        self.assertIn(dummy.epw, dummy.logged_widths)
+
 
 if __name__ == "__main__":
     unittest.main()
