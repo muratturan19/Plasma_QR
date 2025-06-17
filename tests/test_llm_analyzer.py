@@ -2,6 +2,8 @@ import unittest
 from unittest.mock import patch, MagicMock
 import types
 
+from GuideManager import GuideManager
+
 from LLMAnalyzer import LLMAnalyzer, OpenAIError
 
 
@@ -36,11 +38,31 @@ class LLMAnalyzerTest(unittest.TestCase):
     @patch.object(LLMAnalyzer, "_query_llm", return_value="answer")
     def test_prompt_focuses_on_single_step(self, mock_query) -> None:  # type: ignore
         """Prompt should instruct the model to analyze only the current step."""
-        guideline = {"fields": [{"id": "D1", "definition": "desc"}]}
+        guideline = {
+            "method": "8D",
+            "fields": [{"id": "D1", "definition": "desc"}],
+        }
         details = {"complaint": "issue"}
         self.analyzer.analyze(details, guideline)
         args, _ = mock_query.call_args
-        self.assertIn("Ignore other steps", args[0])
+        self.assertIn("Ignore other", args[0])
+
+    @patch.object(LLMAnalyzer, "_query_llm", return_value="ok")
+    def test_analyze_uses_prompt_template(self, mock_query) -> None:  # type: ignore
+        """Templates from PromptManager should be applied."""
+        manager = GuideManager()
+        guideline = manager.get_format("8D")
+        details = {
+            "complaint": "c",
+            "customer": "cust",
+            "subject": "subj",
+            "part_code": "code",
+        }
+        self.analyzer.analyze(details, guideline)
+        prompt = mock_query.call_args_list[0][0][0]
+        self.assertIn("Focus strictly on 'D1'", prompt)
+        self.assertIn("Team Formation", prompt)
+        self.assertIn("Customer: cust", prompt)
 
     def test_query_llm_fallback(self) -> None:
         """``_query_llm`` should return a placeholder for non-auth errors."""

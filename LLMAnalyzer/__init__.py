@@ -5,6 +5,8 @@ from __future__ import annotations
 import os
 from typing import Any, Dict
 
+from PromptManager import PromptManager
+
 
 class OpenAIError(RuntimeError):
     """Raised when the OpenAI client cannot be used."""
@@ -61,20 +63,45 @@ class LLMAnalyzer:
         subject = details.get("subject", "")
         part_code = details.get("part_code", "")
 
+        method_field = guideline.get("method", "")
+        method = method_field.split()[0] if method_field else ""
+        prompt_manager = PromptManager()
+        template = {"system": "", "steps": {}}
+        if method:
+            template = prompt_manager.get_template(method)
+        system_tmpl = template.get("system", "")
+        step_templates = template.get("steps", {})
+
         results: Dict[str, Any] = {}
         fields = guideline.get("fields") or guideline.get("steps", [])
         for step in fields:
             step_id = step.get("id") or step.get("step", "unknown")
             definition = step.get("definition") or step.get("detail", "")
-            prompt = (
-                f"You are preparing content for step '{step_id}' only.\n"
-                f"Ignore other steps and analyze solely this one.\n"
-                f"Step definition: {definition}\n"
-                f"Customer: {customer}\n"
-                f"Subject: {subject}\n"
-                f"Part code: {part_code}\n"
-                f"Complaint: {complaint_text}"
+
+            context = system_tmpl.format(
+                step_id=step_id,
+                customer=customer,
+                subject=subject,
+                part_code=part_code,
+                complaint_text=complaint_text,
+                definition=definition,
             )
+
+            step_tmpl = step_templates.get(step_id, {}).get("prompt", "")
+            step_prompt = step_tmpl.format(
+                step_id=step_id,
+                customer=customer,
+                subject=subject,
+                part_code=part_code,
+                complaint_text=complaint_text,
+                definition=definition,
+            )
+
+            prompt = f"{context}\nStep definition: {definition}"
+            if step_prompt:
+                prompt += f"\n{step_prompt}"
+
             answer = self._query_llm(prompt)
             results[step_id] = {"response": answer}
+
         return results
