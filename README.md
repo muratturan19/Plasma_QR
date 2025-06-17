@@ -110,7 +110,9 @@ asagidaki gibidir:
 Uygulama icerisinde `PromptManager.get_template()` fonksiyonu metod adini
 parametre olarak alir ve ilgili JSON dosyasini bu klasorden okuyup dondurur.
 `LLMAnalyzer` sinifi bu sablonlari kullanarak her adim icin hazirlanan mesajlari
-LLM'e iletir.
+LLM'e iletir. `8D` metodunda ise bu adimlar atlanir ve tek seferde
+`DEFAULT_8D_PROMPT` kullanilarak tam rapor uretilir. Bu durumda
+`analyze` fonksiyonu `{"full_text": "..."}` biciminde sonuc dondurur.
 
 ## Kullanici Girdisi Akisi
 
@@ -181,12 +183,14 @@ guideline = guide.get_format("8D")
 analyzer = LLMAnalyzer()
 details = {"complaint": text}
 analysis = analyzer.analyze(details, guideline)
+result_text = analysis["full_text"]
 
 reporter = ReportGenerator(guide)
 info = {"customer": "ACME", "subject": "Issue", "part_code": "X"}
 paths = reporter.generate(analysis, info, "raporlar")
 print("PDF yolu:", paths["pdf"])
 print("Excel yolu:", paths["excel"])
+print(result_text)
 ```
 
 ## Cikti Formatlari
