@@ -23,6 +23,7 @@ class StreamlitAppTest(unittest.TestCase):
         dummy_st.json = MagicMock()
         dummy_st.download_button = MagicMock()
         dummy_st.markdown = MagicMock()
+        dummy_st.image = MagicMock()
 
         def columns(num: int):
             return [dummy_st for _ in range(num)]
@@ -47,7 +48,8 @@ class StreamlitAppTest(unittest.TestCase):
              patch.object(module, "LLMAnalyzer") as mock_analyzer, \
              patch.object(module, "ReportGenerator") as mock_report, \
              patch.object(module, "Review") as mock_review, \
-             patch("builtins.open", m_open):
+             patch("builtins.open", m_open), \
+             patch.object(Path, "exists", return_value=True):
             mock_manager.return_value.get_format.return_value = {"fields": []}
             mock_analyzer.return_value.analyze.return_value = {
                 "full_text": "ok"
@@ -62,6 +64,7 @@ class StreamlitAppTest(unittest.TestCase):
 
             self.dummy_st.set_page_config.assert_called_once()
             self.dummy_st.columns.assert_called()
+            self.dummy_st.image.assert_called_once_with("Logo/logo.png", width=60)
 
             m_open.assert_any_call(Path("reports") / "LLM1.txt", "w", encoding="utf-8")
             m_open.assert_any_call(Path("reports") / "LLM2.txt", "w", encoding="utf-8")
