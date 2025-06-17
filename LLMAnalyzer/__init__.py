@@ -25,8 +25,8 @@ class LLMAnalyzer:
             model = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
         self.model = model
 
-    def _query_llm(self, prompt: str) -> str:
-        """Return the LLM response for the given prompt."""
+    def _query_llm(self, system_prompt: str, user_prompt: str) -> str:
+        """Return the LLM response for the given prompt pair."""
         print("LLMAnalyzer._query_llm start")
         try:
             from openai import OpenAI  # type: ignore
@@ -41,7 +41,10 @@ class LLMAnalyzer:
         try:
             response = client.chat.completions.create(
                 model=self.model,
-                messages=[{"role": "user", "content": prompt}],
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
+                ],
             )
             tokens = getattr(getattr(response, "usage", None), "total_tokens", None)
             if tokens is not None:
@@ -54,7 +57,7 @@ class LLMAnalyzer:
                 raise OpenAIError("Invalid OpenAI API key") from exc
             print(f"LLMAnalyzer error: {exc}")
             print("LLMAnalyzer._query_llm end")
-            return f"LLM response placeholder for: {prompt[:50]}"
+            return f"LLM response placeholder for: {user_prompt[:50]}"
 
     def analyze(self, details: Dict[str, Any], guideline: Dict[str, Any]) -> Dict[str, Any]:
         """Return analysis results per guideline step using complaint details."""
@@ -71,6 +74,7 @@ class LLMAnalyzer:
             template = prompt_manager.get_template(method)
         system_tmpl = template.get("system", "")
         step_templates = template.get("steps", {})
+        template_has_steps = bool(step_templates)
 
         results: Dict[str, Any] = {}
         fields = guideline.get("fields") or guideline.get("steps", [])
@@ -78,30 +82,29 @@ class LLMAnalyzer:
             step_id = step.get("id") or step.get("step", "unknown")
             definition = step.get("definition") or step.get("detail", "")
 
-            context = system_tmpl.format(
-                step_id=step_id,
-                customer=customer,
-                subject=subject,
-                part_code=part_code,
-                complaint_text=complaint_text,
-                definition=definition,
-            )
+            values = {
+                "step_id": step_id,
+                "customer": customer,
+                "subject": subject,
+                "part_code": part_code,
+                "complaint_text": complaint_text,
+                "definition": definition,
+                "complaint": complaint_text,
+                "description": details.get("description", complaint_text),
+            }
 
-            step_tmpl = step_templates.get(step_id, {}).get("prompt", "")
-            step_prompt = step_tmpl.format(
-                step_id=step_id,
-                customer=customer,
-                subject=subject,
-                part_code=part_code,
-                complaint_text=complaint_text,
-                definition=definition,
-            )
+            if template_has_steps:
+                system_prompt = system_tmpl.format(**values)
+                step_tmpl = step_templates.get(step_id, {}).get("prompt", "")
+                user_prompt = f"Step definition: {definition}"
+                if step_tmpl:
+                    user_prompt += f"\n{step_tmpl.format(**values)}"
+            else:
+                step_entry = template.get(step_id, {})
+                system_prompt = step_entry.get("system", "").format(**values)
+                user_prompt = step_entry.get("user_template", "").format(**values)
 
-            prompt = f"{context}\nStep definition: {definition}"
-            if step_prompt:
-                prompt += f"\n{step_prompt}"
-
-            answer = self._query_llm(prompt)
+            answer = self._query_llm(system_prompt, user_prompt)
             results[step_id] = {"response": answer}
 
         return results

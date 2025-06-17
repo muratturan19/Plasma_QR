@@ -44,8 +44,9 @@ class LLMAnalyzerTest(unittest.TestCase):
         }
         details = {"complaint": "issue"}
         self.analyzer.analyze(details, guideline)
-        args, _ = mock_query.call_args
-        self.assertIn("Ignore other", args[0])
+        system_prompt, user_prompt = mock_query.call_args[0]
+        self.assertIn("D1", system_prompt)
+        self.assertIn("yaln", system_prompt)
 
     @patch.object(LLMAnalyzer, "_query_llm", return_value="ok")
     def test_analyze_uses_prompt_template(self, mock_query) -> None:  # type: ignore
@@ -59,10 +60,11 @@ class LLMAnalyzerTest(unittest.TestCase):
             "part_code": "code",
         }
         self.analyzer.analyze(details, guideline)
-        prompt = mock_query.call_args_list[0][0][0]
-        self.assertIn("Focus strictly on 'D1'", prompt)
-        self.assertIn("Team Formation", prompt)
-        self.assertIn("Customer: cust", prompt)
+        system_prompt, user_prompt = mock_query.call_args_list[0][0]
+        self.assertIn("D1", system_prompt)
+        self.assertIn("Ekip Oluşturma", system_prompt)
+        self.assertIn("Müşteri Şikayeti: c", user_prompt)
+        self.assertIn("Parça Kodu: code", user_prompt)
 
     def test_query_llm_fallback(self) -> None:
         """``_query_llm`` should return a placeholder for non-auth errors."""
@@ -72,7 +74,7 @@ class LLMAnalyzerTest(unittest.TestCase):
         mock_openai.OpenAI = MagicMock(return_value=mock_client)
         with patch.dict("sys.modules", {"openai": mock_openai}):
             with patch.dict("os.environ", {"OPENAI_API_KEY": "key"}):
-                result = self.analyzer._query_llm("prompt")
+                result = self.analyzer._query_llm("sys", "prompt")
         self.assertTrue(result.startswith("LLM response placeholder"))
 
     def test_query_llm_logs_error(self) -> None:
@@ -85,7 +87,7 @@ class LLMAnalyzerTest(unittest.TestCase):
         with patch.dict("sys.modules", {"openai": mock_openai}):
             with patch.dict("os.environ", {"OPENAI_API_KEY": "key"}):
                 with patch("builtins.print") as mock_print:
-                    self.analyzer._query_llm("prompt")
+                    self.analyzer._query_llm("sys", "prompt")
         mock_print.assert_any_call(f"LLMAnalyzer error: {exc}")
 
     def test_missing_api_key_raises(self) -> None:
@@ -95,7 +97,7 @@ class LLMAnalyzerTest(unittest.TestCase):
         with patch.dict("sys.modules", {"openai": mock_openai}):
             with patch.dict("os.environ", {}, clear=True):
                 with self.assertRaises(OpenAIError):
-                    self.analyzer._query_llm("prompt")
+                    self.analyzer._query_llm("sys", "prompt")
 
     def test_invalid_api_key_raises(self) -> None:
         """Invalid API key should raise ``OpenAIError``."""
@@ -106,7 +108,7 @@ class LLMAnalyzerTest(unittest.TestCase):
         with patch.dict("sys.modules", {"openai": mock_openai}):
             with patch.dict("os.environ", {"OPENAI_API_KEY": "bad"}):
                 with self.assertRaises(OpenAIError):
-                    self.analyzer._query_llm("prompt")
+                    self.analyzer._query_llm("sys", "prompt")
 
     def test_init_uses_openai_model_env(self) -> None:
         """Default model should come from ``OPENAI_MODEL`` env variable."""
@@ -128,7 +130,7 @@ class LLMAnalyzerTest(unittest.TestCase):
         with patch.dict("sys.modules", {"openai": mock_openai}):
             with patch.dict("os.environ", {"OPENAI_API_KEY": "key"}):
                 with patch("builtins.print") as mock_print:
-                    result = self.analyzer._query_llm("prompt")
+                    result = self.analyzer._query_llm("sys", "prompt")
         self.assertEqual(result, "ok")
         expected = [
             unittest.mock.call("LLMAnalyzer._query_llm start"),
