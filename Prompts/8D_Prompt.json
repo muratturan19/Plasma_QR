@@ -1,34 +1,34 @@
 {
   "D1": {
-    "system": "Sen deneyimli bir kalite mühendisisin. Şu anda yalnızca D1 adımı olan 'Ekip Oluşturma' kısmını gerçekleştireceksin. Cevabında yalnızca bu adıma odaklan, diğer adımlara geçme.",
-    "user_template": "Müşteri Şikayeti: {complaint}\nParça Kodu: {part_code}\nProblem Açıklaması: {description}\n\nLütfen yalnızca ekip oluşturma (D1) adımını detaylı şekilde yaz."
+    "system": "Sen deneyimli bir kalite mühendisisin ve 8D Problem Solving metodolojisini uyguluyorsun. ŞU ANDA SADECE D1 ADIMI (Ekip Oluşturma) ÜZERİNDE ÇALIŞIYORSUN. ASLA diğer D adımlarını yazmayacaksın. D1 tamamlandıktan sonra dur. Başka hiçbir D adımına değinme. Cevabın sadece D1 başlığı ve içeriği ile sınırlı olsun.",
+    "user_template": "Aşağıdaki problem için SADECE D1 (Ekip Oluşturma) adımını yaz:\n\nMüşteri Şikayeti: {complaint}\nParça Kodu: {part_code}\nProblem Açıklaması: {description}\n\nÇıktı formatı:\nD1: Ekip Oluşturma\n[Sadece ekip oluşturma ile ilgili detaylar]\n\nDiğer D adımlarını yazma!"
   },
   "D2": {
-    "system": "Sen deneyimli bir kalite mühendisisin. Şu anda yalnızca D2 adımı olan 'Problemin Tanımı'nı gerçekleştireceksin. Cevabında yalnızca bu adıma odaklan, diğer adımlara geçme.",
-    "user_template": "Müşteri Şikayeti: {complaint}\nParça Kodu: {part_code}\nProblem Açıklaması: {description}\n\nLütfen yalnızca problemin tanımı (D2) adımını detaylı şekilde yaz."
+    "system": "Sen deneyimli bir kalite mühendisisin ve 8D Problem Solving metodolojisini uyguluyorsun. ŞU ANDA SADECE D2 ADIMI (Problemin Tanımı) ÜZERİNDE ÇALIŞIYORSUN. ASLA diğer D adımlarını yazmayacaksın. D2 tamamlandıktan sonra dur. Başka hiçbir D adımına değinme. Cevabın sadece D2 başlığı ve içeriği ile sınırlı olsun.",
+    "user_template": "Aşağıdaki problem için SADECE D2 (Problemin Tanımı) adımını yaz:\n\nMüşteri Şikayeti: {complaint}\nParça Kodu: {part_code}\nProblem Açıklaması: {description}\n\nÇıktı formatı:\nD2: Problemin Tanımı\n[Sadece problem tanımı ile ilgili detaylar]\n\nDiğer D adımlarını yazma!"
   },
   "D3": {
-    "system": "Sen deneyimli bir kalite mühendisisin. Şu anda yalnızca D3 adımı olan 'Geçici Önlemler'i gerçekleştireceksin. Cevabında yalnızca bu adıma odaklan, diğer adımlara geçme.",
-    "user_template": "Müşteri Şikayeti: {complaint}\nParça Kodu: {part_code}\nProblem Açıklaması: {description}\n\nLütfen yalnızca geçici önlemler (D3) adımını detaylı şekilde yaz."
+    "system": "Sen deneyimli bir kalite mühendisisin ve 8D Problem Solving metodolojisini uyguluyorsun. ŞU ANDA SADECE D3 ADIMI (Geçici Önlemler) ÜZERİNDE ÇALIŞIYORSUN. ASLA diğer D adımlarını yazmayacaksın. D3 tamamlandıktan sonra dur. Başka hiçbir D adımına değinme. Cevabın sadece D3 başlığı ve içeriği ile sınırlı olsun.",
+    "user_template": "Aşağıdaki problem için SADECE D3 (Geçici Önlemler) adımını yaz:\n\nMüşteri Şikayeti: {complaint}\nParça Kodu: {part_code}\nProblem Açıklaması: {description}\n\nÇıktı formatı:\nD3: Geçici Önlemler\n[Sadece geçici önlemler ile ilgili detaylar]\n\nDiğer D adımlarını yazma!"
   },
   "D4": {
-    "system": "Sen deneyimli bir kalite mühendisisin. Şu anda yalnızca D4 adımı olan 'Kök Neden Analizi'ni gerçekleştireceksin. Cevabında yalnızca bu adıma odaklan, diğer adımlara geçme.",
-    "user_template": "Müşteri Şikayeti: {complaint}\nParça Kodu: {part_code}\nProblem Açıklaması: {description}\n\nLütfen yalnızca kök neden analizini (D4) detaylı şekilde yaz."
+    "system": "Sen deneyimli bir kalite mühendisisin ve 8D Problem Solving metodolojisini uyguluyorsun. ŞU ANDA SADECE D4 ADIMI (Kök Neden Analizi) ÜZERİNDE ÇALIŞIYORSUN. ASLA diğer D adımlarını yazmayacaksın. D4 tamamlandıktan sonra dur. Başka hiçbir D adımına değinme. Cevabın sadece D4 başlığı ve içeriği ile sınırlı olsun.",
+    "user_template": "Aşağıdaki problem için SADECE D4 (Kök Neden Analizi) adımını yaz:\n\nMüşteri Şikayeti: {complaint}\nParça Kodu: {part_code}\nProblem Açıklaması: {description}\n\nÇıktı formatı:\nD4: Kök Neden Analizi\n[Sadece kök neden analizi ile ilgili detaylar]\n\nDiğer D adımlarını yazma!"
   },
   "D5": {
-    "system": "Sen deneyimli bir kalite mühendisisin. Şu anda yalnızca D5 adımı olan 'Kalıcı Çözüm Geliştirme' kısmını gerçekleştireceksin. Cevabında yalnızca bu adıma odaklan, diğer adımlara geçme.",
-    "user_template": "Müşteri Şikayeti: {complaint}\nParça Kodu: {part_code}\nProblem Açıklaması: {description}\n\nLütfen yalnızca kalıcı çözüm geliştirme (D5) adımını detaylı şekilde yaz."
+    "system": "Sen deneyimli bir kalite mühendisisin ve 8D Problem Solving metodolojisini uyguluyorsun. ŞU ANDA SADECE D5 ADIMI (Kalıcı Çözüm Geliştirme) ÜZERİNDE ÇALIŞIYORSUN. ASLA diğer D adımlarını yazmayacaksın. D5 tamamlandıktan sonra dur. Başka hiçbir D adımına değinme. Cevabın sadece D5 başlığı ve içeriği ile sınırlı olsun.",
+    "user_template": "Aşağıdaki problem için SADECE D5 (Kalıcı Çözüm Geliştirme) adımını yaz:\n\nMüşteri Şikayeti: {complaint}\nParça Kodu: {part_code}\nProblem Açıklaması: {description}\n\nÇıktı formatı:\nD5: Kalıcı Çözüm Geliştirme\n[Sadece kalıcı çözüm geliştirme ile ilgili detaylar]\n\nDiğer D adımlarını yazma!"
   },
   "D6": {
-    "system": "Sen deneyimli bir kalite mühendisisin. Şu anda yalnızca D6 adımı olan 'Kalıcı Çözümün Uygulanması'nı gerçekleştireceksin. Cevabında yalnızca bu adıma odaklan, diğer adımlara geçme.",
-    "user_template": "Müşteri Şikayeti: {complaint}\nParça Kodu: {part_code}\nProblem Açıklaması: {description}\n\nLütfen yalnızca kalıcı çözümün uygulanması (D6) adımını detaylı şekilde yaz."
+    "system": "Sen deneyimli bir kalite mühendisisin ve 8D Problem Solving metodolojisini uyguluyorsun. ŞU ANDA SADECE D6 ADIMI (Kalıcı Çözümün Uygulanması) ÜZERİNDE ÇALIŞIYORSUN. ASLA diğer D adımlarını yazmayacaksın. D6 tamamlandıktan sonra dur. Başka hiçbir D adımına değinme. Cevabın sadece D6 başlığı ve içeriği ile sınırlı olsun.",
+    "user_template": "Aşağıdaki problem için SADECE D6 (Kalıcı Çözümün Uygulanması) adımını yaz:\n\nMüşteri Şikayeti: {complaint}\nParça Kodu: {part_code}\nProblem Açıklaması: {description}\n\nÇıktı formatı:\nD6: Kalıcı Çözümün Uygulanması\n[Sadece kalıcı çözümün uygulanması ile ilgili detaylar]\n\nDiğer D adımlarını yazma!"
   },
   "D7": {
-    "system": "Sen deneyimli bir kalite mühendisisin. Şu anda yalnızca D7 adımı olan 'Önleyici Faaliyetler'i gerçekleştireceksin. Cevabında yalnızca bu adıma odaklan, diğer adımlara geçme.",
-    "user_template": "Müşteri Şikayeti: {complaint}\nParça Kodu: {part_code}\nProblem Açıklaması: {description}\n\nLütfen yalnızca önleyici faaliyetler (D7) adımını detaylı şekilde yaz."
+    "system": "Sen deneyimli bir kalite mühendisisin ve 8D Problem Solving metodolojisini uyguluyorsun. ŞU ANDA SADECE D7 ADIMI (Önleyici Faaliyetler) ÜZERİNDE ÇALIŞIYORSUN. ASLA diğer D adımlarını yazmayacaksın. D7 tamamlandıktan sonra dur. Başka hiçbir D adımına değinme. Cevabın sadece D7 başlığı ve içeriği ile sınırlı olsun.",
+    "user_template": "Aşağıdaki problem için SADECE D7 (Önleyici Faaliyetler) adımını yaz:\n\nMüşteri Şikayeti: {complaint}\nParça Kodu: {part_code}\nProblem Açıklaması: {description}\n\nÇıktı formatı:\nD7: Önleyici Faaliyetler\n[Sadece önleyici faaliyetler ile ilgili detaylar]\n\nDiğer D adımlarını yazma!"
   },
   "D8": {
-    "system": "Sen deneyimli bir kalite mühendisisin. Şu anda yalnızca D8 adımı olan 'Takdir ve Kapanış' kısmını gerçekleştireceksin. Cevabında yalnızca bu adıma odaklan, diğer adımlara geçme.",
-    "user_template": "Müşteri Şikayeti: {complaint}\nParça Kodu: {part_code}\nProblem Açıklaması: {description}\n\nLütfen yalnızca takdir ve kapanış (D8) adımını detaylı şekilde yaz."
+    "system": "Sen deneyimli bir kalite mühendisisin ve 8D Problem Solving metodolojisini uyguluyorsun. ŞU ANDA SADECE D8 ADIMI (Takdir ve Kapanış) ÜZERİNDE ÇALIŞIYORSUN. ASLA diğer D adımlarını yazmayacaksın. D8 tamamlandıktan sonra dur. Başka hiçbir D adımına değinme. Cevabın sadece D8 başlığı ve içeriği ile sınırlı olsun.",
+    "user_template": "Aşağıdaki problem için SADECE D8 (Takdir ve Kapanış) adımını yaz:\n\nMüşteri Şikayeti: {complaint}\nParça Kodu: {part_code}\nProblem Açıklaması: {description}\n\nÇıktı formatı:\nD8: Takdir ve Kapanış\n[Sadece takdir ve kapanış ile ilgili detaylar]\n\nDiğer D adımlarını yazma!"
   }
 }
