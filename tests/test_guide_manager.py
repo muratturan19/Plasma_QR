@@ -3,7 +3,7 @@ from pathlib import Path
 import unittest
 import unittest.mock
 
-from GuideManager import DEFAULT_8D_GUIDE, GuideManager
+from GuideManager import DEFAULT_8D_GUIDE, GuideManager, GuideNotFoundError
 
 
 class GuideManagerTest(unittest.TestCase):
@@ -54,6 +54,27 @@ class GuideManagerTest(unittest.TestCase):
             self.assertEqual(result, DEFAULT_8D_GUIDE)
         finally:
             backup.rename(target)
+
+    def test_load_guide_missing_file_raises(self) -> None:
+        """``load_guide`` should raise ``GuideNotFoundError`` when the path is invalid."""
+        missing = self.base_dir / "missing.json"
+        with self.assertRaises(GuideNotFoundError):
+            self.manager.load_guide(str(missing))
+
+    def test_get_format_missing_file_raises(self) -> None:
+        """Unknown methods or removed guides should raise ``GuideNotFoundError``."""
+        target = self.base_dir / "DMAIC_Guide.json"
+        backup = target.with_suffix(".json.bak")
+        target.rename(backup)
+        try:
+            with self.assertRaises(GuideNotFoundError):
+                self.manager.get_format("DMAIC")
+        finally:
+            backup.rename(target)
+
+    def test_get_format_unknown_method_raises(self) -> None:
+        with self.assertRaises(GuideNotFoundError):
+            self.manager.get_format("UNKNOWN")
 
 
 if __name__ == "__main__":
