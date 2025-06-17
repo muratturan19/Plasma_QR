@@ -9,9 +9,41 @@ from typing import Any, Dict
 from PromptManager import PromptManager
 
 # Default prompt used for 8D analyses when no template is loaded.
-DEFAULT_8D_PROMPT = (
-    "Sen deneyimli bir kalite mühendisisin..."
-)
+DEFAULT_8D_PROMPT = """
+Sen deneyimli bir kalite mühendisisin. Aşağıdaki müşteri şikayetine göre 8D Problem Çözme metodolojisine uygun detaylı bir rapor hazırla.
+
+Müşteri Şikayeti: {musteri_sikayeti}
+Parça Kodu: {parca_kodu}
+Problem Açıklaması: {problem_aciklamasi}
+
+Rapor formatı şu şekilde olmalıdır:
+
+D1: Ekip Oluşturma
+[...]
+
+D2: Problemin Tanımı
+[...]
+
+D3: Geçici Önlemler
+[...]
+
+D4: Kök Neden Analizi
+[...]
+
+D5: Kalıcı Çözüm Geliştirme
+[...]
+
+D6: Kalıcı Çözümün Uygulanması
+[...]
+
+D7: Önleyici Faaliyetler
+[...]
+
+D8: Takdir ve Kapanış
+[...]
+
+❗️Yalnızca yukarıdaki başlıklara uygun teknik içerik üret. Giriş paragrafı, genel yorum ya da metodoloji açıklaması yapma. Her başlığı kendi içeriğiyle doldur, ekstra bilgi verme.
+"""
 
 
 class OpenAIError(RuntimeError):
