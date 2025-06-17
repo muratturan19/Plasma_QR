@@ -191,13 +191,15 @@ Simdilik siniflar sadece taslak niteligindedir ve gercek islevler icermemektedir
 
 ## Testler
 
-Testleri çalistirmadan önce tum bagimliliklarin yüklendiginden emin olun:
+Testler `fpdf`, `openpyxl` ve `python-dotenv` gibi ek paketlere baglidir.
+Bu kutuphaneler `requirements.txt` dosyasinda listelenmistir.
+Testleri calistirmadan once tum bagimliliklari kurdugunuzdan emin olun:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Kurulum tamamlandiktan sonra birim testlerini asagidaki komutla calistirabilirsiniz:
+Bagimliliklari kurduktan sonra birim testlerini asagidaki komutla calistirabilirsiniz:
 
 ```bash
 python -m unittest discover

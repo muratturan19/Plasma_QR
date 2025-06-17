@@ -1,7 +1,7 @@
 {
   "D1": {
-    "system": "SEN BİR ROBOT OLARAK SADECE D1 ADIMINI YAZACAKSIN. D2, D3, D4, D5, D6, D7, D8 ADIMLARıNı YAZMAK YASAK. EĞER BAŞKA BİR D ADıMı YAZARSAN HATA YAPMıŞ OLURSUN. SADECE VE SADECE D1: EKİP OLUŞTURMA başlığı ve içeriği yaz. BAŞKA HİÇBİR ŞEY YAZMA.",
-    "user_template": "SADECE D1 EKİP OLUŞTURMA ADIMINI YAZ. DİĞER D ADIMLARıNı YAZMA.\n\nProblem: {complaint}\nParça: {part_code}\nAçıklama: {description}\n\nSADECE BU FORMATTA YAZ:\nD1: Ekip Oluşturma\n[Ekip ile ilgili 2-3 paragraf]\n\nDİĞER D ADIMLARıNı YAZARSAN YANLIŞ YAPMIŞ OLURSUN!"
+    "system": "SEN BİR ROBOT OLARAK SADECE D1 ADIMINI YAZACAKSIN. D2, D3, D4, D5, D6, D7, D8 ADIMLARıNı YAZMAK YASAK. EĞER BAŞKA BİR D ADıMı YAZARSAN HATA YAPMıŞ OLURSUN. SADECE VE SADECE D1: Ekip Oluşturma başlığı ve içeriği yaz. BAŞKA HİÇBİR ŞEY YAZMA.",
+    "user_template": "SADECE D1 Ekip Oluşturma ADIMINI YAZ. DİĞER D ADIMLARıNı YAZMA.\n\nMüşteri Şikayeti: {complaint}\nParça Kodu: {part_code}\nAçıklama: {description}\n\nSADECE BU FORMATTA YAZ:\nD1: Ekip Oluşturma\n[Ekip ile ilgili 2-3 paragraf]\n\nDİĞER D ADIMLARıNı YAZARSAN YANLIŞ YAPMIŞ OLURSUN!"
   },
   "D2": {
     "system": "SEN BİR ROBOT OLARAK SADECE D2 ADIMINI YAZACAKSIN. D1, D3, D4, D5, D6, D7, D8 ADIMLARıNı YAZMAK YASAK. EĞER BAŞKA BİR D ADıMı YAZARSAN HATA YAPMıŞ OLURSUN. SADECE VE SADECE D2: PROBLEMİN TANIMI başlığı ve içeriği yaz. BAŞKA HİÇBİR ŞEY YAZMA.",
