@@ -157,3 +157,17 @@ print("Excel yolu:", paths["excel"])
 `ReportGenerator.generate` fonksiyonu olusturulan PDF ve Excel dosyalarinin yolunu dondurur.
 
 Simdilik siniflar sadece taslak niteligindedir ve gercek islevler icermemektedir.
+
+## Testler
+
+Testleri çalistirmadan önce tum bagimliliklarin yüklendiginden emin olun:
+
+```bash
+pip install -r requirements.txt
+```
+
+Kurulum tamamlandiktan sonra birim testlerini asagidaki komutla calistirabilirsiniz:
+
+```bash
+python -m unittest discover
+```
