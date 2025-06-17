@@ -46,7 +46,7 @@ class StreamlitAppTest(unittest.TestCase):
             mock_analyzer.return_value.analyze.return_value = {
                 "Step1": {"response": "ok"}
             }
-            mock_review.return_value.perform.return_value = ["checked"]
+            mock_review.return_value.perform.return_value = "checked"
             mock_report.return_value.generate.return_value = {
                 "pdf": "file.pdf",
                 "excel": "file.xlsx",
@@ -60,7 +60,7 @@ class StreamlitAppTest(unittest.TestCase):
             mock_manager.return_value.get_format.assert_called_with("8D")
             mock_analyzer.return_value.analyze.assert_called_once()
             mock_review.return_value.perform.assert_called_with(
-                ["ok"],
+                "ok",
                 method="8D",
                 customer="cust",
                 subject="subject",
@@ -68,7 +68,10 @@ class StreamlitAppTest(unittest.TestCase):
                 guideline_json=json.dumps({"fields": []}, ensure_ascii=False),
             )
             mock_report.return_value.generate.assert_called_with(
-                {"Step1": {"response": "checked"}},
+                {
+                    "Step1": {"response": "ok"},
+                    "full_report": {"response": "checked"},
+                },
                 {"customer": "cust", "subject": "subject", "part_code": "code"},
                 "reports",
             )

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Iterable, List
 
 
 class ReviewLLMError(RuntimeError):
@@ -69,10 +68,7 @@ class Review:
         }
         return self.template.format(**params)
 
-    def perform(self, data: Iterable[str], **context: str) -> List[str]:
-        """Review the given data and return feedback for each item."""
-        results: List[str] = []
-        for text in data:
-            prompt = self._build_prompt(text, **context)
-            results.append(self._query_llm(prompt))
-        return results
+    def perform(self, text: str, **context: str) -> str:
+        """Return a reviewed version of the provided ``text``."""
+        prompt = self._build_prompt(text, **context)
+        return self._query_llm(prompt)

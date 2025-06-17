@@ -56,16 +56,16 @@ def main(args: Optional[List[str]] = None) -> None:
         json.dump(analysis, f, ensure_ascii=False, indent=2)
 
     reviewer = Review()
-    reviewed = reviewer.perform(
-        [value["response"] for value in analysis.values()],
+    combined = "\n".join(v["response"] for v in analysis.values())
+    full_report = reviewer.perform(
+        combined,
         method=method,
         customer=customer,
         subject=subject,
         part_code=part_code,
         guideline_json=json.dumps(guideline, ensure_ascii=False),
     )
-    for (key, value), new_resp in zip(analysis.items(), reviewed):
-        value["response"] = new_resp
+    analysis["full_report"] = {"response": full_report}
 
     with open(out_dir / "LLM2.txt", "w", encoding="utf-8") as f:
         json.dump(analysis, f, ensure_ascii=False, indent=2)
