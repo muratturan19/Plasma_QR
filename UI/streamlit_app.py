@@ -12,7 +12,7 @@ from ReportGenerator import ReportGenerator
 from Review import Review
 
 st.set_page_config(
-    page_title="Quality Reporter",
+    page_title="Ak\u0131ll\u0131 Kalite Raporlama Asistan\u0131",
     page_icon=":memo:",
     layout="centered",
 )
@@ -20,8 +20,26 @@ st.set_page_config(
 st.markdown(
     """
     <style>
+        body {
+            background-color: #f9f9f9;
+        }
         h1 {
             color: #4E79A7;
+        }
+        .card {
+            background-color: #ffffff;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+        .stButton>button {
+            background-color: #d72638;
+            color: white;
+        }
+        .stButton>button:hover {
+            background-color: #b71c2f;
+            color: white;
         }
     </style>
     """,
@@ -34,9 +52,17 @@ METHODS = ["8D", "5N1K", "A3", "DMAIC", "Ishikawa"]
 def main() -> None:
     """Run the Streamlit application."""
 
-    st.title("Quality Reporter")
+    logo_path = Path("Logo/logo.png")
+    if logo_path.exists():
+        st.image(str(logo_path), width=60)
+    st.title("Ak\u0131ll\u0131 Kalite Raporlama Asistan\u0131")
+    st.markdown(
+        "M\u00fc\u015fteri şik\u00e2yetini girin, metod seçin ve saniyeler "
+        "içinde profesyonel bir rapor oluşturun."
+    )
     st.markdown("---")
 
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     col1.markdown("### Details")
     complaint = col1.text_area("Complaint")
@@ -46,6 +72,7 @@ def main() -> None:
     customer = col2.text_input("Customer")
     subject = col2.text_input("Subject")
     part_code = col2.text_input("Part code")
+    st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown("---")
 
