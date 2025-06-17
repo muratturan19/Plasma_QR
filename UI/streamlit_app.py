@@ -67,8 +67,12 @@ def main() -> None:
         generator = ReportGenerator(manager)
         paths = generator.generate(analysis, complaint_info, "reports")
 
-        st.subheader("Analysis")
-        st.json(analysis)
+        st.subheader("Final Report")
+        final_text = analysis.get("full_report", {}).get("response")
+        if final_text:
+            st.text_area("Report", final_text, height=300)
+        else:
+            st.write("No final report available.")
 
         pdf_name = Path(paths["pdf"]).name
         with open(paths["pdf"], "rb") as pdf_file:
