@@ -100,3 +100,6 @@ class ReportGenerator:
         wb.save(str(excel_path))
 
         return {"pdf": str(pdf_path), "excel": str(excel_path)}
+
+
+__all__ = ["ReportGenerator"]
