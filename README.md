@@ -24,6 +24,25 @@ Unicode karakterleri içeren PDF çıktısı alınabilmesi için depo kökünde 
 ``Fonts`` klasöründeki ``DejaVuSans.ttf`` dosyası kullanılır. Dosya mevcut
 değilse sistemdeki ``/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf`` yolu
 denenir.
+
+Varsayılan olarak font aşağıdaki konumlarda aranır:
+
+1. ``Fonts/DejaVuSans.ttf``
+2. ``/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf``
+
+## FONT_PATH Ortam Değişkeni
+
+Uygulama PDF oluştururken varsayılan olarak yukarıdaki konumlardaki
+``DejaVuSans.ttf`` dosyasını kullanır. Font bulunamazsa program hata verir.
+Bu durumda ``FONT_PATH`` ortam değişkenini tanımlayarak farklı bir ``.ttf``
+dosyası kullanabilirsiniz:
+
+```bash
+export FONT_PATH="/tam/yol/AlternatifFont.ttf"
+```
+Dosyayı indirdikten sonra bu değişkeni tanımlayıp uygulamayı
+çalıştırmanız yeterlidir. Geçerli bir yol belirttiğinizde PDF işlemleri
+bu font ile devam eder.
 ## OpenAI Anahtari
 
 `LLMAnalyzer` sinifi OpenAI API'sini kullanir. Gercek bir sorgu icin
