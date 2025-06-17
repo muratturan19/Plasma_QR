@@ -66,6 +66,24 @@ class LLMAnalyzerTest(unittest.TestCase):
         self.assertIn("Müşteri Şikayeti: c", user_prompt)
         self.assertIn("Parça Kodu: code", user_prompt)
 
+    @patch.object(LLMAnalyzer, "_query_llm")
+    def test_previous_results_included(self, mock_query) -> None:  # type: ignore
+        """Earlier step answers should appear in later step prompts."""
+        mock_query.side_effect = ["first", "second"]
+        guideline = {
+            "method": "8D",
+            "fields": [{"id": "D1"}, {"id": "D2"}],
+        }
+        details = {"complaint": "c"}
+
+        self.analyzer.analyze(details, guideline)
+
+        first_call = mock_query.call_args_list[0][0]
+        second_call = mock_query.call_args_list[1][0]
+
+        self.assertNotIn("first", first_call[1])
+        self.assertIn("first", second_call[1])
+
     def test_query_llm_fallback(self) -> None:
         """``_query_llm`` should return a placeholder for non-auth errors."""
         mock_openai = types.ModuleType("openai")

@@ -79,6 +79,7 @@ class LLMAnalyzer:
         template_has_steps = bool(step_templates)
 
         results: Dict[str, Any] = {}
+        accumulated: Dict[str, str] = {}
         fields = guideline.get("fields") or guideline.get("steps", [])
         for step in fields:
             step_id = step.get("id") or step.get("step", "unknown")
@@ -102,11 +103,17 @@ class LLMAnalyzer:
                 if step_tmpl:
                     user_prompt += f"\n{step_tmpl.format(**values)}"
             else:
-                step_entry = template.get(step_id, {})
-                system_prompt = step_entry.get("system", "").format(**values)
-                user_prompt = step_entry.get("user_template", "").format(**values)
+                if method == "8D":
+                    system_prompt, user_prompt = prompt_manager.get_8d_step_prompt(
+                        step_id, values, accumulated
+                    )
+                else:
+                    step_entry = template.get(step_id, {})
+                    system_prompt = step_entry.get("system", "").format(**values)
+                    user_prompt = step_entry.get("user_template", "").format(**values)
 
             answer = self._query_llm(system_prompt, user_prompt)
             results[step_id] = {"response": answer}
+            accumulated[step_id] = answer
 
         return results

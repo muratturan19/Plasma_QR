@@ -20,3 +20,36 @@ class PromptManager:
         base_dir = Path(__file__).resolve().parents[1] / "Prompts"
         prompt_path = base_dir / f"{method}_Prompt.json"
         return self.load_prompt(str(prompt_path))
+
+    def get_8d_step_prompt(
+        self,
+        step_id: str,
+        details: Dict[str, Any],
+        previous_results: Dict[str, str] | None = None,
+    ) -> tuple[str, str]:
+        """Return ``system`` and ``user`` prompts for an 8D step.
+
+        Parameters
+        ----------
+        step_id:
+            The identifier of the current 8D step (e.g. ``"D1"``).
+        details:
+            Complaint details used to fill the prompt template.
+        previous_results:
+            Mapping of earlier step ids to their LLM responses. These are
+            appended to the user prompt to provide context.
+        """
+
+        template = self.get_template("8D")
+        step_template = template.get(step_id, {})
+
+        system_prompt = step_template.get("system", "").format(**details)
+        user_prompt = step_template.get("user_template", "").format(**details)
+
+        if previous_results:
+            joined = "\n".join(
+                f"{sid}: {resp}" for sid, resp in previous_results.items()
+            )
+            user_prompt = f"{user_prompt}\n\nPrevious step results:\n{joined}"
+
+        return system_prompt, user_prompt
