@@ -112,8 +112,6 @@ def main() -> None:
                 file_name=excel_name,
             )
 
-        st.markdown(f"[PDF file]({paths['pdf']})")
-        st.markdown(f"[Excel file]({paths['excel']})")
 
 
 if __name__ == "__main__":
