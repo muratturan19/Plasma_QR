@@ -82,8 +82,18 @@ class ReportGenerator:
         pdf.cell(0, 10, txt=f"Subject: {subject}", ln=1)
         pdf.cell(0, 10, txt=f"Part Code: {part_code}", ln=1)
         pdf.ln(5)
+        entries = []
+        seen = set()
         for key, value in analysis.items():
+            if key == "full_text" and "full_report" in analysis:
+                continue
             response = value.get("response", "") if isinstance(value, dict) else str(value)
+            if response in seen:
+                continue
+            seen.add(response)
+            entries.append((key, response))
+
+        for key, response in entries:
             line = f"{key}: {response}"
             width = getattr(pdf, "epw", 0)
             pdf.multi_cell(width, 10, txt=line)
@@ -97,8 +107,7 @@ class ReportGenerator:
         ws.append(["Part Code", part_code])
         ws.append([])
         ws.append(["Step", "Response"])
-        for key, value in analysis.items():
-            response = value.get("response", "") if isinstance(value, dict) else str(value)
+        for key, response in entries:
             ws.append([key, response])
         wb.save(str(excel_path))
 
