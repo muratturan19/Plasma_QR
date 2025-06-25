@@ -72,9 +72,7 @@ def main() -> None:
 
     logo_path = Path(__file__).resolve().parents[1] / "Logo" / "logo.png"
     if logo_path.exists():
-        cols = st.columns(3)
-        # Display the logo at four times the previous width
-        cols[1].image(str(logo_path), width=240)
+        st.sidebar.image(str(logo_path), use_column_width=True)
     st.markdown(
         "<h1 style='text-align: center; font-size: 64px;'>PLASMA PLASTİK</h1>",
         unsafe_allow_html=True,
