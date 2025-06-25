@@ -6,7 +6,10 @@ from typing import Any, Dict, List
 from pathlib import Path
 from datetime import datetime
 
+from difflib import SequenceMatcher
 from openpyxl import load_workbook
+
+from . import normalize_text
 
 
 class ExcelClaimsSearcher:
@@ -70,14 +73,19 @@ class ExcelClaimsSearcher:
                 if not val:
                     continue
                 key = key.lower()
-                cell = str(record.get(key, "")).lower()
-                val_str = str(val).lower()
+                cell_raw = str(record.get(key, ""))
+                cell = normalize_text(cell_raw)
+                val_norm = normalize_text(str(val))
                 if key == "complaint":
-                    if val_str not in cell:
+                    if val_norm in cell:
+                        continue
+                    ratio = SequenceMatcher(None, val_norm, cell).ratio()
+                    if ratio < 0.8:
                         match = False
                         break
                 else:
-                    if cell != val_str:
+                    ratio = SequenceMatcher(None, val_norm, cell).ratio()
+                    if cell != val_norm and ratio < 0.8:
                         match = False
                         break
             if match:

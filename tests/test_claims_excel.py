@@ -4,7 +4,7 @@ import unittest
 from datetime import datetime
 
 from ComplaintSearch.claims_excel import ExcelClaimsSearcher
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
 
 
 class ExcelClaimsSearchTest(unittest.TestCase):
@@ -30,6 +30,26 @@ class ExcelClaimsSearchTest(unittest.TestCase):
             self.assertEqual(result[0]["customer"], "ACME")
             empty = searcher.search({"customer": "ACME"}, year=2022)
             self.assertEqual(empty, [])
+
+    def test_normalization_and_fuzzy(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            file_path = os.path.join(tmpdir, "claims.xlsx")
+            self._create_file(file_path)
+
+            wb = load_workbook(file_path)
+            ws = wb.active
+            ws.append(["\u015fikayet var", "GAMMA", "door", "X3", datetime(2023, 2, 1)])
+            wb.save(file_path)
+
+            searcher = ExcelClaimsSearcher(file_path)
+
+            accent = searcher.search({"complaint": "sikayet"})
+            self.assertEqual(len(accent), 1)
+            self.assertEqual(accent[0]["customer"], "GAMMA")
+
+            typo = searcher.search({"complaint": "noize"})
+            self.assertEqual(len(typo), 1)
+            self.assertEqual(typo[0]["customer"], "ACME")
 
     def test_turkish_headers(self) -> None:
         """Ensure search works when headers are Turkish."""
