@@ -120,6 +120,30 @@ class ReportGeneratorTest(unittest.TestCase):
             self.assertTrue(Path(paths["pdf"]).exists())
             self.assertTrue(Path(paths["excel"]).exists())
 
+    def test_generate_deduplicates_lines(self) -> None:
+        """Repeated content should appear only once in the PDF."""
+        analysis = {"full_text": "dup", "full_report": {"response": "dup"}}
+        info: dict[str, str] = {}
+
+        class CapturePDF(FPDF):
+            def __init__(self) -> None:
+                super().__init__()
+                self.lines: list[str] = []
+
+            def multi_cell(self, w, h, text='', *args, **kwargs):  # type: ignore[override]
+                self.lines.append(kwargs.get('txt', text))
+                kwargs.setdefault('txt', text)
+                return super().multi_cell(w, h, **kwargs)
+
+        pdf = CapturePDF()
+
+        with tempfile.TemporaryDirectory() as tmpdir, \
+             patch('ReportGenerator.FPDF', return_value=pdf):
+            self.generator.generate(analysis, info, tmpdir)
+
+        occurrences = [line for line in pdf.lines if 'dup' in line]
+        self.assertEqual(len(occurrences), 1)
+
 
 if __name__ == "__main__":
     unittest.main()
