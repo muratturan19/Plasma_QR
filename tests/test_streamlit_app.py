@@ -107,5 +107,71 @@ class StreamlitAppTest(unittest.TestCase):
             self.assertTrue(self.dummy_st.download_button.called)
 
 
+class StreamlitSearchTest(unittest.TestCase):
+    """Tests for sidebar search behavior."""
+
+    def _setup_env(self, sidebar_button: bool) -> types.ModuleType:
+        dummy_st = types.ModuleType("streamlit")
+        dummy_st.title = MagicMock()
+        dummy_st.set_page_config = MagicMock()
+        dummy_st.text_area = MagicMock(return_value="")
+        dummy_st.selectbox = MagicMock(side_effect=["A3", "Tümü"])
+        dummy_st.text_input = MagicMock(side_effect=["c", "s", "p"])
+        dummy_st.button = MagicMock(return_value=False)
+        dummy_st.checkbox = MagicMock(return_value=False)
+        dummy_st.subheader = MagicMock()
+        dummy_st.write = MagicMock()
+        dummy_st.json = MagicMock()
+        dummy_st.download_button = MagicMock()
+        dummy_st.markdown = MagicMock()
+        sidebar = types.SimpleNamespace(
+            markdown=MagicMock(),
+            text_input=MagicMock(return_value="k"),
+            button=MagicMock(return_value=sidebar_button),
+            json=MagicMock(),
+            image=MagicMock(),
+            write=MagicMock(),
+        )
+        dummy_st.sidebar = sidebar
+        dummy_st.columns = MagicMock(return_value=[dummy_st, dummy_st])
+
+        @contextmanager
+        def spinner(*args, **kwargs):
+            spinner.called = True
+            yield
+
+        dummy_st.spinner = spinner
+        sys.modules["streamlit"] = dummy_st
+        self.spinner = spinner
+        self.dummy_st = dummy_st
+        return dummy_st
+
+    def tearDown(self) -> None:
+        sys.modules.pop("streamlit", None)
+
+    def test_empty_search_shows_message(self) -> None:
+        dummy_st = self._setup_env(True)
+        module = importlib.import_module("UI.streamlit_app")
+        importlib.reload(module)
+        with patch.object(module, "ComplaintStore") as mock_store:
+            mock_store.return_value.search.return_value = []
+            module.main()
+            self.assertTrue(self.spinner.called)
+            calls = dummy_st.sidebar.markdown.call_args_list
+            self.assertTrue(any("Sonuç bulunamadı" in str(c.args[0]) for c in calls))
+
+    def test_search_renders_card(self) -> None:
+        record = {"complaint": "x", "subject": "y", "customer": "z", "date": "d"}
+        dummy_st = self._setup_env(True)
+        module = importlib.import_module("UI.streamlit_app")
+        importlib.reload(module)
+        with patch.object(module, "ComplaintStore") as mock_store:
+            mock_store.return_value.search.return_value = [record]
+            module.main()
+            self.assertTrue(self.spinner.called)
+            html_calls = [str(c.args[0]) for c in dummy_st.sidebar.markdown.call_args_list]
+            self.assertTrue(any("<strong>" in h for h in html_calls))
+
+
 if __name__ == "__main__":
     unittest.main()

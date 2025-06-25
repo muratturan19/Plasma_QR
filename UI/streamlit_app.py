@@ -80,10 +80,22 @@ def main() -> None:
     st.sidebar.markdown("### Search Complaints")
     search_term = st.sidebar.text_input("Keyword")
     if st.sidebar.button("Search"):
-        results = ComplaintStore().search(search_term)
-        st.sidebar.write(f"Results: {len(results)}")
-        for item in results:
-            st.sidebar.json(item)
+        with st.spinner("Searching complaints..."):
+            results = ComplaintStore().search(search_term)
+        if not results:
+            st.sidebar.markdown("Sonuç bulunamadı")
+        else:
+            st.sidebar.write(f"Results: {len(results)}")
+            for item in results:
+                card = (
+                    f"<div class='card'>"
+                    f"<strong>{item.get('complaint', '')}</strong><br>"
+                    f"<em>{item.get('subject', '')}</em><br>"
+                    f"<span style='font-size: 0.85em'>"
+                    f"{item.get('customer', '')} - {item.get('date', '')}"
+                    f"</span></div>"
+                )
+                st.sidebar.markdown(card, unsafe_allow_html=True)
     st.title("Akıllı Kalite Raporlama Asistanı")
     st.markdown(
         "Müşteri şikâyetini girin, metod seçin ve saniyeler "
@@ -128,10 +140,22 @@ def main() -> None:
         if opt_subject:
             filters["subject"] = subject
         year = None if year_option == year_label else int(year_option)
-        results = ExcelClaimsSearcher().search(filters, year=year)
-        st.write(f"Sonuçlar: {len(results)}")
-        for item in results:
-            st.json(item)
+        with st.spinner("Searching records..."):
+            results = ExcelClaimsSearcher().search(filters, year=year)
+        if not results:
+            st.markdown("Sonuç bulunamadı")
+        else:
+            st.write(f"Sonuçlar: {len(results)}")
+            for item in results:
+                card = (
+                    f"<div class='card'>"
+                    f"<strong>{item.get('complaint', '')}</strong><br>"
+                    f"<em>{item.get('subject', '')}</em><br>"
+                    f"<span style='font-size: 0.85em'>"
+                    f"{item.get('customer', '')} - {item.get('date', '')}"
+                    f"</span></div>"
+                )
+                st.markdown(card, unsafe_allow_html=True)
 
     if st.button("Analyze"):
         manager = GuideManager()
