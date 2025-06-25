@@ -16,10 +16,12 @@ class StreamlitAppTest(unittest.TestCase):
         dummy_st.title = MagicMock()
         dummy_st.set_page_config = MagicMock()
         dummy_st.text_area = MagicMock(return_value="c")
-        dummy_st.selectbox = MagicMock(return_value="A3")
+        dummy_st.selectbox = MagicMock(side_effect=["A3", "Tümü"])
         dummy_st.text_input = MagicMock(side_effect=["cust", "subject", "code"])
         dummy_st.button = MagicMock(return_value=True)
+        dummy_st.checkbox = MagicMock(return_value=False)
         dummy_st.subheader = MagicMock()
+        dummy_st.write = MagicMock()
         dummy_st.json = MagicMock()
         dummy_st.download_button = MagicMock()
         dummy_st.markdown = MagicMock()
@@ -56,6 +58,7 @@ class StreamlitAppTest(unittest.TestCase):
              patch.object(module, "ReportGenerator") as mock_report, \
              patch.object(module, "Review") as mock_review, \
              patch.object(module, "ComplaintStore") as mock_store, \
+             patch.object(module, "ExcelClaimsSearcher") as mock_claims, \
              patch("builtins.open", m_open), \
              patch.object(Path, "exists", return_value=True):
             mock_manager.return_value.get_format.return_value = {"fields": []}
@@ -67,6 +70,7 @@ class StreamlitAppTest(unittest.TestCase):
                 "pdf": "file.pdf",
                 "excel": "file.xlsx",
             }
+            mock_claims.return_value.search.return_value = []
 
             module.main()
 
@@ -96,6 +100,7 @@ class StreamlitAppTest(unittest.TestCase):
                 "reports",
             )
             mock_store.return_value.add_complaint.assert_called_once()
+            mock_claims.return_value.search.assert_called_once()
             self.assertTrue(self.dummy_st.download_button.called)
 
 

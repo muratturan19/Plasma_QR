@@ -6,11 +6,12 @@ import streamlit as st
 
 from pathlib import Path
 import json
+from datetime import datetime
 from GuideManager import GuideManager
 from LLMAnalyzer import LLMAnalyzer
 from ReportGenerator import ReportGenerator
 from Review import Review
-from ComplaintSearch import ComplaintStore
+from ComplaintSearch import ComplaintStore, ExcelClaimsSearcher
 
 st.set_page_config(
     page_title="Akıllı Kalite Raporlama Asistanı",
@@ -88,6 +89,34 @@ def main() -> None:
     st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown("---")
+
+    st.markdown("### Benzer şikayetleri sorgula")
+    col_chk1, col_chk2 = st.columns(2)
+    opt_complaint = col_chk1.checkbox("Benzer Şikayet")
+    opt_customer = col_chk1.checkbox("Müşteri")
+    opt_part_code = col_chk2.checkbox("Parça Kodu")
+    opt_subject = col_chk2.checkbox("Şikayet Konusu")
+
+    current_year = datetime.now().year
+    years = [str(y) for y in range(current_year, current_year - 20, -1)]
+    year_label = "Tümü"
+    year_option = st.selectbox("Yıl (opsiyonel)", [year_label] + years)
+
+    if st.button("SORGULA", key="query"):
+        filters = {}
+        if opt_complaint:
+            filters["complaint"] = complaint
+        if opt_customer:
+            filters["customer"] = customer
+        if opt_part_code:
+            filters["part_code"] = part_code
+        if opt_subject:
+            filters["subject"] = subject
+        year = None if year_option == year_label else int(year_option)
+        results = ExcelClaimsSearcher().search(filters, year=year)
+        st.write(f"Sonuçlar: {len(results)}")
+        for item in results:
+            st.json(item)
 
     if st.button("Analyze"):
         manager = GuideManager()
