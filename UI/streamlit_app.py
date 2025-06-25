@@ -12,7 +12,7 @@ from ReportGenerator import ReportGenerator
 from Review import Review
 
 st.set_page_config(
-    page_title="Ak\u0131ll\u0131 Kalite Raporlama Asistan\u0131",
+    page_title="Akıllı Kalite Raporlama Asistanı",
     page_icon=":memo:",
     layout="centered",
 )
@@ -57,12 +57,12 @@ def main() -> None:
         cols = st.columns(3)
         cols[1].image(str(logo_path), width=60)
     st.markdown(
-        "<h1 style='text-align: center; font-size: 64px;'>PLASMA PLAST\u0130K</h1>",
+        "<h1 style='text-align: center; font-size: 64px;'>PLASMA PLASTİK</h1>",
         unsafe_allow_html=True,
     )
-    st.title("Ak\u0131ll\u0131 Kalite Raporlama Asistan\u0131")
+    st.title("Akıllı Kalite Raporlama Asistanı")
     st.markdown(
-        "M\u00fc\u015fteri şik\u00e2yetini girin, metod seçin ve saniyeler "
+        "Müşteri şikâyetini girin, metod seçin ve saniyeler "
         "içinde profesyonel bir rapor oluşturun."
     )
     st.markdown("---")
