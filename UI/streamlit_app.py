@@ -54,7 +54,7 @@ METHODS = ["8D", "5N1K", "A3", "DMAIC", "Ishikawa"]
 def main() -> None:
     """Run the Streamlit application."""
 
-    logo_path = Path("Logo/logo.png")
+    logo_path = Path(__file__).resolve().parents[1] / "Logo" / "logo.png"
     if logo_path.exists():
         cols = st.columns(3)
         cols[1].image(str(logo_path), width=60)

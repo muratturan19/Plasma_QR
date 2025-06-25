@@ -220,3 +220,26 @@ Bagimliliklari kurduktan sonra birim testlerini asagidaki komutla calistirabilir
 ```bash
 python -m unittest discover
 ```
+
+## EXE Paketleme
+
+Uygulamayı Windows üzerinde tek bir çalıştırılabilir dosya haline getirmek
+için `PyInstaller` kullanılabilir. Önce paketi kurun:
+
+```bash
+pip install pyinstaller
+```
+
+Daha sonra aşağıdaki komutla gerekli veri dosyalarıyla birlikte paketleyin:
+
+```bash
+pyinstaller --onefile run_app.py \
+  --add-data 'Guidelines/*:Guidelines' \
+  --add-data 'Prompts/*:Prompts' \
+  --add-data 'Fonts/*:Fonts' \
+  --add-data 'Logo/*:Logo' \
+  --add-data 'CC/*:CC'
+```
+
+Oluşan `dist/run_app.exe` dosyası müşteri bilgisayarında doğrudan
+çalıştırılabilir.
