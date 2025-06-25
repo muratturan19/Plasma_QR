@@ -24,6 +24,13 @@ class StreamlitAppTest(unittest.TestCase):
         dummy_st.download_button = MagicMock()
         dummy_st.markdown = MagicMock()
         dummy_st.image = MagicMock()
+        sidebar = types.SimpleNamespace(
+            markdown=MagicMock(),
+            text_input=MagicMock(return_value="q"),
+            button=MagicMock(return_value=False),
+            json=MagicMock(),
+        )
+        dummy_st.sidebar = sidebar
 
         def columns(num: int):
             return [dummy_st for _ in range(num)]
@@ -48,6 +55,7 @@ class StreamlitAppTest(unittest.TestCase):
              patch.object(module, "LLMAnalyzer") as mock_analyzer, \
              patch.object(module, "ReportGenerator") as mock_report, \
              patch.object(module, "Review") as mock_review, \
+             patch.object(module, "ComplaintStore") as mock_store, \
              patch("builtins.open", m_open), \
              patch.object(Path, "exists", return_value=True):
             mock_manager.return_value.get_format.return_value = {"fields": []}
@@ -87,6 +95,7 @@ class StreamlitAppTest(unittest.TestCase):
                 {"customer": "cust", "subject": "subject", "part_code": "code"},
                 "reports",
             )
+            mock_store.return_value.add_complaint.assert_called_once()
             self.assertTrue(self.dummy_st.download_button.called)
 
 

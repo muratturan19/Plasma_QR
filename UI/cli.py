@@ -12,6 +12,7 @@ from GuideManager import GuideManager
 from LLMAnalyzer import LLMAnalyzer
 from ReportGenerator import ReportGenerator
 from Review import Review
+from ComplaintSearch import ComplaintStore
 
 
 METHODS = ["8D", "5N1K", "A3", "DMAIC", "Ishikawa"]
@@ -26,6 +27,7 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
     parser.add_argument("--customer", help="Customer name")
     parser.add_argument("--subject", help="Complaint subject")
     parser.add_argument("--part-code", help="Related part code")
+    parser.add_argument("--search", help="Search past complaints")
     return parser.parse_args(args)
 
 
@@ -33,6 +35,12 @@ def main(args: Optional[List[str]] = None) -> None:
     """Run the CLI application."""
     logging.basicConfig(level=logging.INFO)
     options = parse_args(args)
+
+    if options.search:
+        store = ComplaintStore()
+        results = store.search(options.search)
+        print(json.dumps(results, ensure_ascii=False, indent=2))
+        return
 
     complaint = options.complaint or input("Complaint text: ")
     method = options.method or input(f"Method ({', '.join(METHODS)}): ")
@@ -50,6 +58,7 @@ def main(args: Optional[List[str]] = None) -> None:
         "subject": subject,
         "part_code": part_code,
     }
+    ComplaintStore().add_complaint(details)
     analysis = analyzer.analyze(details, guideline)
 
     out_dir = Path(options.output)
