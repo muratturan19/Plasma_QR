@@ -54,7 +54,8 @@ def main() -> None:
 
     logo_path = Path("Logo/logo.png")
     if logo_path.exists():
-        st.image(str(logo_path), width=60)
+        cols = st.columns(3)
+        cols[1].image(str(logo_path), width=60)
     st.markdown(
         "<h1 style='text-align: center; font-size: 64px;'>PLASMA PLAST\u0130K</h1>",
         unsafe_allow_html=True,
