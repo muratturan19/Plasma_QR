@@ -55,6 +55,10 @@ def main() -> None:
     logo_path = Path("Logo/logo.png")
     if logo_path.exists():
         st.image(str(logo_path), width=60)
+    st.markdown(
+        "<h1 style='text-align: center; font-size: 64px;'>PLASMA PLAST\u0130K</h1>",
+        unsafe_allow_html=True,
+    )
     st.title("Ak\u0131ll\u0131 Kalite Raporlama Asistan\u0131")
     st.markdown(
         "M\u00fc\u015fteri şik\u00e2yetini girin, metod seçin ve saniyeler "
