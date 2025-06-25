@@ -110,14 +110,14 @@ class StreamlitAppTest(unittest.TestCase):
 class StreamlitSearchTest(unittest.TestCase):
     """Tests for sidebar search behavior."""
 
-    def _setup_env(self, sidebar_button: bool) -> types.ModuleType:
+    def _setup_env(self, sidebar_button: bool, query_button: bool = False) -> types.ModuleType:
         dummy_st = types.ModuleType("streamlit")
         dummy_st.title = MagicMock()
         dummy_st.set_page_config = MagicMock()
         dummy_st.text_area = MagicMock(return_value="")
         dummy_st.selectbox = MagicMock(side_effect=["A3", "Tümü"])
         dummy_st.text_input = MagicMock(side_effect=["c", "s", "p"])
-        dummy_st.button = MagicMock(return_value=False)
+        dummy_st.button = MagicMock(side_effect=[query_button, False])
         dummy_st.checkbox = MagicMock(return_value=False)
         dummy_st.subheader = MagicMock()
         dummy_st.write = MagicMock()
@@ -135,14 +135,16 @@ class StreamlitSearchTest(unittest.TestCase):
         dummy_st.sidebar = sidebar
         dummy_st.columns = MagicMock(return_value=[dummy_st, dummy_st])
 
+        spinner_mock = MagicMock()
+
         @contextmanager
         def spinner(*args, **kwargs):
-            spinner.called = True
+            spinner_mock(*args, **kwargs)
             yield
 
         dummy_st.spinner = spinner
         sys.modules["streamlit"] = dummy_st
-        self.spinner = spinner
+        self.spinner = spinner_mock
         self.dummy_st = dummy_st
         return dummy_st
 
@@ -170,6 +172,29 @@ class StreamlitSearchTest(unittest.TestCase):
             module.main()
             self.assertTrue(self.spinner.called)
             html_calls = [str(c.args[0]) for c in dummy_st.sidebar.markdown.call_args_list]
+            self.assertTrue(any("<strong>" in h for h in html_calls))
+
+    def test_query_empty_search_shows_message(self) -> None:
+        dummy_st = self._setup_env(False, query_button=True)
+        module = importlib.import_module("UI.streamlit_app")
+        importlib.reload(module)
+        with patch.object(module, "ExcelClaimsSearcher") as mock_searcher:
+            mock_searcher.return_value.search.return_value = []
+            module.main()
+            self.assertTrue(self.spinner.called)
+            calls = dummy_st.markdown.call_args_list
+            self.assertTrue(any("Sonuç bulunamadı" in str(c.args[0]) for c in calls))
+
+    def test_query_search_renders_card(self) -> None:
+        record = {"complaint": "a", "subject": "b", "customer": "c", "date": "d"}
+        dummy_st = self._setup_env(False, query_button=True)
+        module = importlib.import_module("UI.streamlit_app")
+        importlib.reload(module)
+        with patch.object(module, "ExcelClaimsSearcher") as mock_searcher:
+            mock_searcher.return_value.search.return_value = [record]
+            module.main()
+            self.assertTrue(self.spinner.called)
+            html_calls = [str(c.args[0]) for c in dummy_st.markdown.call_args_list]
             self.assertTrue(any("<strong>" in h for h in html_calls))
 
 
