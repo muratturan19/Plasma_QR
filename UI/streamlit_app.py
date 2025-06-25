@@ -23,25 +23,41 @@ st.markdown(
     """
     <style>
         body {
-            background-color: #f9f9f9;
+            background: linear-gradient(#ffffff, #f0f0f0);
+            color: #333333;
+        }
+        h1, h2, h3 {
+            font-weight: 700;
+            color: #2E86C1;
         }
         h1 {
-            color: #4E79A7;
+            font-size: 3rem;
         }
         .card {
             background-color: #ffffff;
             padding: 1rem;
-            border-radius: 8px;
+            border-radius: 12px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             margin-bottom: 1rem;
         }
+        input, textarea, select {
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+        }
         .stButton>button {
-            background-color: #d72638;
-            color: white;
+            background-color: #2E86C1;
+            color: #ffffff;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+            transition: background-color 0.3s ease;
         }
         .stButton>button:hover {
-            background-color: #b71c2f;
-            color: white;
+            background-color: #1A5276;
+            color: #ffffff;
         }
     </style>
     """,
