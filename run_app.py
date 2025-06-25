@@ -7,6 +7,8 @@ import logging
 
 from UI import run_streamlit
 
+load_dotenv()
+
 def main() -> None:
     """Execute the Streamlit UI."""
     logging.basicConfig(level=logging.INFO)
