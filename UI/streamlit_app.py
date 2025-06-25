@@ -106,13 +106,25 @@ def main() -> None:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     col1.markdown("### Details")
-    complaint = col1.text_area("Complaint")
+    complaint = col1.text_area(
+        "Complaint",
+        help="Short description of the issue raised by the customer",
+    )
     method = col1.selectbox("Method", METHODS)
 
     col2.markdown("### Meta")
-    customer = col2.text_input("Customer")
-    subject = col2.text_input("Subject")
-    part_code = col2.text_input("Part code")
+    customer = col2.text_input(
+        "Customer",
+        help="Name of the customer submitting the complaint",
+    )
+    subject = col2.text_input(
+        "Subject",
+        help="Main topic or category of the complaint",
+    )
+    part_code = col2.text_input(
+        "Part code",
+        help="Identifier of the affected part or product",
+    )
     st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown("---")
