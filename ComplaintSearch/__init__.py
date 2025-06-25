@@ -6,6 +6,8 @@ from pathlib import Path
 import json
 from typing import Dict, List
 
+from .claims_excel import ExcelClaimsSearcher
+
 
 class ComplaintStore:
     """Persist and query complaint records."""
@@ -50,4 +52,4 @@ class ComplaintStore:
         return results
 
 
-__all__ = ["ComplaintStore"]
+__all__ = ["ComplaintStore", "ExcelClaimsSearcher"]
