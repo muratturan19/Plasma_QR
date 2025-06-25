@@ -40,6 +40,14 @@ class ExcelClaimsSearcher:
         rows = ws.iter_rows(values_only=True)
         try:
             headers = [str(c).strip().lower() if c is not None else "" for c in next(rows)]
+            mapping = {
+                "müşteri şikayeti": "complaint",
+                "müşteri": "customer",
+                "konu": "subject",
+                "parça kodu": "part_code",
+                "tarih": "date",
+            }
+            headers = [mapping.get(h, h) for h in headers]
         except StopIteration:
             wb.close()
             return []
