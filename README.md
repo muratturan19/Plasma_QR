@@ -141,10 +141,20 @@ Bu arayuz icin `streamlit` kutuphanesi gereklidir ve `requirements.txt` dosyasin
 Tarayici tabanli arayuzu calistirmak icin asagidaki komutu kullanabilirsiniz:
 
 ```bash
+streamlit run run_app.py
+```
+Bu komut **deponun kok dizininden** calistirildiginda gerekli paketleri
+dogru sekilde bulur ve arayuzu acar. `UI/streamlit_app.py` dosyasini
+daha sonra calistirmak isterseniz, `PYTHONPATH` degiskenini depo kokune
+ayarlamaniz gerekir; aksi halde `ModuleNotFoundError: No module named
+'GuideManager'` hatasiyla karsilasabilirsiniz.
+
+```bash
+export PYTHONPATH="$(pwd)"
 streamlit run UI/streamlit_app.py
 ```
 
-Kok dizindeki ``run_app.py`` dosyasi ayni arayuzu kolayca ve uyarisiz sekilde acmanizi saglar:
+Kok dizindeki ``run_app.py`` dosyasini kullanarak arayuzu uyarisiz sekilde acabilirsiniz:
 
 ```bash
 python run_app.py
