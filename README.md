@@ -71,6 +71,7 @@ Proje asagidaki paketleri icermektedir:
 - `Review`: Olusturulan rapor ya da analiz sonucunu gozden gecirir.
 - `Comparison`: Iki veri kumesini veya raporu karsilastirir.
 - `ReportGenerator`: Analiz sonucundan secilen metod icin rapor uretir.
+- `ComplaintSearch`: Musteri sikayetlerini kaydeder ve arar.
 
 Her paket icerisinde beklenen davranisi aciklayan siniflar yer almaktadir.
 
@@ -137,8 +138,9 @@ ui.start()
 
 ## Streamlit Arayuzu
 
-Bu arayuz icin `streamlit` kutuphanesi gereklidir ve `requirements.txt` dosyasinda yer alir.
-Tarayici tabanli arayuzu calistirmak icin asagidaki komutu kullanabilirsiniz:
+ Bu arayuz icin `streamlit` kutuphanesi gereklidir ve `requirements.txt` dosyasinda yer alir.
+ Arayuzun sol panelinden gecmis sikayetlerde anahtar kelime arayabilirsiniz.
+ Tarayici tabanli arayuzu calistirmak icin asagidaki komutu kullanabilirsiniz:
 
 ```bash
 streamlit run run_app.py

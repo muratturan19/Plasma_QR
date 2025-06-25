@@ -10,6 +10,7 @@ from GuideManager import GuideManager
 from LLMAnalyzer import LLMAnalyzer
 from ReportGenerator import ReportGenerator
 from Review import Review
+from ComplaintSearch import ComplaintStore
 
 st.set_page_config(
     page_title="Akıllı Kalite Raporlama Asistanı",
@@ -60,6 +61,13 @@ def main() -> None:
         "<h1 style='text-align: center; font-size: 64px;'>PLASMA PLASTİK</h1>",
         unsafe_allow_html=True,
     )
+    st.sidebar.markdown("### Search Complaints")
+    search_term = st.sidebar.text_input("Keyword")
+    if st.sidebar.button("Search"):
+        results = ComplaintStore().search(search_term)
+        st.sidebar.write(f"Results: {len(results)}")
+        for item in results:
+            st.sidebar.json(item)
     st.title("Akıllı Kalite Raporlama Asistanı")
     st.markdown(
         "Müşteri şikâyetini girin, metod seçin ve saniyeler "
@@ -92,6 +100,7 @@ def main() -> None:
             "subject": subject,
             "part_code": part_code,
         }
+        ComplaintStore().add_complaint(details)
         with st.spinner("Analyzing..."):
             analysis = analyzer.analyze(details, guideline)
         out_dir = Path("reports")

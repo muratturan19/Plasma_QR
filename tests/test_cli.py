@@ -74,6 +74,17 @@ class CLITest(unittest.TestCase):
             tmpdir,
         )
 
+    @patch("UI.cli.ComplaintStore")
+    def test_search_option(self, mock_store) -> None:
+        mock_store.return_value.search.return_value = [
+            {"complaint": "a"}
+        ]
+        with io.StringIO() as buf, redirect_stdout(buf):
+            cli.main(["--search", "a"])
+            output = buf.getvalue()
+        mock_store.return_value.search.assert_called_with("a")
+        self.assertIn("complaint", output)
+
 
 if __name__ == "__main__":
     unittest.main()
