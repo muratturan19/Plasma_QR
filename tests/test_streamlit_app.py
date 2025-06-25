@@ -25,12 +25,12 @@ class StreamlitAppTest(unittest.TestCase):
         dummy_st.json = MagicMock()
         dummy_st.download_button = MagicMock()
         dummy_st.markdown = MagicMock()
-        dummy_st.image = MagicMock()
         sidebar = types.SimpleNamespace(
             markdown=MagicMock(),
             text_input=MagicMock(return_value="q"),
             button=MagicMock(return_value=False),
             json=MagicMock(),
+            image=MagicMock(),
         )
         dummy_st.sidebar = sidebar
 
@@ -77,7 +77,9 @@ class StreamlitAppTest(unittest.TestCase):
             self.dummy_st.set_page_config.assert_called_once()
             self.dummy_st.columns.assert_called()
             expected_logo = Path(module.__file__).resolve().parents[1] / "Logo" / "logo.png"
-            self.dummy_st.image.assert_called_once_with(str(expected_logo), width=240)
+            self.dummy_st.sidebar.image.assert_called_once_with(
+                str(expected_logo), use_column_width=True
+            )
 
             m_open.assert_any_call(Path("reports") / "LLM1.txt", "w", encoding="utf-8")
             m_open.assert_any_call(Path("reports") / "LLM2.txt", "w", encoding="utf-8")
