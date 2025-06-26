@@ -94,14 +94,16 @@ def place_logo() -> None:
     """Display the logo and heading in the header."""
 
     logo_path = Path(__file__).resolve().parents[1] / "Logo" / "logo.png"
-    col_logo, col_title = st.columns([2, 3])
+    col_logo, col_title = st.columns([1, 3])
+
     if logo_path.exists():
-        col_logo.image(str(logo_path), width=200)
+        col_logo.image(str(logo_path), width=250)
+
     col_title.markdown(
         (
-            "<h1 style='text-align: left; color: #14397C; font-size: 3.5rem;"
-            " font-weight: 700; font-family: \"Open Sans\", sans-serif;'>"
-            "PLASMA PLASTİK</h1>"
+            "<h1 style='color: #14397C; display:flex; align-items:center; "
+            "font-size: 3.5rem; font-family: \"Open Sans\", sans-serif; "
+            "margin: 0;'>PLASMA PLASTİK</h1>"
         ),
         unsafe_allow_html=True,
     )
