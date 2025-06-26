@@ -28,6 +28,7 @@ class StreamlitAppTest(unittest.TestCase):
         dummy_st.download_button = MagicMock()
         dummy_st.markdown = MagicMock()
         dummy_st.image = MagicMock()
+        dummy_st.error = MagicMock()
         sidebar = types.SimpleNamespace(
             markdown=MagicMock(),
             text_input=MagicMock(return_value="q"),
@@ -145,6 +146,7 @@ class StreamlitSearchTest(unittest.TestCase):
         dummy_st.download_button = MagicMock()
         dummy_st.markdown = MagicMock()
         dummy_st.image = MagicMock()
+        dummy_st.error = MagicMock()
         sidebar = types.SimpleNamespace(
             markdown=MagicMock(),
             text_input=MagicMock(return_value="k"),
@@ -219,6 +221,65 @@ class StreamlitSearchTest(unittest.TestCase):
             self.assertTrue(self.spinner.called)
             html_calls = [str(c.args[0]) for c in dummy_st.markdown.call_args_list]
             self.assertTrue(any("<strong>" in h for h in html_calls))
+
+    def test_analyze_requires_selections(self) -> None:
+        dummy_st = types.ModuleType("streamlit")
+        dummy_st.title = MagicMock()
+        dummy_st.set_page_config = MagicMock()
+        dummy_st.text_area = MagicMock(return_value="c")
+        dummy_st.selectbox = MagicMock(
+            side_effect=[
+                "A3",
+                "Lütfen seçiniz",
+                "Lütfen seçiniz",
+                "Lütfen seçiniz",
+                "Tümü",
+            ]
+        )
+        dummy_st.text_input = MagicMock()
+        dummy_st.button = MagicMock(return_value=True)
+        dummy_st.checkbox = MagicMock(return_value=False)
+        dummy_st.subheader = MagicMock()
+        dummy_st.write = MagicMock()
+        dummy_st.json = MagicMock()
+        dummy_st.download_button = MagicMock()
+        dummy_st.markdown = MagicMock()
+        dummy_st.image = MagicMock()
+        dummy_st.error = MagicMock()
+        sidebar = types.SimpleNamespace(
+            markdown=MagicMock(),
+            text_input=MagicMock(return_value="q"),
+            button=MagicMock(return_value=False),
+            json=MagicMock(),
+            image=MagicMock(),
+        )
+        dummy_st.sidebar = sidebar
+
+        def columns(spec):
+            count = spec if isinstance(spec, int) else len(spec)
+            return [dummy_st for _ in range(count)]
+
+        dummy_st.columns = MagicMock(side_effect=columns)
+
+        @contextmanager
+        def spinner(*args, **kwargs):
+            yield
+
+        dummy_st.spinner = spinner
+        sys.modules["streamlit"] = dummy_st
+
+        module = importlib.import_module("UI.streamlit_app")
+        importlib.reload(module)
+        with patch.object(module, "ExcelClaimsSearcher") as mock_searcher, \
+                patch.object(module, "GuideManager") as mock_manager, \
+                patch.object(module, "LLMAnalyzer") as mock_analyzer, \
+                patch.object(module, "ReportGenerator") as mock_report, \
+                patch.object(module, "Review") as mock_review, \
+                patch.object(module, "ComplaintStore") as mock_store:
+            mock_searcher.return_value.unique_values.side_effect = [[], [], []]
+            module.main()
+            self.assertTrue(dummy_st.error.called)
+            mock_analyzer.return_value.analyze.assert_not_called()
 
 
 if __name__ == "__main__":
