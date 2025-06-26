@@ -90,8 +90,8 @@ st.markdown(
 METHODS = ["8D", "5N1K", "A3", "DMAIC", "Ishikawa"]
 
 
-def main() -> None:
-    """Run the Streamlit application."""
+def place_logo() -> None:
+    """Display the logo and heading in the header."""
 
     logo_path = Path(__file__).resolve().parents[1] / "Logo" / "logo.png"
     col_logo, col_title = st.columns([1, 3])
@@ -101,6 +101,12 @@ def main() -> None:
         "<h1 style='text-align: left;'>PLASMA PLASTİK</h1>",
         unsafe_allow_html=True,
     )
+
+
+def main() -> None:
+    """Run the Streamlit application."""
+
+    place_logo()
     st.sidebar.markdown("### Search Complaints")
     search_term = st.sidebar.text_input("Keyword", key="keyword")
     if st.sidebar.button("🔍 Search", key="search"):

@@ -55,7 +55,8 @@ class StreamlitAppTest(unittest.TestCase):
     def test_main_pipeline(self) -> None:
         module = importlib.import_module("UI.streamlit_app")
         m_open = mock_open(read_data=b"data")
-        with patch.object(module, "GuideManager") as mock_manager, \
+        with patch.object(module, "place_logo", wraps=module.place_logo) as mock_logo, \
+             patch.object(module, "GuideManager") as mock_manager, \
              patch.object(module, "LLMAnalyzer") as mock_analyzer, \
              patch.object(module, "ReportGenerator") as mock_report, \
              patch.object(module, "Review") as mock_review, \
@@ -76,6 +77,7 @@ class StreamlitAppTest(unittest.TestCase):
 
             module.main()
 
+            mock_logo.assert_called_once()
             self.dummy_st.set_page_config.assert_called_once()
             self.dummy_st.columns.assert_called()
             self.assertTrue(self.dummy_st.image.called)
