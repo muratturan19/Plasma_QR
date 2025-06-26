@@ -3,7 +3,9 @@ import tempfile
 import unittest
 from datetime import datetime
 from unittest.mock import patch
+from pathlib import Path
 
+from ComplaintSearch import claims_excel
 from ComplaintSearch.claims_excel import ExcelClaimsSearcher
 from openpyxl import Workbook, load_workbook
 
@@ -94,6 +96,14 @@ class ExcelClaimsSearchTest(unittest.TestCase):
                 searcher = ExcelClaimsSearcher()
                 result = searcher.search({"customer": "ACME"}, year=2023)
                 self.assertEqual(len(result), 1)
+
+    def test_load_dotenv_called(self) -> None:
+        """``load_dotenv`` should be invoked when ``path`` is ``None``."""
+        with patch.dict("os.environ", {"CLAIMS_FILE_PATH": "f"}):
+            with patch.object(claims_excel, "load_dotenv") as mock_load:
+                searcher = ExcelClaimsSearcher()
+                self.assertTrue(mock_load.called)
+                self.assertEqual(searcher.path, Path("f"))
 
 
 if __name__ == "__main__":
