@@ -150,20 +150,36 @@ def main() -> None:
     method = col1.selectbox("Method", METHODS, key="method")
 
     col2.markdown("### Meta")
-    customer = col2.text_input(
+
+    def select_or_input(label: str, options: list[str], key: str) -> str:
+        choice = col2.selectbox(
+            label,
+            options + ["Yeni değer gir..."],
+            key=f"{key}_select",
+        )
+        if choice == "Yeni değer gir...":
+            return col2.text_input(label, key=key)
+        return choice
+
+    searcher = ExcelClaimsSearcher()
+    customers = searcher.unique_values("customer")
+    subjects = searcher.unique_values("subject")
+    part_codes = searcher.unique_values("part_code")
+
+    customer = select_or_input(
         "Customer",
-        help="Name of the customer submitting the complaint",
-        key="customer",
+        customers,
+        "customer",
     )
-    subject = col2.text_input(
+    subject = select_or_input(
         "Subject",
-        help="Main topic or category of the complaint",
-        key="subject",
+        subjects,
+        "subject",
     )
-    part_code = col2.text_input(
+    part_code = select_or_input(
         "Part code",
-        help="Identifier of the affected part or product",
-        key="part_code",
+        part_codes,
+        "part_code",
     )
     user_directives = st.text_area(
         "Ek özel talimatlar/uyarılar",
