@@ -183,6 +183,47 @@ from UI import run_streamlit
 run_streamlit()
 ```
 
+## API Sunucusu
+
+`api` paketindeki FastAPI uygulamasi HTTP uzerinden ayni
+islevlere erisim saglar. Sunucuyu calistirmak icin once bagimliliklari
+kurun ve `run_api.py` dosyasini calistirin:
+
+```bash
+pip install -r requirements.txt
+python run_api.py
+```
+
+Sunucu varsayilan olarak `http://localhost:8000` adresinde
+asagidaki uclari sunar:
+
+- `POST /analyze` – `LLMAnalyzer.analyze` cagrisi
+- `POST /review` – `Review.perform` cagrisi
+- `POST /report` – `ReportGenerator.generate` cagrisi
+- `GET /complaints` – `ComplaintStore` ve `ExcelClaimsSearcher` sorgulari
+
+Ornek kullanim:
+
+```bash
+curl -X POST http://localhost:8000/analyze \
+     -H 'Content-Type: application/json' \
+     -d '{"details": {"complaint": "test"}, "guideline": {"fields": []}}'
+```
+
+### React Arayuzu
+
+API'yi kullanmak icin `frontend/` klasorundeki React projesini
+gelistirme modunda baslatabilirsiniz:
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+Bu komut gelistirme sunucusunu calistirir ve API'ye 8000 portundan
+baglanarak istek gonderir.
+
 ## Minimal Ornek
 
 Asagidaki kod ornegi girdi akisini nasil kullanabileceginizi gosterir:

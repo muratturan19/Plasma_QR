@@ -4,3 +4,6 @@ openai
 streamlit>=1.0
 python-dotenv
 streamlit-option-menu
+
+fastapi
+uvicorn
