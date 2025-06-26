@@ -90,12 +90,11 @@ def main() -> None:
     """Run the Streamlit application."""
 
     logo_path = Path(__file__).resolve().parents[1] / "Logo" / "logo.png"
+    col_logo, col_title = st.columns([1, 3])
     if logo_path.exists():
-        st.sidebar.image(str(logo_path), use_container_width=True)
-
-
-    st.markdown(
-        "<h1 style='text-align: center;'>PLASMA PLASTİK</h1>",
+        col_logo.image(str(logo_path), use_container_width=True)
+    col_title.markdown(
+        "<h1 style='text-align: left;'>PLASMA PLASTİK</h1>",
         unsafe_allow_html=True,
     )
     st.sidebar.markdown("### Search Complaints")
