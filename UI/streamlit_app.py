@@ -88,6 +88,7 @@ st.markdown(
 )
 
 METHODS = ["8D", "5N1K", "A3", "DMAIC", "Ishikawa"]
+PLACEHOLDER = "Lütfen seçiniz"
 
 
 def place_logo() -> None:
@@ -154,9 +155,11 @@ def main() -> None:
     def select_or_input(label: str, options: list[str], key: str) -> str:
         choice = col2.selectbox(
             label,
-            options + ["Yeni değer gir..."],
+            [PLACEHOLDER] + options + ["Yeni değer gir..."],
             key=f"{key}_select",
         )
+        if choice == PLACEHOLDER:
+            return ""
         if choice == "Yeni değer gir...":
             return col2.text_input(label, key=key)
         return choice
@@ -232,6 +235,12 @@ def main() -> None:
                 st.markdown(card, unsafe_allow_html=True)
 
     if st.button("🧠 Analyze"):
+        if not all([customer, subject, part_code]):
+            st.error(
+                "Lütfen müşteri, konu ve parça kodu seçimlerini yapınız."
+            )
+            return
+
         manager = GuideManager()
         guideline = manager.get_format(method)
 
