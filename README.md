@@ -245,6 +245,7 @@ Daha sonra aşağıdaki komutla gerekli veri dosyalarıyla birlikte paketleyin:
 
 ```bash
 pyinstaller --onefile run_app.py \
+  --copy-metadata streamlit \
   --add-data 'Guidelines/*:Guidelines' \
   --add-data 'Prompts/*:Prompts' \
   --add-data 'Fonts/*:Fonts' \

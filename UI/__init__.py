@@ -2,15 +2,25 @@
 
 from typing import List, Optional
 import subprocess
+import sys
 from pathlib import Path
 
 
 def run_streamlit() -> None:
-    """Launch the Streamlit application via ``streamlit run``."""
+    """Launch the Streamlit application.
+
+    When running from a PyInstaller-built executable, execute Streamlit's CLI
+    directly in-process to avoid missing metadata errors.
+    """
     from . import streamlit_app
 
     script = Path(streamlit_app.__file__).resolve()
-    subprocess.run(["streamlit", "run", str(script)], check=True)
+    if getattr(sys, "frozen", False):
+        sys.argv = ["streamlit", "run", str(script)]
+        import streamlit.web.cli as stcli
+        stcli.main()
+    else:
+        subprocess.run(["streamlit", "run", str(script)], check=True)
 
 
 def run_cli(args: Optional[List[str]] = None) -> None:
