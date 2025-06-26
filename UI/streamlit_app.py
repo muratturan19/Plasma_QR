@@ -159,6 +159,10 @@ def main() -> None:
         help="Identifier of the affected part or product",
         key="part_code",
     )
+    user_directives = st.text_area(
+        "Ek özel talimatlar/uyarılar",
+        key="directives",
+    )
     st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown("---")
@@ -218,7 +222,7 @@ def main() -> None:
         }
         ComplaintStore().add_complaint(details)
         with st.spinner("Analyzing..."):
-            analysis = analyzer.analyze(details, guideline)
+            analysis = analyzer.analyze(details, guideline, user_directives)
         out_dir = Path("reports")
         out_dir.mkdir(parents=True, exist_ok=True)
         with open(out_dir / "LLM1.txt", "w", encoding="utf-8") as f:

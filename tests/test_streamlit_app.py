@@ -87,7 +87,16 @@ class StreamlitAppTest(unittest.TestCase):
             m_open.assert_any_call(Path("reports") / "LLM2.txt", "w", encoding="utf-8")
 
             mock_manager.return_value.get_format.assert_called_with("A3")
-            mock_analyzer.return_value.analyze.assert_called_once()
+            mock_analyzer.return_value.analyze.assert_called_with(
+                {
+                    "complaint": "c",
+                    "customer": "cust",
+                    "subject": "subject",
+                    "part_code": "code",
+                },
+                {"fields": []},
+                "c",
+            )
             mock_review.return_value.perform.assert_called_with(
                 "ok",
                 method="A3",

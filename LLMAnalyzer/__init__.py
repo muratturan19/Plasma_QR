@@ -98,8 +98,13 @@ class LLMAnalyzer:
             self.logger.debug("LLMAnalyzer._query_llm end")
             return f"LLM response placeholder for: {user_prompt[:50]}"
 
-    def analyze(self, details: Dict[str, Any], guideline: Dict[str, Any]) -> Dict[str, Any]:
-        """Return analysis results per guideline step using complaint details."""
+    def analyze(
+        self,
+        details: Dict[str, Any],
+        guideline: Dict[str, Any],
+        directives: str = "",
+    ) -> Dict[str, Any]:
+        """Return analysis using complaint details and optional directives."""
         complaint_text = details.get("complaint", "")
         customer = details.get("customer", "")
         subject = details.get("subject", "")
@@ -115,6 +120,12 @@ class LLMAnalyzer:
                 f"Parça Kodu: {part_code}\n"
                 f"Problem Açıklaması: {subject or complaint_text}"
             )
+            if directives:
+                user_prompt += (
+                    "\n---\nKullanıcıdan gelen özel talimatlar:\n"
+                    f"{directives}\n\n"
+                    "Lütfen yukarıdaki taleplere ve kısıtlamalara mutlaka uy."
+                )
             answer = self._query_llm(DEFAULT_8D_PROMPT, user_prompt)
             return {"full_text": answer}
 
@@ -126,6 +137,12 @@ class LLMAnalyzer:
                 .replace("{{parca_kodu}}", part_code)
                 .replace("{{problem_aciklamasi}}", subject or complaint_text)
             )
+            if directives:
+                user_prompt += (
+                    "\n---\nKullanıcıdan gelen özel talimatlar:\n"
+                    f"{directives}\n\n"
+                    "Lütfen yukarıdaki taleplere ve kısıtlamalara mutlaka uy."
+                )
             answer = self._query_llm("", user_prompt)
             return {"full_text": answer}
 
@@ -163,6 +180,12 @@ class LLMAnalyzer:
                 step_entry = template.get(step_id, {})
                 system_prompt = step_entry.get("system", "").format(**values)
                 user_prompt = step_entry.get("user_template", "").format(**values)
+            if directives:
+                user_prompt += (
+                    "\n---\nKullanıcıdan gelen özel talimatlar:\n"
+                    f"{directives}\n\n"
+                    "Lütfen yukarıdaki taleplere ve kısıtlamalara mutlaka uy."
+                )
 
             answer = self._query_llm(system_prompt, user_prompt)
             results[step_id] = {"response": answer}
