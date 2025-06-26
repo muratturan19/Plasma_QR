@@ -16,7 +16,9 @@ class StreamlitAppTest(unittest.TestCase):
         dummy_st.title = MagicMock()
         dummy_st.set_page_config = MagicMock()
         dummy_st.text_area = MagicMock(return_value="c")
-        dummy_st.selectbox = MagicMock(side_effect=["A3", "Tümü"])
+        dummy_st.selectbox = MagicMock(
+            side_effect=["A3", "Yeni değer gir...", "Yeni değer gir...", "Yeni değer gir...", "Tümü"]
+        )
         dummy_st.text_input = MagicMock(side_effect=["cust", "subject", "code"])
         dummy_st.button = MagicMock(return_value=True)
         dummy_st.checkbox = MagicMock(return_value=False)
@@ -74,6 +76,11 @@ class StreamlitAppTest(unittest.TestCase):
                 "excel": "file.xlsx",
             }
             mock_claims.return_value.search.return_value = []
+            mock_claims.return_value.unique_values.side_effect = [
+                ["cust"],
+                ["subject"],
+                ["code"],
+            ]
 
             module.main()
 
@@ -126,7 +133,9 @@ class StreamlitSearchTest(unittest.TestCase):
         dummy_st.title = MagicMock()
         dummy_st.set_page_config = MagicMock()
         dummy_st.text_area = MagicMock(return_value="")
-        dummy_st.selectbox = MagicMock(side_effect=["A3", "Tümü"])
+        dummy_st.selectbox = MagicMock(
+            side_effect=["A3", "Yeni değer gir...", "Yeni değer gir...", "Yeni değer gir...", "Tümü"]
+        )
         dummy_st.text_input = MagicMock(side_effect=["c", "s", "p"])
         dummy_st.button = MagicMock(side_effect=[query_button, False])
         dummy_st.checkbox = MagicMock(return_value=False)
@@ -192,6 +201,7 @@ class StreamlitSearchTest(unittest.TestCase):
         importlib.reload(module)
         with patch.object(module, "ExcelClaimsSearcher") as mock_searcher:
             mock_searcher.return_value.search.return_value = []
+            mock_searcher.return_value.unique_values.side_effect = [[], [], []]
             module.main()
             self.assertTrue(self.spinner.called)
             calls = dummy_st.markdown.call_args_list
@@ -204,6 +214,7 @@ class StreamlitSearchTest(unittest.TestCase):
         importlib.reload(module)
         with patch.object(module, "ExcelClaimsSearcher") as mock_searcher:
             mock_searcher.return_value.search.return_value = [record]
+            mock_searcher.return_value.unique_values.side_effect = [[], [], []]
             module.main()
             self.assertTrue(self.spinner.called)
             html_calls = [str(c.args[0]) for c in dummy_st.markdown.call_args_list]

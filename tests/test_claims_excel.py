@@ -69,6 +69,21 @@ class ExcelClaimsSearchTest(unittest.TestCase):
             self.assertIn("customer", result[0])
             self.assertEqual(result[0]["customer"], "ACME")
 
+    def test_unique_values(self) -> None:
+        """``unique_values`` should return sorted distinct entries."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            file_path = os.path.join(tmpdir, "claims.xlsx")
+            self._create_file(file_path)
+
+            wb = load_workbook(file_path)
+            ws = wb.active
+            ws.append(["extra", "ACME", "engine", "X1", datetime(2024, 1, 1)])
+            wb.save(file_path)
+
+            searcher = ExcelClaimsSearcher(file_path)
+            customers = searcher.unique_values("customer")
+            self.assertEqual(customers, ["ACME", "BETA"])
+
 
 if __name__ == "__main__":
     unittest.main()

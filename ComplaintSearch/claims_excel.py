@@ -94,5 +94,58 @@ class ExcelClaimsSearcher:
         wb.close()
         return results
 
+    def unique_values(self, field: str) -> List[str]:
+        """Return sorted unique values for ``field``.
+
+        Parameters
+        ----------
+        field:
+            Column name to extract unique values from. Turkish headers are
+            automatically mapped to their English counterparts.
+
+        Returns
+        -------
+        List[str]
+            Unique cell values as strings. Empty cells are ignored.
+        """
+        if not self.path.exists():
+            return []
+
+        wb = load_workbook(self.path, read_only=True)
+        ws = wb.active
+        rows = ws.iter_rows(values_only=True)
+        try:
+            headers = [str(c).strip().lower() if c is not None else "" for c in next(rows)]
+            mapping = {
+                "müşteri şikayeti": "complaint",
+                "müşteri": "customer",
+                "konu": "subject",
+                "parça kodu": "part_code",
+                "tarih": "date",
+            }
+            headers = [mapping.get(h, h) for h in headers]
+        except StopIteration:
+            wb.close()
+            return []
+
+        if field not in headers:
+            wb.close()
+            return []
+
+        index = headers.index(field)
+        values = set()
+        for row in rows:
+            if index >= len(row):
+                continue
+            val = row[index]
+            if val is None:
+                continue
+            text = str(val).strip()
+            if text:
+                values.add(text)
+
+        wb.close()
+        return sorted(values)
+
 
 __all__ = ["ExcelClaimsSearcher"]
