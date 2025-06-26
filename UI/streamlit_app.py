@@ -4,6 +4,12 @@ from __future__ import annotations
 
 import streamlit as st
 
+try:
+    # Optional navigation helper
+    from streamlit_option_menu import option_menu as st_option_menu
+except ModuleNotFoundError:  # pragma: no cover - optional dependency
+    st_option_menu = None
+
 from pathlib import Path
 import json
 from datetime import datetime
@@ -21,8 +27,11 @@ st.set_page_config(
 
 st.markdown(
     """
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+          rel="stylesheet">
     <style>
         body {
+            font-family: 'Roboto', sans-serif;
             background: linear-gradient(#ffffff, #f0f0f0);
             color: #333333;
         }
@@ -33,11 +42,18 @@ st.markdown(
         h1 {
             font-size: 3rem;
         }
+        div[data-testid="stSidebar"] {
+            background-color: #2E4053;
+            color: #ffffff;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
         .card {
             background-color: #ffffff;
             padding: 1rem;
             border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
             margin-bottom: 1rem;
         }
         input, textarea, select {
@@ -53,11 +69,12 @@ st.markdown(
             border-radius: 8px;
             font-size: 1rem;
             width: 100%;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
         .stButton>button:hover {
             background-color: #1A5276;
             color: #ffffff;
+            transform: translateY(-2px);
         }
     </style>
     """,
@@ -73,6 +90,22 @@ def main() -> None:
     logo_path = Path(__file__).resolve().parents[1] / "Logo" / "logo.png"
     if logo_path.exists():
         st.sidebar.image(str(logo_path), use_column_width=True)
+
+    if st_option_menu:
+        st_option_menu(
+            "Navigation",
+            ["Report", "Search"],
+            icons=["file-earmark-text", "search"],
+            menu_icon="list",
+            default_index=0,
+            styles={
+                "container": {"padding": "0"},
+                "nav-link": {"font-size": "18px"},
+                "icon": {"font-size": "20px"},
+                "nav-link-selected": {"background-color": "#1A5276"},
+            },
+        )
+
     st.markdown(
         "<h1 style='text-align: center; font-size: 64px;'>PLASMA PLASTİK</h1>",
         unsafe_allow_html=True,
