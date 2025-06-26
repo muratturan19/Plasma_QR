@@ -42,6 +42,8 @@ class CLITest(unittest.TestCase):
                     "subject",
                     "--part-code",
                     "code",
+                    "--directives",
+                    "dir",
                 ])
                 output = buf.getvalue()
             llm1 = Path(tmpdir) / "LLM1.txt"
@@ -52,7 +54,16 @@ class CLITest(unittest.TestCase):
         self.assertIn("full_text", output)
         self.assertIn("file.pdf", output)
         mock_manager.return_value.get_format.assert_called_with("A3")
-        mock_analyzer.return_value.analyze.assert_called_once()
+        mock_analyzer.return_value.analyze.assert_called_with(
+            {
+                "complaint": "c",
+                "customer": "cust",
+                "subject": "subject",
+                "part_code": "code",
+            },
+            {"fields": []},
+            "dir",
+        )
         mock_review.return_value.perform.assert_called_with(
             "ok",
             method="A3",

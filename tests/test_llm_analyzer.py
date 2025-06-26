@@ -58,6 +58,24 @@ class LLMAnalyzerTest(unittest.TestCase):
         self.assertEqual(call_args[0], "")
         self.assertIn("comp", call_args[1])
 
+    @patch.object(LLMAnalyzer, "_query_llm", return_value="ok")
+    def test_directives_added_to_8d_prompt(self, mock_query) -> None:  # type: ignore
+        """Directives should be appended when method is ``8D``."""
+        guideline = {"method": "8D", "fields": []}
+        details = {"complaint": "c", "subject": "s", "part_code": "p"}
+        self.analyzer.analyze(details, guideline, directives="d")
+        call_args = mock_query.call_args[0]
+        self.assertIn("Kullanıcıdan gelen özel talimatlar:\nd", call_args[1])
+
+    @patch.object(LLMAnalyzer, "_query_llm", return_value="ok")
+    def test_directives_added_to_regular_prompt(self, mock_query) -> None:  # type: ignore
+        """Directives should be appended for non-8D methods."""
+        guideline = {"method": "A3", "fields": []}
+        details = {"complaint": "c", "subject": "s", "part_code": "p"}
+        self.analyzer.analyze(details, guideline, directives="d")
+        call_args = mock_query.call_args[0]
+        self.assertIn("Kullanıcıdan gelen özel talimatlar:\nd", call_args[1])
+
     def test_query_llm_fallback(self) -> None:
         """``_query_llm`` should return a placeholder for non-auth errors."""
         mock_openai = types.ModuleType("openai")

@@ -27,6 +27,7 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
     parser.add_argument("--customer", help="Customer name")
     parser.add_argument("--subject", help="Complaint subject")
     parser.add_argument("--part-code", help="Related part code")
+    parser.add_argument("--directives", help="Additional user directives")
     parser.add_argument("--search", help="Search past complaints")
     return parser.parse_args(args)
 
@@ -47,6 +48,7 @@ def main(args: Optional[List[str]] = None) -> None:
     customer = options.customer or input("Customer: ")
     subject = options.subject or input("Subject: ")
     part_code = options.part_code or input("Part code: ")
+    directives = options.directives or input("Directives: ")
 
     manager = GuideManager()
     guideline = manager.get_format(method)
@@ -59,7 +61,7 @@ def main(args: Optional[List[str]] = None) -> None:
         "part_code": part_code,
     }
     ComplaintStore().add_complaint(details)
-    analysis = analyzer.analyze(details, guideline)
+    analysis = analyzer.analyze(details, guideline, directives)
 
     out_dir = Path(options.output)
     out_dir.mkdir(parents=True, exist_ok=True)
