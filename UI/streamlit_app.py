@@ -153,16 +153,23 @@ def main() -> None:
     col2.markdown("### Meta")
 
     def select_or_input(label: str, options: list[str], key: str) -> str:
+        typed = col2.text_input(label, key=key)
+        filtered = (
+            [o for o in options if o.lower().startswith(typed.lower())]
+            if typed
+            else options
+        )
+        if not filtered:
+            return typed
         choice = col2.selectbox(
-            label,
-            [PLACEHOLDER] + options + ["Yeni değer gir..."],
+            f"{label} options",
+            filtered,
             key=f"{key}_select",
         )
-        if choice == PLACEHOLDER:
-            return ""
-        if choice == "Yeni değer gir...":
-            return col2.text_input(label, key=key)
-        return choice
+        if choice != typed:
+            st.session_state[key] = choice
+            typed = choice
+        return typed
 
     searcher = ExcelClaimsSearcher()
     customers = searcher.unique_values("customer")
