@@ -9,22 +9,21 @@ from importlib import resources
 
 
 def run_streamlit() -> None:
-    """Launch the Streamlit application.
+    """Launch the Streamlit application."""
 
-    When running from a PyInstaller-built executable, execute Streamlit's CLI
-    directly in-process to avoid missing metadata errors.
-    """
     from . import streamlit_app
 
     script = Path(streamlit_app.__file__).resolve()
-    if not script.exists():
+    frozen = getattr(sys, "frozen", False)
+
+    if frozen or not script.exists():
         tmp_path = Path(tempfile.gettempdir()) / "streamlit_app.py"
         with resources.files("UI").joinpath("streamlit_app.py").open("rb") as src, \
                 open(tmp_path, "wb") as dst:
             dst.write(src.read())
         script = tmp_path
 
-    if getattr(sys, "frozen", False):
+    if frozen:
         sys.argv = ["streamlit", "run", str(script)]
         import streamlit.web.cli as stcli
         stcli.main()

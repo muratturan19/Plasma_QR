@@ -2,7 +2,7 @@ import importlib
 import sys
 import types
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, mock_open
 from pathlib import Path
 
 
@@ -57,6 +57,10 @@ class RunStreamlitTest(unittest.TestCase):
         dummy_streamlit = types.ModuleType("streamlit")
         dummy_streamlit.web = dummy_web
 
+        resource_path = Path(__file__).resolve().parents[1] / "UI" / "streamlit_app.py"
+        dummy_files = MagicMock()
+        dummy_files.joinpath.return_value = resource_path
+
         with patch.object(module.sys, "frozen", True, create=True), \
                 patch.dict(sys.modules, {
                     "streamlit": dummy_streamlit,
@@ -65,7 +69,9 @@ class RunStreamlitTest(unittest.TestCase):
                 }), \
                 patch("UI.streamlit_app", create=True) as mock_app, \
                 patch("subprocess.run") as mock_run, \
-                patch.object(Path, "exists", return_value=True):
+                patch("importlib.resources.files", return_value=dummy_files), \
+                patch("tempfile.gettempdir", return_value="/tmp"), \
+                patch("pathlib.Path.open", mock_open(read_data=b"data")):
             mock_app.__file__ = "app_file"
             module.run_streamlit()
             dummy_cli.main.assert_called_once()
@@ -84,7 +90,8 @@ class RunStreamlitTest(unittest.TestCase):
                 patch("UI.streamlit_app", create=True) as mock_app, \
                 patch.object(Path, "exists", return_value=False), \
                 patch("importlib.resources.files", return_value=dummy_files), \
-                patch("tempfile.gettempdir", return_value="/tmp"):
+                patch("tempfile.gettempdir", return_value="/tmp"), \
+                patch("pathlib.Path.open", mock_open(read_data=b"data")):
             mock_app.__file__ = "missing.py"
             module.run_streamlit()
             expected = ["streamlit", "run", "/tmp/streamlit_app.py"]
