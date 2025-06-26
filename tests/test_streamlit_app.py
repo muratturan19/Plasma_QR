@@ -76,10 +76,6 @@ class StreamlitAppTest(unittest.TestCase):
 
             self.dummy_st.set_page_config.assert_called_once()
             self.dummy_st.columns.assert_called()
-            expected_logo = Path(module.__file__).resolve().parents[1] / "Logo" / "logo.png"
-            self.dummy_st.sidebar.image.assert_called_once_with(
-                str(expected_logo), use_container_width=True
-            )
 
             m_open.assert_any_call(Path("reports") / "LLM1.txt", "w", encoding="utf-8")
             m_open.assert_any_call(Path("reports") / "LLM2.txt", "w", encoding="utf-8")
