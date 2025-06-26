@@ -91,20 +91,6 @@ def main() -> None:
     if logo_path.exists():
         st.sidebar.image(str(logo_path), use_container_width=True)
 
-    if st_option_menu:
-        st_option_menu(
-            "Navigation",
-            ["Report", "Search"],
-            icons=["file-earmark-text", "search"],
-            menu_icon="list",
-            default_index=0,
-            styles={
-                "container": {"padding": "0"},
-                "nav-link": {"font-size": "18px"},
-                "icon": {"font-size": "20px"},
-                "nav-link-selected": {"background-color": "#1A5276"},
-            },
-        )
 
     st.markdown(
         "<h1 style='text-align: center; font-size: 64px;'>PLASMA PLASTİK</h1>",
