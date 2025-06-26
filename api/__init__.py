@@ -1,0 +1,90 @@
+"""FastAPI server exposing core Quality Reporter functionality."""
+
+from __future__ import annotations
+
+from typing import Any, Dict, Optional
+
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+
+from GuideManager import GuideManager
+from LLMAnalyzer import LLMAnalyzer
+from Review import Review
+from ReportGenerator import ReportGenerator
+from ComplaintSearch import ComplaintStore, ExcelClaimsSearcher
+
+app = FastAPI(title="Plasma QR API")
+
+# Shared component instances
+_guide_manager = GuideManager()
+analyzer = LLMAnalyzer()
+reviewer = Review()
+reporter = ReportGenerator(_guide_manager)
+_store = ComplaintStore()
+_excel_searcher = ExcelClaimsSearcher()
+
+
+class AnalyzeBody(BaseModel):
+    details: Dict[str, Any]
+    guideline: Dict[str, Any]
+    directives: str = ""
+
+
+@app.post("/analyze")
+def analyze(body: AnalyzeBody) -> Dict[str, Any]:
+    """Return analysis results from ``LLMAnalyzer``."""
+    return analyzer.analyze(body.details, body.guideline, body.directives)
+
+
+class ReviewBody(BaseModel):
+    text: str
+    context: Dict[str, str] = {}
+
+
+@app.post("/review")
+def review(body: ReviewBody) -> Dict[str, str]:
+    """Return reviewed text using ``Review``."""
+    try:
+        result = reviewer.perform(body.text, **body.context)
+    except Exception as exc:  # pragma: no cover - network issues
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+    return {"result": result}
+
+
+class ReportBody(BaseModel):
+    analysis: Dict[str, Any]
+    complaint_info: Dict[str, str]
+    output_dir: str = "."
+
+
+@app.post("/report")
+def report(body: ReportBody) -> Dict[str, str]:
+    """Generate PDF and Excel reports via ``ReportGenerator``."""
+    return reporter.generate(body.analysis, body.complaint_info, body.output_dir)
+
+
+@app.get("/complaints")
+def complaints(
+    keyword: Optional[str] = None,
+    complaint: Optional[str] = None,
+    customer: Optional[str] = None,
+    subject: Optional[str] = None,
+    part_code: Optional[str] = None,
+    year: Optional[int] = None,
+) -> Dict[str, Any]:
+    """Return complaint queries from JSON store and Excel file."""
+    store_results = _store.search(keyword) if keyword else []
+    filters: Dict[str, str] = {}
+    if complaint:
+        filters["complaint"] = complaint
+    if customer:
+        filters["customer"] = customer
+    if subject:
+        filters["subject"] = subject
+    if part_code:
+        filters["part_code"] = part_code
+    excel_results = _excel_searcher.search(filters, year) if filters or year else []
+    return {"store": store_results, "excel": excel_results}
+
+
+__all__ = ["app"]
