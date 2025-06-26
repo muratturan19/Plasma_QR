@@ -53,25 +53,27 @@ st.markdown(
         }
         .card {
             background-color: #ffffff;
-            padding: 1rem;
+            padding: 1.5rem;
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
         input, textarea, select {
             padding: 0.75rem;
             border-radius: 8px;
             font-size: 1rem;
             width: 100%;
+            margin-bottom: 1rem;
         }
         .stButton>button {
             background-color: #2E86C1;
             color: #ffffff;
-            padding: 0.75rem 1.25rem;
+            padding: 1rem 1.5rem;
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 1.1rem;
             width: 100%;
             transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 0.5rem;
         }
         .stButton>button:hover {
             background-color: #1A5276;
