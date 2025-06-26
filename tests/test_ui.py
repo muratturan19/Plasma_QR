@@ -33,17 +33,41 @@ class UILazyImportTest(unittest.TestCase):
 
 
 class RunStreamlitTest(unittest.TestCase):
-    """Tests for ``run_streamlit``."""
+    """Tests for ``run_streamlit`` under different environments."""
 
-    def test_run_streamlit_invokes_subprocess(self) -> None:
+    def test_run_streamlit_invokes_subprocess_when_not_frozen(self) -> None:
         module = importlib.import_module("UI")
 
-        with patch("subprocess.run") as mock_run, \
+        with patch.object(module.sys, "frozen", False, create=True), \
+                patch("subprocess.run") as mock_run, \
                 patch("UI.streamlit_app", create=True) as mock_app:
             mock_app.__file__ = "app_file"
             module.run_streamlit()
             expected = ["streamlit", "run", str(Path("app_file").resolve())]
             mock_run.assert_called_once_with(expected, check=True)
+
+    def test_run_streamlit_invokes_cli_when_frozen(self) -> None:
+        module = importlib.import_module("UI")
+
+        dummy_cli = types.ModuleType("streamlit.web.cli")
+        dummy_cli.main = MagicMock()
+        dummy_web = types.ModuleType("streamlit.web")
+        dummy_web.cli = dummy_cli
+        dummy_streamlit = types.ModuleType("streamlit")
+        dummy_streamlit.web = dummy_web
+
+        with patch.object(module.sys, "frozen", True, create=True), \
+                patch.dict(sys.modules, {
+                    "streamlit": dummy_streamlit,
+                    "streamlit.web": dummy_web,
+                    "streamlit.web.cli": dummy_cli,
+                }), \
+                patch("UI.streamlit_app", create=True) as mock_app, \
+                patch("subprocess.run") as mock_run:
+            mock_app.__file__ = "app_file"
+            module.run_streamlit()
+            dummy_cli.main.assert_called_once()
+            mock_run.assert_not_called()
 
 
 if __name__ == '__main__':
