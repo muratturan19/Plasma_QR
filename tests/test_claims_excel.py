@@ -2,6 +2,7 @@ import os
 import tempfile
 import unittest
 from datetime import datetime
+from unittest.mock import patch
 
 from ComplaintSearch.claims_excel import ExcelClaimsSearcher
 from openpyxl import Workbook, load_workbook
@@ -83,6 +84,16 @@ class ExcelClaimsSearchTest(unittest.TestCase):
             searcher = ExcelClaimsSearcher(file_path)
             customers = searcher.unique_values("customer")
             self.assertEqual(customers, ["ACME", "BETA"])
+
+    def test_env_default_path(self) -> None:
+        """File path should come from ``CLAIMS_FILE_PATH`` when not provided."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            file_path = os.path.join(tmpdir, "claims.xlsx")
+            self._create_file(file_path)
+            with patch.dict("os.environ", {"CLAIMS_FILE_PATH": file_path}):
+                searcher = ExcelClaimsSearcher()
+                result = searcher.search({"customer": "ACME"}, year=2023)
+                self.assertEqual(len(result), 1)
 
 
 if __name__ == "__main__":
