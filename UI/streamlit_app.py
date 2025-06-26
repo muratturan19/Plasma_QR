@@ -89,7 +89,7 @@ def main() -> None:
 
     logo_path = Path(__file__).resolve().parents[1] / "Logo" / "logo.png"
     if logo_path.exists():
-        st.sidebar.image(str(logo_path), use_column_width=True)
+        st.sidebar.image(str(logo_path), use_container_width=True)
 
     if st_option_menu:
         st_option_menu(
