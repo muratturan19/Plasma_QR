@@ -111,8 +111,8 @@ def main() -> None:
         unsafe_allow_html=True,
     )
     st.sidebar.markdown("### Search Complaints")
-    search_term = st.sidebar.text_input("Keyword")
-    if st.sidebar.button("Search"):
+    search_term = st.sidebar.text_input("Keyword", key="keyword")
+    if st.sidebar.button("Search", key="search"):
         with st.spinner("Searching complaints..."):
             results = ComplaintStore().search(search_term)
         if not results:
@@ -142,21 +142,25 @@ def main() -> None:
     complaint = col1.text_area(
         "Complaint",
         help="Short description of the issue raised by the customer",
+        key="complaint",
     )
-    method = col1.selectbox("Method", METHODS)
+    method = col1.selectbox("Method", METHODS, key="method")
 
     col2.markdown("### Meta")
     customer = col2.text_input(
         "Customer",
         help="Name of the customer submitting the complaint",
+        key="customer",
     )
     subject = col2.text_input(
         "Subject",
         help="Main topic or category of the complaint",
+        key="subject",
     )
     part_code = col2.text_input(
         "Part code",
         help="Identifier of the affected part or product",
+        key="part_code",
     )
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -164,15 +168,17 @@ def main() -> None:
 
     st.markdown("### Benzer şikayetleri sorgula")
     col_chk1, col_chk2 = st.columns(2)
-    opt_complaint = col_chk1.checkbox("Benzer Şikayet")
-    opt_customer = col_chk1.checkbox("Müşteri")
-    opt_part_code = col_chk2.checkbox("Parça Kodu")
-    opt_subject = col_chk2.checkbox("Şikayet Konusu")
+    opt_complaint = col_chk1.checkbox("Benzer Şikayet", key="opt_complaint")
+    opt_customer = col_chk1.checkbox("Müşteri", key="opt_customer")
+    opt_part_code = col_chk2.checkbox("Parça Kodu", key="opt_part_code")
+    opt_subject = col_chk2.checkbox("Şikayet Konusu", key="opt_subject")
 
     current_year = datetime.now().year
     years = [str(y) for y in range(current_year, current_year - 20, -1)]
     year_label = "Tümü"
-    year_option = st.selectbox("Yıl (opsiyonel)", [year_label] + years)
+    year_option = st.selectbox(
+        "Yıl (opsiyonel)", [year_label] + years, key="year_option"
+    )
 
     if st.button("SORGULA", key="query"):
         filters = {}
