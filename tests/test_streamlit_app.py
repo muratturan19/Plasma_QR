@@ -25,6 +25,7 @@ class StreamlitAppTest(unittest.TestCase):
         dummy_st.json = MagicMock()
         dummy_st.download_button = MagicMock()
         dummy_st.markdown = MagicMock()
+        dummy_st.image = MagicMock()
         sidebar = types.SimpleNamespace(
             markdown=MagicMock(),
             text_input=MagicMock(return_value="q"),
@@ -34,8 +35,9 @@ class StreamlitAppTest(unittest.TestCase):
         )
         dummy_st.sidebar = sidebar
 
-        def columns(num: int):
-            return [dummy_st for _ in range(num)]
+        def columns(spec):
+            count = spec if isinstance(spec, int) else len(spec)
+            return [dummy_st for _ in range(count)]
 
         dummy_st.columns = MagicMock(side_effect=columns)
 
@@ -76,6 +78,8 @@ class StreamlitAppTest(unittest.TestCase):
 
             self.dummy_st.set_page_config.assert_called_once()
             self.dummy_st.columns.assert_called()
+            self.assertTrue(self.dummy_st.image.called)
+            self.dummy_st.sidebar.image.assert_not_called()
 
             m_open.assert_any_call(Path("reports") / "LLM1.txt", "w", encoding="utf-8")
             m_open.assert_any_call(Path("reports") / "LLM2.txt", "w", encoding="utf-8")
@@ -120,6 +124,7 @@ class StreamlitSearchTest(unittest.TestCase):
         dummy_st.json = MagicMock()
         dummy_st.download_button = MagicMock()
         dummy_st.markdown = MagicMock()
+        dummy_st.image = MagicMock()
         sidebar = types.SimpleNamespace(
             markdown=MagicMock(),
             text_input=MagicMock(return_value="k"),
