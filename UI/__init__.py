@@ -3,7 +3,9 @@
 from typing import List, Optional
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
+from importlib import resources
 
 
 def run_streamlit() -> None:
@@ -15,6 +17,13 @@ def run_streamlit() -> None:
     from . import streamlit_app
 
     script = Path(streamlit_app.__file__).resolve()
+    if not script.exists():
+        tmp_path = Path(tempfile.gettempdir()) / "streamlit_app.py"
+        with resources.files("UI").joinpath("streamlit_app.py").open("rb") as src, \
+                open(tmp_path, "wb") as dst:
+            dst.write(src.read())
+        script = tmp_path
+
     if getattr(sys, "frozen", False):
         sys.argv = ["streamlit", "run", str(script)]
         import streamlit.web.cli as stcli
