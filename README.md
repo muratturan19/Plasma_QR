@@ -291,6 +291,7 @@ pyinstaller --onefile run_app.py \
   --add-data 'Prompts/*:Prompts' \
   --add-data 'Fonts/*:Fonts' \
   --add-data 'Logo/*:Logo' \
+  --add-data "UI/streamlit_app.py:UI" \
   --add-data 'CC/*:CC'
 ```
 
