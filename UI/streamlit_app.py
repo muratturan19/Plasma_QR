@@ -27,7 +27,7 @@ st.set_page_config(
 
 st.markdown(
     """
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap"
           rel="stylesheet">
     <style>
         body {
@@ -41,6 +41,8 @@ st.markdown(
         }
         h1 {
             font-size: 3rem;
+            color: #193C6B;
+            font-family: 'Montserrat', sans-serif;
         }
         div[data-testid="stSidebar"] {
             background-color: #2E4053;
@@ -93,7 +95,7 @@ def main() -> None:
 
 
     st.markdown(
-        "<h1 style='text-align: center; font-size: 64px;'>PLASMA PLASTİK</h1>",
+        "<h1 style='text-align: center;'>PLASMA PLASTİK</h1>",
         unsafe_allow_html=True,
     )
     st.sidebar.markdown("### Search Complaints")
