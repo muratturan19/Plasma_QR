@@ -72,13 +72,15 @@ st.markdown(
             border-radius: 8px;
             font-size: 1.1rem;
             width: 100%;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease,
+                        box-shadow 0.2s ease;
             margin-top: 0.5rem;
         }
         .stButton>button:hover {
             background-color: #1A5276;
             color: #ffffff;
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
     </style>
     """,
@@ -101,7 +103,7 @@ def main() -> None:
     )
     st.sidebar.markdown("### Search Complaints")
     search_term = st.sidebar.text_input("Keyword", key="keyword")
-    if st.sidebar.button("Search", key="search"):
+    if st.sidebar.button("🔍 Search", key="search"):
         with st.spinner("Searching complaints..."):
             results = ComplaintStore().search(search_term)
         if not results:
@@ -197,7 +199,7 @@ def main() -> None:
                 )
                 st.markdown(card, unsafe_allow_html=True)
 
-    if st.button("Analyze"):
+    if st.button("🧠 Analyze"):
         manager = GuideManager()
         guideline = manager.get_format(method)
 
@@ -253,10 +255,10 @@ def main() -> None:
 
         col_dl1, col_dl2 = st.columns(2)
         with open(paths["pdf"], "rb") as pdf_file:
-            col_dl1.download_button("Download PDF", pdf_file, file_name=pdf_name)
+            col_dl1.download_button("⬇️ PDF", pdf_file, file_name=pdf_name)
         with open(paths["excel"], "rb") as excel_file:
             col_dl2.download_button(
-                "Download Excel",
+                "⬇️ Excel",
                 excel_file,
                 file_name=excel_name,
             )
