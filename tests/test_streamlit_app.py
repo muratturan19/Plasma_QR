@@ -17,7 +17,7 @@ class StreamlitAppTest(unittest.TestCase):
         dummy_st.set_page_config = MagicMock()
         dummy_st.text_area = MagicMock(return_value="c")
         dummy_st.selectbox = MagicMock(
-            side_effect=["A3", "Yeni değer gir...", "Yeni değer gir...", "Yeni değer gir...", "Tümü"]
+            side_effect=["A3", "cust", "subject", "code", "Tümü"]
         )
         dummy_st.text_input = MagicMock(side_effect=["cust", "subject", "code"])
         dummy_st.button = MagicMock(return_value=True)
@@ -29,6 +29,7 @@ class StreamlitAppTest(unittest.TestCase):
         dummy_st.markdown = MagicMock()
         dummy_st.image = MagicMock()
         dummy_st.error = MagicMock()
+        dummy_st.session_state = {}
         sidebar = types.SimpleNamespace(
             markdown=MagicMock(),
             text_input=MagicMock(return_value="q"),
@@ -134,9 +135,8 @@ class StreamlitSearchTest(unittest.TestCase):
         dummy_st.title = MagicMock()
         dummy_st.set_page_config = MagicMock()
         dummy_st.text_area = MagicMock(return_value="")
-        dummy_st.selectbox = MagicMock(
-            side_effect=["A3", "Yeni değer gir...", "Yeni değer gir...", "Yeni değer gir...", "Tümü"]
-        )
+        selectbox_effect = ["A3", "Tümü"] if query_button else ["A3", "c", "s", "p", "Tümü"]
+        dummy_st.selectbox = MagicMock(side_effect=selectbox_effect)
         dummy_st.text_input = MagicMock(side_effect=["c", "s", "p"])
         dummy_st.button = MagicMock(side_effect=[query_button, False])
         dummy_st.checkbox = MagicMock(return_value=False)
@@ -147,6 +147,7 @@ class StreamlitSearchTest(unittest.TestCase):
         dummy_st.markdown = MagicMock()
         dummy_st.image = MagicMock()
         dummy_st.error = MagicMock()
+        dummy_st.session_state = {}
         sidebar = types.SimpleNamespace(
             markdown=MagicMock(),
             text_input=MagicMock(return_value="k"),
@@ -230,13 +231,10 @@ class StreamlitSearchTest(unittest.TestCase):
         dummy_st.selectbox = MagicMock(
             side_effect=[
                 "A3",
-                "Lütfen seçiniz",
-                "Lütfen seçiniz",
-                "Lütfen seçiniz",
                 "Tümü",
             ]
         )
-        dummy_st.text_input = MagicMock()
+        dummy_st.text_input = MagicMock(return_value="")
         dummy_st.button = MagicMock(return_value=True)
         dummy_st.checkbox = MagicMock(return_value=False)
         dummy_st.subheader = MagicMock()
