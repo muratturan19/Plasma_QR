@@ -27,11 +27,11 @@ st.set_page_config(
 
 st.markdown(
     """
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap"
-          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Open Sans', 'Roboto', sans-serif;
             background: linear-gradient(#ffffff, #f0f0f0);
             color: #333333;
         }
@@ -40,9 +40,9 @@ st.markdown(
             color: #2E86C1;
         }
         h1 {
-            font-size: 3rem;
-            color: #193C6B;
-            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5rem;
+            color: #14397C;
+            font-family: 'Open Sans', 'Montserrat', sans-serif;
         }
         div[data-testid="stSidebar"] {
             background-color: #2E4053;
@@ -94,11 +94,15 @@ def place_logo() -> None:
     """Display the logo and heading in the header."""
 
     logo_path = Path(__file__).resolve().parents[1] / "Logo" / "logo.png"
-    col_logo, col_title = st.columns([1, 3])
+    col_logo, col_title = st.columns([2, 3])
     if logo_path.exists():
-        col_logo.image(str(logo_path), use_container_width=True)
+        col_logo.image(str(logo_path), width=200)
     col_title.markdown(
-        "<h1 style='text-align: left;'>PLASMA PLASTİK</h1>",
+        (
+            "<h1 style='text-align: left; color: #14397C; font-size: 3.5rem;"
+            " font-weight: 700; font-family: \"Open Sans\", sans-serif;'>"
+            "PLASMA PLASTİK</h1>"
+        ),
         unsafe_allow_html=True,
     )
 
