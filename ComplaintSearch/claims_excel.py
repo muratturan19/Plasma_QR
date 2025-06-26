@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any, Dict, List
 from pathlib import Path
 from datetime import datetime
+import os
 
 from difflib import SequenceMatcher
 from openpyxl import load_workbook
@@ -15,7 +16,14 @@ from . import normalize_text
 class ExcelClaimsSearcher:
     """Search complaint records stored in an Excel file."""
 
-    def __init__(self, path: str | Path = "CC/claims.xlsx") -> None:
+    def __init__(self, path: str | Path | None = None) -> None:
+        """Initialize with optional Excel file ``path``.
+
+        When ``path`` is ``None``, ``CLAIMS_FILE_PATH`` environment variable is
+        consulted. If the variable is unset, ``CC/claims.xlsx`` is used.
+        """
+        if path is None:
+            path = os.getenv("CLAIMS_FILE_PATH", "CC/claims.xlsx")
         self.path = Path(path)
 
     def search(self, filters: Dict[str, str], year: int | None = None) -> List[Dict[str, Any]]:
