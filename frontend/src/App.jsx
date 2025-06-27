@@ -11,7 +11,19 @@ function App() {
   }
 
   const theme = useMemo(
-    () => createTheme({ palette: { mode } }),
+    () =>
+      createTheme({
+        palette: {
+          mode,
+          primary: {
+            main: mode === 'light' ? '#0d47a1' : '#90caf9'
+          }
+        },
+        shape: { borderRadius: 12 },
+        typography: {
+          fontFamily: "'Inter','Roboto','Helvetica','Arial',sans-serif"
+        }
+      }),
     [mode]
   )
 

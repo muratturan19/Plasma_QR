@@ -5,6 +5,8 @@ import Button from '@mui/material/Button'
 import Autocomplete from '@mui/material/Autocomplete'
 import Alert from '@mui/material/Alert'
 import Typography from '@mui/material/Typography'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
 import { API_BASE } from '../api'
 
 const METHODS = ['8D', 'A3', 'Ishikawa', '5N1K', 'DMAIC']
@@ -85,7 +87,9 @@ function AnalysisForm() {
   }
 
   return (
-    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 2 }}>
+    <Card sx={{ mt: 2 }}>
+      <CardContent>
+        <Box component="form" onSubmit={handleSubmit} noValidate>
       <TextField
         label="Complaint"
         value={complaint}
@@ -161,7 +165,9 @@ function AnalysisForm() {
           )}
         </Box>
       )}
-    </Box>
+        </Box>
+      </CardContent>
+    </Card>
   )
 }
 
