@@ -14,3 +14,9 @@ it('shows sun icon in dark mode', () => {
   render(<Header toggleColorMode={() => {}} mode="dark" />)
   expect(screen.getByTestId('Brightness7Icon')).toBeInTheDocument()
 })
+
+it('renders help and settings buttons', () => {
+  render(<Header toggleColorMode={() => {}} mode="light" />)
+  expect(screen.getByLabelText(/help/i)).toBeInTheDocument()
+  expect(screen.getByLabelText(/settings/i)).toBeInTheDocument()
+})
