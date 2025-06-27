@@ -1,6 +1,7 @@
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 import SampleForm from '../components/SampleForm'
+import ComplaintFetcher from '../components/ComplaintFetcher'
 
 function Home() {
   return (
@@ -9,6 +10,7 @@ function Home() {
         Plasma QR Home
       </Typography>
       <SampleForm />
+      <ComplaintFetcher />
     </Container>
   )
 }
