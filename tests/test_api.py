@@ -15,6 +15,18 @@ class APITest(unittest.TestCase):
     def setUp(self) -> None:
         self.client = TestClient(api.app, raise_server_exceptions=False)
 
+    def test_cors_preflight(self) -> None:
+        """OPTIONS request should include CORS headers."""
+        response = self.client.options(
+            "/analyze",
+            headers={
+                "Origin": "http://example.com",
+                "Access-Control-Request-Method": "POST",
+            },
+        )
+        self.assertIn(response.status_code, {200, 204})
+        self.assertIn("access-control-allow-origin", response.headers)
+
     def test_analyze_endpoint(self) -> None:
         payload = {"details": {"complaint": "c"}, "guideline": {"fields": []}, "directives": ""}
         with patch.object(api.analyzer, "analyze", return_value={"ok": 1}) as mock_analyze:

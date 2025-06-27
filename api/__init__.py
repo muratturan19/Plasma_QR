@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any, Dict, Optional
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from GuideManager import GuideManager
@@ -14,6 +15,12 @@ from ReportGenerator import ReportGenerator
 from ComplaintSearch import ComplaintStore, ExcelClaimsSearcher
 
 app = FastAPI(title="Plasma QR API")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Shared component instances
 _guide_manager = GuideManager()
