@@ -203,6 +203,9 @@ asagidaki uclari sunar:
 - `POST /review` – `Review.perform` cagrisi
 - `POST /report` – `ReportGenerator.generate` cagrisi
 - `GET /complaints` – `ComplaintStore` ve `ExcelClaimsSearcher` sorgulari
+- `POST /complaints` – yeni sikayet ekler
+- `GET /guide/{method}` – `GuideManager.get_format` cagrisi
+- `GET /options/{field}` – Excel'deki benzersiz degerleri dondurur
 
 Ornek kullanim:
 
@@ -210,6 +213,20 @@ Ornek kullanim:
 curl -X POST http://localhost:8000/analyze \
      -H 'Content-Type: application/json' \
      -d '{"details": {"complaint": "test"}, "guideline": {"fields": []}}'
+
+# rehber verisini cekmek
+curl http://localhost:8000/guide/8D
+
+# tum musterileri listelemek
+curl http://localhost:8000/options/customer
+
+# filtreli sikayet arama
+curl "http://localhost:8000/complaints?customer=ACME&year=2024"
+
+# rapor olusturmak icin
+curl -X POST http://localhost:8000/report \
+     -H 'Content-Type: application/json' \
+     -d '{"analysis": {}, "complaint_info": {"customer": "ACME", "subject": "Test", "part_code": "X"}}'
 ```
 
 ### React Arayuzu
@@ -315,3 +332,25 @@ cd frontend
 npm install
 npm run dev
 ```
+
+## React UI Calisma Akisi
+
+Arayuzdeki **AnalysisForm** bileşeni asagidaki alanlari zorunlu tutar:
+
+- Complaint
+- Customer
+- Subject
+- Part Code
+- Method (8D, A3, Ishikawa, 5N1K veya DMAIC)
+- Directives (opsiyonel)
+
+Formu gonderdiginizde sirayla `/analyze`, `/review` ve `/report` uclari
+cagrilir. Donen nihai metin ekranda gosterilir ve olusan PDF ile Excel
+dosyalari icin indirme baglantilari saglanir.
+
+**ComplaintQuery** bileşeni `GET /complaints` ucunu kullanarak dinamik
+filtreleme yapmaniza olanak tanir.
+
+Onyuzu calistirmak icin yukaridaki komutlardan sonra tarayicinizda
+`http://localhost:5173` adresini acabilirsiniz. Arayuz API'ye 8000
+portundan baglanir.
