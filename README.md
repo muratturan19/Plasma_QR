@@ -149,6 +149,8 @@ ui.start()
 
 ## Streamlit Arayuzu
 
+**Not:** Streamlit tabanli arayuz artik bakimda degildir ve kullanimi desteklenmemektedir.
+
  Bu arayuz icin `streamlit` kutuphanesi gereklidir ve `requirements.txt` dosyasinda yer alir.
  Arayuzun sol panelinden gecmis sikayetlerde anahtar kelime arayabilirsiniz.
  Tarayici tabanli arayuzu calistirmak icin asagidaki komutu kullanabilirsiniz:
