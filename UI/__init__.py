@@ -16,7 +16,18 @@ def run_streamlit() -> None:
     script = Path(streamlit_app.__file__).resolve()
     frozen = getattr(sys, "frozen", False)
 
-    if frozen or not script.exists():
+    if frozen:
+        bundle_root = Path(getattr(sys, "_MEIPASS", Path.cwd()))
+        candidate = bundle_root / "UI" / "streamlit_app.py"
+        if candidate.exists():
+            script = candidate
+        else:
+            tmp_path = Path(tempfile.gettempdir()) / "streamlit_app.py"
+            with resources.files("UI").joinpath("streamlit_app.py").open("rb") as src, \
+                    open(tmp_path, "wb") as dst:
+                dst.write(src.read())
+            script = tmp_path
+    elif not script.exists():
         tmp_path = Path(tempfile.gettempdir()) / "streamlit_app.py"
         with resources.files("UI").joinpath("streamlit_app.py").open("rb") as src, \
                 open(tmp_path, "wb") as dst:
