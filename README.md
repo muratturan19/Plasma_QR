@@ -204,8 +204,8 @@ asagidaki uclari sunar:
 - `POST /report` – `ReportGenerator.generate` cagrisi
 - `GET /complaints` – `ComplaintStore` ve `ExcelClaimsSearcher` sorgulari
 - `POST /complaints` – yeni sikayet ekler
-- `GET /guide/{method}` – `GuideManager.get_format` cagrisi
-- `GET /options/{field}` – Excel'deki benzersiz degerleri dondurur
+- `GET /guide/{method}` – secili metodun rehber adimlarini dondurur
+- `GET /options/{field}` – Excel'deki benzersiz degerlerini dondurur ve dropdown menulerde kullanilir
 
 Ornek kullanim:
 
@@ -220,8 +220,8 @@ curl http://localhost:8000/guide/8D
 # tum musterileri listelemek
 curl http://localhost:8000/options/customer
 
-# filtreli sikayet arama
-curl "http://localhost:8000/complaints?customer=ACME&year=2024"
+# dinamik filtreleme ornegi
+curl "http://localhost:8000/complaints?customer=ACME&part_code=X&year=2024"
 
 # rapor olusturmak icin
 curl -X POST http://localhost:8000/report \
@@ -229,24 +229,35 @@ curl -X POST http://localhost:8000/report \
      -d '{"analysis": {}, "complaint_info": {"customer": "ACME", "subject": "Test", "part_code": "X"}}'
 ```
 
-### React Arayuzu
+## React UI Calisma Akisi
 
-API'yi kullanmak icin `frontend/` klasorundeki React projesini
-gelistirme modunda baslatabilirsiniz:
+React tabanli onyuzu calistirmak icin Node.js yüklü olmalidir.
 
 ```bash
 cd frontend
 npm install
-npm start
-npm test
+npm run dev
 ```
 
-Bu komut gelistirme sunucusunu calistirir ve API'ye 8000 portundan
-baglanarak istek gonderir.
+Komutlarin ardindan tarayicida `http://localhost:5173` adresini acarak
+arayuze ulasabilirsiniz. Arayuz API'ye 8000 portundan istek gönderir.
 
-Uygulama, duyarlı bir baslik ve koyu/acik tema anahtari içerir. Baslikta
-şirket logosu görünür ve küçük ekranlara uyum saglar. Tema düğmesi ile
-istenilen mod seçilebilir.
+**AnalysisForm** bileseni su alanlari zorunlu tutar:
+
+- Complaint
+- Customer
+- Subject
+- Part Code
+- Method (8D, A3, Ishikawa, 5N1K veya DMAIC)
+- Directives (opsiyonel)
+
+Form gonderildiginde sirayla `/analyze`, `/review` ve `/report`
+uclari cagrilir. Donen nihai metin ekranda gorunur ve olusan PDF ile
+Excel dosyalari icin indirme baglantilari saglanir.
+
+**ComplaintQuery** bileseni `GET /complaints` ucunu kullanarak
+dinamik filtreleme yapmaniza olanak tanir. Drop-down menulerdeki degerler
+`/options/{field}` ucu ile doldurulur.
 
 ## Minimal Ornek
 
