@@ -45,6 +45,28 @@ class APITest(unittest.TestCase):
         mock_store.assert_called_with("k")
         mock_excel.assert_called_with({"customer": "c"}, None)
 
+    def test_options_endpoint(self) -> None:
+        with patch.object(api._excel_searcher, "unique_values", return_value=["a", "b"]) as mock_opts:
+            response = self.client.get("/options/customer")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"values": ["a", "b"]})
+        mock_opts.assert_called_with("customer")
+
+    def test_guide_endpoint(self) -> None:
+        with patch.object(api._guide_manager, "get_format", return_value={"method": "8D"}) as mock_get:
+            response = self.client.get("/guide/8D")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"method": "8D"})
+        mock_get.assert_called_with("8D")
+
+    def test_add_complaint_endpoint(self) -> None:
+        body = {"complaint": "c", "customer": "cust", "subject": "s", "part_code": "p"}
+        with patch.object(api._store, "add_complaint") as mock_add:
+            response = self.client.post("/complaints", json=body)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"status": "ok"})
+        mock_add.assert_called_with(body)
+
 
 if __name__ == "__main__":
     unittest.main()

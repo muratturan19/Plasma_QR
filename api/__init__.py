@@ -87,4 +87,30 @@ def complaints(
     return {"store": store_results, "excel": excel_results}
 
 
+class ComplaintBody(BaseModel):
+    complaint: str
+    customer: str
+    subject: str
+    part_code: str
+
+
+@app.post("/complaints")
+def add_complaint(body: ComplaintBody) -> Dict[str, str]:
+    """Persist a complaint in the JSON store."""
+    _store.add_complaint(body.dict())
+    return {"status": "ok"}
+
+
+@app.get("/options/{field}")
+def options(field: str) -> Dict[str, Any]:
+    """Return unique option values for ``field`` from the Excel claims file."""
+    return {"values": _excel_searcher.unique_values(field)}
+
+
+@app.get("/guide/{method}")
+def guide(method: str) -> Dict[str, Any]:
+    """Return guideline data for ``method``."""
+    return _guide_manager.get_format(method)
+
+
 __all__ = ["app"]
