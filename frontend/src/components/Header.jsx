@@ -19,23 +19,31 @@ function Header({ toggleColorMode, mode }) {
     <AppBar
       position="static"
       sx={{
-        backgroundColor: theme.palette.background.paper,
-        color: theme.palette.text.primary,
-        boxShadow: theme.shadows[1]
+        backgroundColor: '#002855',
+        color: '#ffffff',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+        borderBottom: '4px solid #14397c'
       }}
     >
       <Toolbar>
         <Box component="img" src={logo} alt="Company Logo" sx={{ height: isMobile ? 40 : 50, mr: 2 }} />
-        <Typography variant={isMobile ? 'h6' : 'h5'} sx={{ flexGrow: 1 }}>
+        <Typography
+          variant={isMobile ? 'h6' : 'h5'}
+          sx={{
+            flexGrow: 1,
+            fontFamily: 'Poppins, Inter, sans-serif',
+            animation: 'fadeIn 1s ease-in-out'
+          }}
+        >
           Plasma QR
         </Typography>
-        <IconButton color="inherit" aria-label="help">
+        <IconButton color="inherit" aria-label="help" sx={{ mx: 0.5, transition: 'transform 0.2s', '&:hover': { transform: 'scale(1.1)' } }}>
           <HelpOutlineIcon />
         </IconButton>
-        <IconButton color="inherit" aria-label="settings">
+        <IconButton color="inherit" aria-label="settings" sx={{ mx: 0.5, transition: 'transform 0.2s', '&:hover': { transform: 'scale(1.1)' } }}>
           <SettingsIcon />
         </IconButton>
-        <IconButton color="inherit" onClick={toggleColorMode} aria-label="toggle color mode">
+        <IconButton color="inherit" onClick={toggleColorMode} aria-label="toggle color mode" sx={{ mx: 0.5, transition: 'transform 0.2s', '&:hover': { transform: 'scale(1.1)' } }}>
           {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
         </IconButton>
       </Toolbar>

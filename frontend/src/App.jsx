@@ -16,12 +16,15 @@ function App() {
         palette: {
           mode,
           primary: {
-            main: mode === 'light' ? '#0d47a1' : '#90caf9'
+            main: '#002855'
+          },
+          secondary: {
+            main: '#14397c'
           }
         },
         shape: { borderRadius: 12 },
         typography: {
-          fontFamily: "'Inter','Roboto','Helvetica','Arial',sans-serif"
+          fontFamily: "'Poppins','Inter','Roboto','Helvetica','Arial',sans-serif"
         }
       }),
     [mode]

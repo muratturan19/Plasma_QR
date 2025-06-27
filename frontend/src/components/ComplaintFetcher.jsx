@@ -3,6 +3,7 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { API_BASE } from '../api'
+import FileDownloadIcon from '@mui/icons-material/FileDownload'
 
 function ComplaintFetcher() {
   const [data, setData] = useState(null)
@@ -23,8 +24,13 @@ function ComplaintFetcher() {
   }
 
   return (
-    <Box sx={{ mt: 2 }}>
-      <Button variant="outlined" onClick={fetchData} sx={{ mb: 2 }}>
+    <Box sx={{ mt: 2, background: 'linear-gradient(180deg,#ffffff,#f0f4fa)', p: 2, borderRadius: 2, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+      <Button
+        variant="contained"
+        onClick={fetchData}
+        startIcon={<FileDownloadIcon />}
+        sx={{ mb: 2, px: 3, py: 1.2 }}
+      >
         Fetch Complaints
       </Button>
       {error && (

@@ -140,7 +140,13 @@ function AnalysisForm() {
   }
 
   return (
-    <Card sx={{ mt: 2 }}>
+    <Card
+      sx={{
+        mt: 2,
+        background: 'linear-gradient(180deg, #ffffff 0%, #f0f4fa 100%)',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+      }}
+    >
       <CardContent>
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <Grid container spacing={2}>
@@ -293,7 +299,12 @@ function AnalysisForm() {
         multiline
         minRows={3}
       />
-      <Button type="submit" variant="contained" sx={{ mt: 2 }}>
+      <Button
+        type="submit"
+        variant="contained"
+        startIcon={<QrCode2Icon />}
+        sx={{ mt: 2, px: 4, py: 1.5, fontSize: '1rem', transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}
+      >
         Analyze
       </Button>
       {loading && (
@@ -334,7 +345,7 @@ function AnalysisForm() {
                 download
                 variant="outlined"
                 startIcon={<PictureAsPdfIcon />}
-                sx={{ mr: 1 }}
+                sx={{ mr: 1, px: 3, py: 1 }}
               >
                 PDF
               </Button>
@@ -344,6 +355,7 @@ function AnalysisForm() {
                 download
                 variant="outlined"
                 startIcon={<FileDownloadIcon />}
+                sx={{ px: 3, py: 1 }}
               >
                 Excel
               </Button>
