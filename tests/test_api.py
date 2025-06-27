@@ -2,6 +2,9 @@ import unittest
 from unittest.mock import patch
 
 from fastapi.testclient import TestClient
+import tempfile
+from pathlib import Path
+from ComplaintSearch import ComplaintStore
 
 import api
 
@@ -10,7 +13,7 @@ class APITest(unittest.TestCase):
     """Tests for FastAPI endpoints."""
 
     def setUp(self) -> None:
-        self.client = TestClient(api.app)
+        self.client = TestClient(api.app, raise_server_exceptions=False)
 
     def test_analyze_endpoint(self) -> None:
         payload = {"details": {"complaint": "c"}, "guideline": {"fields": []}, "directives": ""}
@@ -67,6 +70,29 @@ class APITest(unittest.TestCase):
         self.assertEqual(response.json(), {"status": "ok"})
         mock_add.assert_called_with(body)
 
+
+    def test_review_endpoint_error(self) -> None:
+        body = {"text": "t", "context": {}}
+        with patch.object(api.reviewer, "perform", side_effect=Exception("boom")):
+            response = self.client.post("/review", json=body)
+        self.assertEqual(response.status_code, 500)
+        self.assertIn("boom", response.json()["detail"])
+
+    def test_complaints_endpoint_error(self) -> None:
+        with patch.object(api._excel_searcher, "search", side_effect=ValueError("fail")):
+            response = self.client.get("/complaints", params={"customer": "c"})
+        self.assertEqual(response.status_code, 500)
+
+    def test_complaint_persistence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            store = ComplaintStore(Path(tmpdir) / "c.json")
+            with patch.object(api, "_store", store):
+                body = {"complaint": "n", "customer": "AC", "subject": "s", "part_code": "p"}
+                add_resp = self.client.post("/complaints", json=body)
+                self.assertEqual(add_resp.status_code, 200)
+                resp = self.client.get("/complaints", params={"keyword": "n"})
+            self.assertEqual(resp.status_code, 200)
+            self.assertEqual(resp.json()["store"], [body])
 
 if __name__ == "__main__":
     unittest.main()
