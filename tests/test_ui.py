@@ -97,6 +97,36 @@ class RunStreamlitTest(unittest.TestCase):
             expected = ["streamlit", "run", "/tmp/streamlit_app.py"]
             mock_run.assert_called_once_with(expected, check=True)
 
+    def test_run_streamlit_uses_meipass_path(self) -> None:
+        module = importlib.import_module("UI")
+
+        dummy_cli = types.ModuleType("streamlit.web.cli")
+        dummy_cli.main = MagicMock()
+        dummy_web = types.ModuleType("streamlit.web")
+        dummy_web.cli = dummy_cli
+        dummy_streamlit = types.ModuleType("streamlit")
+        dummy_streamlit.web = dummy_web
+
+        meipass = Path("/bundle")
+        candidate = meipass / "UI" / "streamlit_app.py"
+
+        with patch.object(module.sys, "frozen", True, create=True), \
+                patch.object(module.sys, "_MEIPASS", str(meipass), create=True), \
+                patch.dict(sys.modules, {
+                    "streamlit": dummy_streamlit,
+                    "streamlit.web": dummy_web,
+                    "streamlit.web.cli": dummy_cli,
+                }), \
+                patch("UI.streamlit_app", create=True) as mock_app, \
+                patch.object(Path, "exists", side_effect=lambda self: self == candidate, autospec=True), \
+                patch("subprocess.run") as mock_run, \
+                patch("importlib.resources.files") as mock_files:
+            mock_app.__file__ = "app_file"
+            module.run_streamlit()
+            dummy_cli.main.assert_called_once()
+            mock_run.assert_not_called()
+            mock_files.assert_not_called()
+
 
 if __name__ == '__main__':
     unittest.main()
