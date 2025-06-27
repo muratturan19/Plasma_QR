@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
@@ -10,6 +10,12 @@ import Typography from '@mui/material/Typography'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Grow from '@mui/material/Grow'
+import Grid from '@mui/material/Grid'
+import InputAdornment from '@mui/material/InputAdornment'
+import PersonIcon from '@mui/icons-material/Person'
+import LabelIcon from '@mui/icons-material/Label'
+import QrCode2Icon from '@mui/icons-material/QrCode2'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
 import FileDownloadIcon from '@mui/icons-material/FileDownload'
@@ -30,6 +36,20 @@ const GUIDE_TEXT = {
     'DMAIC, süreç iyileştirme için kullanılan sistematik bir problem çözme metodudur.'
 }
 
+const inputSx = {
+  transition: 'border-color 0.3s',
+  '& .MuiOutlinedInput-root': {
+    '&:hover fieldset': { borderColor: 'primary.main' },
+    '&.Mui-focused fieldset': { borderColor: 'primary.main' }
+  },
+  '& .MuiSvgIcon-root': {
+    transition: 'color 0.3s'
+  },
+  '& .MuiOutlinedInput-root.Mui-focused .MuiSvgIcon-root': {
+    color: 'primary.main'
+  }
+}
+
 function AnalysisForm() {
   const [complaint, setComplaint] = useState('')
   const [customer, setCustomer] = useState('')
@@ -42,6 +62,26 @@ function AnalysisForm() {
   const [loading, setLoading] = useState(false)
   const [finalText, setFinalText] = useState('')
   const [downloads, setDownloads] = useState(null)
+  const [customerOptions, setCustomerOptions] = useState([])
+  const [subjectOptions, setSubjectOptions] = useState([])
+  const [partCodeOptions, setPartCodeOptions] = useState([])
+
+  useEffect(() => {
+    const fetchOptions = async (field, setter) => {
+      try {
+        const res = await fetch(`${API_BASE}/options/${field}`)
+        if (res.ok) {
+          const data = await res.json()
+          setter(data.values || [])
+        }
+      } catch {
+        // ignore errors
+      }
+    }
+    fetchOptions('customer', setCustomerOptions)
+    fetchOptions('subject', setSubjectOptions)
+    fetchOptions('part_code', setPartCodeOptions)
+  }, [])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -103,40 +143,142 @@ function AnalysisForm() {
     <Card sx={{ mt: 2 }}>
       <CardContent>
         <Box component="form" onSubmit={handleSubmit} noValidate>
-      <TextField
-        label="Complaint"
-        value={complaint}
-        onChange={(e) => setComplaint(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
-      <TextField
-        label="Customer"
-        value={customer}
-        onChange={(e) => setCustomer(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
-      <TextField
-        label="Subject"
-        value={subject}
-        onChange={(e) => setSubject(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
-      <TextField
-        label="Part Code"
-        value={partCode}
-        onChange={(e) => setPartCode(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
-      <Autocomplete
-        options={METHODS}
-        value={method}
-        onChange={(event, newValue) => setMethod(newValue)}
-        renderInput={(params) => <TextField {...params} label="Method" margin="normal" />}
-      />
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Complaint"
+                value={complaint}
+                onChange={(e) => setComplaint(e.target.value)}
+                fullWidth
+                margin="normal"
+                multiline
+                minRows={5}
+                sx={inputSx}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Autocomplete
+                freeSolo
+                options={customerOptions}
+                inputValue={customer}
+                onInputChange={(e, v) => setCustomer(v)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Customer"
+                    margin="normal"
+                    sx={inputSx}
+                    InputProps={{
+                      ...params.InputProps,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <PersonIcon />
+                        </InputAdornment>
+                      )
+                    }}
+                    inputProps={{
+                      ...params.inputProps,
+                      'data-testid': 'customer-input'
+                    }}
+                  />
+                )}
+              />
+              <Autocomplete
+                freeSolo
+                options={subjectOptions}
+                inputValue={subject}
+                onInputChange={(e, v) => setSubject(v)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Subject"
+                    margin="normal"
+                    sx={inputSx}
+                    InputProps={{
+                      ...params.InputProps,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <LabelIcon />
+                        </InputAdornment>
+                      )
+                    }}
+                    inputProps={{
+                      ...params.inputProps,
+                      'data-testid': 'subject-input'
+                    }}
+                  />
+                )}
+              />
+              <Autocomplete
+                freeSolo
+                options={partCodeOptions}
+                inputValue={partCode}
+                onInputChange={(e, v) => setPartCode(v)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Part Code"
+                    margin="normal"
+                    sx={inputSx}
+                    InputProps={{
+                      ...params.InputProps,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <QrCode2Icon />
+                        </InputAdornment>
+                      )
+                    }}
+                    inputProps={{
+                      ...params.inputProps,
+                      'data-testid': 'partcode-input'
+                    }}
+                  />
+                )}
+              />
+              <Autocomplete
+                options={METHODS}
+                value={method}
+                onChange={(event, newValue) => setMethod(newValue)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Method"
+                    margin="normal"
+                    sx={inputSx}
+                    InputProps={{
+                      ...params.InputProps,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <ArrowDropDownIcon />
+                        </InputAdornment>
+                      )
+                    }}
+                    inputProps={{
+                      ...params.inputProps,
+                      'data-testid': 'method-input'
+                    }}
+                  />
+                )}
+              />
+              {method && (
+                <Alert severity="info" sx={{ mt: 1 }} data-testid="guide-text">
+                  {GUIDE_TEXT[method]}
+                </Alert>
+              )}
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Directives"
+                value={directives}
+                onChange={(e) => setDirectives(e.target.value)}
+                fullWidth
+                margin="normal"
+                multiline
+                minRows={3}
+                sx={inputSx}
+              />
+            </Grid>
+          </Grid>
       {method && (
         <Alert severity="info" sx={{ mt: 1 }} data-testid="guide-text">
           {GUIDE_TEXT[method]}

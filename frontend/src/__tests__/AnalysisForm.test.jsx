@@ -3,10 +3,20 @@ import AnalysisForm from '../components/AnalysisForm'
 
 vi.mock('@mui/material/Autocomplete', () => ({
   __esModule: true,
-  default: ({ value, onChange }) => (
-    <input data-testid="method-input" value={value || ''} onChange={(e) => onChange(null, e.target.value)} />
-  )
+  default: ({ value, onChange, onInputChange, renderInput }) => {
+    const params = { inputProps: {}, InputProps: {} }
+    const { inputProps } = renderInput(params).props
+    const handler = onChange || onInputChange || (() => {})
+    return (
+      <input
+        data-testid={inputProps['data-testid']}
+        value={value || ''}
+        onChange={(e) => handler(null, e.target.value)}
+      />
+    )
+  }
 }))
+
 
 beforeEach(() => {
   global.fetch = vi.fn()
@@ -18,16 +28,20 @@ afterEach(() => {
 
 test('submits form and shows results', async () => {
   fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
     .mockResolvedValueOnce({ ok: true, json: async () => ({ step: 'a' }) })
     .mockResolvedValueOnce({ ok: true, json: async () => ({ result: 'done' }) })
     .mockResolvedValueOnce({ ok: true, json: async () => ({ pdf: 'p', excel: 'e' }) })
 
   render(<AnalysisForm />)
+  fetch.mockClear()
 
   fireEvent.change(screen.getByLabelText(/complaint/i), { target: { value: 'c' } })
-  fireEvent.change(screen.getByLabelText(/customer/i), { target: { value: 'cu' } })
-  fireEvent.change(screen.getByLabelText(/subject/i), { target: { value: 's' } })
-  fireEvent.change(screen.getByLabelText(/part code/i), { target: { value: 'p' } })
+  fireEvent.change(screen.getByTestId('customer-input'), { target: { value: 'cu' } })
+  fireEvent.change(screen.getByTestId('subject-input'), { target: { value: 's' } })
+  fireEvent.change(screen.getByTestId('partcode-input'), { target: { value: 'p' } })
   fireEvent.change(screen.getByTestId('method-input'), { target: { value: '8D' } })
   fireEvent.click(screen.getByRole('button', { name: /analyze/i }))
 
@@ -40,13 +54,18 @@ test('submits form and shows results', async () => {
 })
 
 test('shows error on api failure', async () => {
-  fetch.mockResolvedValueOnce({ ok: false, status: 500 })
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: false, status: 500 })
 
   render(<AnalysisForm />)
+  fetch.mockClear()
   fireEvent.change(screen.getByLabelText(/complaint/i), { target: { value: 'c' } })
-  fireEvent.change(screen.getByLabelText(/customer/i), { target: { value: 'cu' } })
-  fireEvent.change(screen.getByLabelText(/subject/i), { target: { value: 's' } })
-  fireEvent.change(screen.getByLabelText(/part code/i), { target: { value: 'p' } })
+  fireEvent.change(screen.getByTestId('customer-input'), { target: { value: 'cu' } })
+  fireEvent.change(screen.getByTestId('subject-input'), { target: { value: 's' } })
+  fireEvent.change(screen.getByTestId('partcode-input'), { target: { value: 'p' } })
   fireEvent.change(screen.getByTestId('method-input'), { target: { value: '8D' } })
   fireEvent.click(screen.getByRole('button', { name: /analyze/i }))
 
