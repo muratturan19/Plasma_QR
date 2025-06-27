@@ -4,6 +4,8 @@ import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Autocomplete from '@mui/material/Autocomplete'
 import Alert from '@mui/material/Alert'
+import Snackbar from '@mui/material/Snackbar'
+import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -32,6 +34,8 @@ function AnalysisForm() {
   const [method, setMethod] = useState(null)
   const [directives, setDirectives] = useState('')
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+  const [loading, setLoading] = useState(false)
   const [finalText, setFinalText] = useState('')
   const [downloads, setDownloads] = useState(null)
 
@@ -42,6 +46,8 @@ function AnalysisForm() {
       return
     }
     setError('')
+    setSuccess('')
+    setLoading(true)
     setFinalText('')
     setDownloads(null)
     try {
@@ -81,8 +87,11 @@ function AnalysisForm() {
       const downloadsData = await reportRes.json()
       setFinalText(result)
       setDownloads(downloadsData)
+      setSuccess('Report created successfully.')
     } catch (err) {
       setError(err.message)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -141,11 +150,21 @@ function AnalysisForm() {
       <Button type="submit" variant="contained" sx={{ mt: 2 }}>
         Analyze
       </Button>
-      {error && (
-        <Alert severity="error" sx={{ mt: 2 }}>
-          {error}
-        </Alert>
+      {loading && (
+        <CircularProgress sx={{ mt: 2 }} data-testid="loading-indicator" />
       )}
+      <Snackbar
+        open={Boolean(error)}
+        autoHideDuration={6000}
+        onClose={() => setError('')}
+        message={error}
+      />
+      <Snackbar
+        open={Boolean(success)}
+        autoHideDuration={6000}
+        onClose={() => setSuccess('')}
+        message={success}
+      />
       {finalText && (
         <Box sx={{ mt: 2 }}>
           <Typography variant="h6">Final Report</Typography>
