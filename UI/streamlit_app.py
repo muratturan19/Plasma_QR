@@ -11,6 +11,7 @@ except ModuleNotFoundError:  # pragma: no cover - optional dependency
     st_option_menu = None
 
 from pathlib import Path
+from importlib import resources
 import json
 from datetime import datetime
 from GuideManager import GuideManager
@@ -94,10 +95,10 @@ PLACEHOLDER = "Lütfen seçiniz"
 def place_logo() -> None:
     """Display the logo and heading in the header."""
 
-    logo_path = Path(__file__).resolve().parents[1] / "Logo" / "logo.png"
+    logo_path = resources.files("Logo") / "logo.png"
     col_logo, col_title = st.columns([1, 3])
 
-    if logo_path.exists():
+    if logo_path.is_file():
         col_logo.image(str(logo_path), width=250)
 
     col_title.markdown(
