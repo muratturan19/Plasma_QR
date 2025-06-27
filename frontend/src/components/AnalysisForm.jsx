@@ -5,6 +5,7 @@ import Button from '@mui/material/Button'
 import Autocomplete from '@mui/material/Autocomplete'
 import Alert from '@mui/material/Alert'
 import Typography from '@mui/material/Typography'
+import { API_BASE } from '../api'
 
 const METHODS = ['8D', 'A3', 'Ishikawa', '5N1K', 'DMAIC']
 
@@ -44,7 +45,7 @@ function AnalysisForm() {
     try {
       const details = { complaint, customer, subject, part_code: partCode }
       const analyzeBody = { details, guideline: { method }, directives }
-      const analyzeRes = await fetch('/analyze', {
+      const analyzeRes = await fetch(`${API_BASE}/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(analyzeBody)
@@ -53,7 +54,7 @@ function AnalysisForm() {
         throw new Error(`HTTP ${analyzeRes.status}`)
       }
       const analysis = await analyzeRes.json()
-      const reviewRes = await fetch('/review', {
+      const reviewRes = await fetch(`${API_BASE}/review`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: JSON.stringify(analysis), context: { method } })
@@ -63,7 +64,7 @@ function AnalysisForm() {
       }
       const { result } = await reviewRes.json()
       analysis.full_report = { response: result }
-      const reportRes = await fetch('/report', {
+      const reportRes = await fetch(`${API_BASE}/report`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
