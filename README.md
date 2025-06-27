@@ -221,6 +221,7 @@ gelistirme modunda baslatabilirsiniz:
 cd frontend
 npm install
 npm start
+npm test
 ```
 
 Bu komut gelistirme sunucusunu calistirir ve API'ye 8000 portundan
