@@ -8,8 +8,13 @@ function Home() {
   return (
     <>
       <Container maxWidth="sm">
-        <Typography variant="h4" component="h1" gutterBottom>
-          Plasma QR Home
+        <Typography
+          variant="h4"
+          component="h1"
+          gutterBottom
+          sx={{ color: '#002855', fontFamily: 'Poppins, Inter, sans-serif' }}
+        >
+          Plasma QR
         </Typography>
         <AnalysisForm />
         <ComplaintFetcher />
