@@ -9,6 +9,10 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
+import Grow from '@mui/material/Grow'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
+import FileDownloadIcon from '@mui/icons-material/FileDownload'
 import { API_BASE } from '../api'
 
 const METHODS = ['8D', 'A3', 'Ishikawa', '5N1K', 'DMAIC']
@@ -167,19 +171,40 @@ function AnalysisForm() {
       />
       {finalText && (
         <Box sx={{ mt: 2 }}>
+          <Grow in={Boolean(success)}>
+            <Box display="flex" justifyContent="center" sx={{ mb: 1 }}>
+              <CheckCircleIcon
+                color="success"
+                fontSize="large"
+                data-testid="CheckCircleIcon"
+              />
+            </Box>
+          </Grow>
           <Typography variant="h6">Final Report</Typography>
           <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
             {finalText}
           </Typography>
           {downloads && (
             <Box sx={{ mt: 1 }}>
-              <a href={downloads.pdf} download>
-                Download PDF
-              </a>{' '}
-              |{' '}
-              <a href={downloads.excel} download>
-                Download Excel
-              </a>
+              <Button
+                component="a"
+                href={downloads.pdf}
+                download
+                variant="outlined"
+                startIcon={<PictureAsPdfIcon />}
+                sx={{ mr: 1 }}
+              >
+                PDF
+              </Button>
+              <Button
+                component="a"
+                href={downloads.excel}
+                download
+                variant="outlined"
+                startIcon={<FileDownloadIcon />}
+              >
+                Excel
+              </Button>
             </Box>
           )}
         </Box>

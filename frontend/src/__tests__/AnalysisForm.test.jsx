@@ -34,6 +34,9 @@ test('submits form and shows results', async () => {
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
   await screen.findByText(/done/)
   await screen.findByText(/created successfully/i)
+  await screen.findByTestId('CheckCircleIcon')
+  expect(screen.getByTestId('PictureAsPdfIcon')).toBeInTheDocument()
+  expect(screen.getByTestId('FileDownloadIcon')).toBeInTheDocument()
 })
 
 test('shows error on api failure', async () => {
