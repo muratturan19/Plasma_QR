@@ -4,106 +4,163 @@ import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Autocomplete from '@mui/material/Autocomplete'
 import Alert from '@mui/material/Alert'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import Typography from '@mui/material/Typography'
+
+const METHODS = ['8D', 'A3', 'Ishikawa', '5N1K', 'DMAIC']
+
+const GUIDE_TEXT = {
+  '8D':
+    '8D (Eight Disciplines) metodu, ürün ve süreç kaynaklı problemleri sistematik şekilde çözmek için geliştirilmiş etkili bir problem çözme tekniğidir.',
+  A3:
+    'A3 Problem Solving, problemi sistematik biçimde tanımlamak, analiz etmek ve çözüm geliştirmek için kullanılan yalın düşünce temelli bir yaklaşımdır.',
+  Ishikawa:
+    'Ishikawa (Balık Kılçığı) Diyagramı, problemin kök nedenlerini sistematik olarak analiz etmeye yarayan neden-sonuç diyagramıdır.',
+  '5N1K':
+    '5N1K (5W1H) yöntemi, bir problemi tüm yönleriyle incelemek için kullanılan klasik sorgulama metodudur.',
+  DMAIC:
+    'DMAIC, süreç iyileştirme için kullanılan sistematik bir problem çözme metodudur.'
+}
 
 function AnalysisForm() {
   const [complaint, setComplaint] = useState('')
-  const [guideline, setGuideline] = useState(null)
-  const [date, setDate] = useState(null)
+  const [customer, setCustomer] = useState('')
+  const [subject, setSubject] = useState('')
+  const [partCode, setPartCode] = useState('')
+  const [method, setMethod] = useState(null)
+  const [directives, setDirectives] = useState('')
   const [error, setError] = useState('')
-  const [results, setResults] = useState(null)
+  const [finalText, setFinalText] = useState('')
+  const [downloads, setDownloads] = useState(null)
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    if (!complaint || !guideline || !date) {
+    if (!complaint || !customer || !subject || !partCode || !method) {
       setError('All fields are required.')
       return
     }
     setError('')
-    setResults(null)
-    const payload = {
-      details: { complaint, date: date.toISOString() },
-      guideline: { method: guideline },
-      directives: ''
-    }
+    setFinalText('')
+    setDownloads(null)
     try {
-      const response = await fetch('/analyze', {
+      const details = { complaint, customer, subject, part_code: partCode }
+      const analyzeBody = { details, guideline: { method }, directives }
+      const analyzeRes = await fetch('/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(analyzeBody)
       })
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`)
+      if (!analyzeRes.ok) {
+        throw new Error(`HTTP ${analyzeRes.status}`)
       }
-      const data = await response.json()
-      setResults(data)
+      const analysis = await analyzeRes.json()
+      const reviewRes = await fetch('/review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: JSON.stringify(analysis), context: { method } })
+      })
+      if (!reviewRes.ok) {
+        throw new Error(`HTTP ${reviewRes.status}`)
+      }
+      const { result } = await reviewRes.json()
+      analysis.full_report = { response: result }
+      const reportRes = await fetch('/report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          analysis,
+          complaint_info: { customer, subject, part_code: partCode },
+          output_dir: '.'
+        })
+      })
+      if (!reportRes.ok) {
+        throw new Error(`HTTP ${reportRes.status}`)
+      }
+      const downloadsData = await reportRes.json()
+      setFinalText(result)
+      setDownloads(downloadsData)
     } catch (err) {
       setError(err.message)
     }
   }
 
-  const rows = results ? Object.entries(results) : []
-
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 2 }}>
-        <TextField
-          label="Complaint"
-          value={complaint}
-          onChange={(e) => setComplaint(e.target.value)}
-          fullWidth
-          margin="normal"
-          helperText="Enter complaint details"
-        />
-        <Autocomplete
-          options={['8D', 'QR', 'Other']}
-          value={guideline}
-          onChange={(event, newValue) => setGuideline(newValue)}
-          renderInput={(params) => (
-            <TextField {...params} label="Guideline" margin="normal" helperText="Select analysis guideline" />
+    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 2 }}>
+      <TextField
+        label="Complaint"
+        value={complaint}
+        onChange={(e) => setComplaint(e.target.value)}
+        fullWidth
+        margin="normal"
+      />
+      <TextField
+        label="Customer"
+        value={customer}
+        onChange={(e) => setCustomer(e.target.value)}
+        fullWidth
+        margin="normal"
+      />
+      <TextField
+        label="Subject"
+        value={subject}
+        onChange={(e) => setSubject(e.target.value)}
+        fullWidth
+        margin="normal"
+      />
+      <TextField
+        label="Part Code"
+        value={partCode}
+        onChange={(e) => setPartCode(e.target.value)}
+        fullWidth
+        margin="normal"
+      />
+      <Autocomplete
+        options={METHODS}
+        value={method}
+        onChange={(event, newValue) => setMethod(newValue)}
+        renderInput={(params) => <TextField {...params} label="Method" margin="normal" />}
+      />
+      {method && (
+        <Alert severity="info" sx={{ mt: 1 }} data-testid="guide-text">
+          {GUIDE_TEXT[method]}
+        </Alert>
+      )}
+      <TextField
+        label="Directives"
+        value={directives}
+        onChange={(e) => setDirectives(e.target.value)}
+        fullWidth
+        margin="normal"
+        multiline
+        minRows={3}
+      />
+      <Button type="submit" variant="contained" sx={{ mt: 2 }}>
+        Analyze
+      </Button>
+      {error && (
+        <Alert severity="error" sx={{ mt: 2 }}>
+          {error}
+        </Alert>
+      )}
+      {finalText && (
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="h6">Final Report</Typography>
+          <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+            {finalText}
+          </Typography>
+          {downloads && (
+            <Box sx={{ mt: 1 }}>
+              <a href={downloads.pdf} download>
+                Download PDF
+              </a>{' '}
+              |{' '}
+              <a href={downloads.excel} download>
+                Download Excel
+              </a>
+            </Box>
           )}
-        />
-        <DatePicker
-          label="Date"
-          value={date}
-          onChange={(newValue) => setDate(newValue)}
-          renderInput={(params) => <TextField {...params} margin="normal" helperText="Choose report date" />}
-        />
-        <Button type="submit" variant="contained" sx={{ mt: 2 }}>
-          Analyze
-        </Button>
-        {error && (
-          <Alert severity="error" sx={{ mt: 2 }}>
-            {error}
-          </Alert>
-        )}
-        {rows.length > 0 && (
-          <Table sx={{ mt: 2 }} size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Key</TableCell>
-                <TableCell>Value</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map(([key, value]) => (
-                <TableRow key={key}>
-                  <TableCell>{key}</TableCell>
-                  <TableCell>{String(value)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
-      </Box>
-    </LocalizationProvider>
+        </Box>
+      )}
+    </Box>
   )
 }
 
