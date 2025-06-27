@@ -10,6 +10,8 @@ from fpdf import FPDF
 from openpyxl import Workbook
 from uuid import uuid4
 
+DEFAULT_FONT_PATH = Path(__file__).resolve().parents[1] / "Fonts" / "DejaVuSans.ttf"
+
 from GuideManager import GuideManager
 
 
@@ -62,7 +64,7 @@ class ReportGenerator:
         if env_font:
             font_path = Path(env_font)
         else:
-            font_path = Path(__file__).resolve().parents[1] / "Fonts" / "DejaVuSans.ttf"
+            font_path = DEFAULT_FONT_PATH
         if not font_path.exists():
             fallback = Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
             if fallback.exists():
