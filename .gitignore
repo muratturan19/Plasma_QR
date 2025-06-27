@@ -22,3 +22,4 @@ Fonts/*.pkl
 # Frontend
 frontend/node_modules/
 frontend/dist/
+complaints.json
