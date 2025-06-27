@@ -33,6 +33,7 @@ test('submits form and shows results', async () => {
 
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
   await screen.findByText(/done/)
+  await screen.findByText(/created successfully/i)
 })
 
 test('shows error on api failure', async () => {
@@ -48,4 +49,5 @@ test('shows error on api failure', async () => {
 
   await waitFor(() => expect(fetch).toHaveBeenCalled())
   await screen.findByText(/http 500/i)
+  expect(screen.getByText(/http 500/i)).toBeInTheDocument()
 })
