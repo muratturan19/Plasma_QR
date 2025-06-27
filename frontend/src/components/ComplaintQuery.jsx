@@ -12,6 +12,7 @@ import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Alert from '@mui/material/Alert'
+import { API_BASE } from '../api'
 
 function ComplaintQuery() {
   const [complaint, setComplaint] = useState('')
@@ -34,7 +35,7 @@ function ComplaintQuery() {
     if (usePartCode && partCode) params.append('part_code', partCode)
     if (year) params.append('year', year)
     try {
-      const res = await fetch(`/complaints?${params.toString()}`)
+      const res = await fetch(`${API_BASE}/complaints?${params.toString()}`)
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}`)
       }

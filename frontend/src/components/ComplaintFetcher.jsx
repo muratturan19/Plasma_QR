@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
+import { API_BASE } from '../api'
 
 function ComplaintFetcher() {
   const [data, setData] = useState(null)
@@ -9,7 +10,7 @@ function ComplaintFetcher() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('/complaints')
+      const response = await fetch(`${API_BASE}/complaints`)
       if (!response.ok) {
         throw new Error(`HTTP error ${response.status}`)
       }
