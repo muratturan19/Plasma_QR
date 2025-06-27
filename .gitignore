@@ -18,3 +18,7 @@ dist/
 *.log
 .pytest_cache/
 Fonts/*.pkl
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
