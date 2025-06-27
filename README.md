@@ -226,6 +226,10 @@ npm start
 Bu komut gelistirme sunucusunu calistirir ve API'ye 8000 portundan
 baglanarak istek gonderir.
 
+Uygulama, duyarlı bir baslik ve koyu/acik tema anahtari içerir. Baslikta
+şirket logosu görünür ve küçük ekranlara uyum saglar. Tema düğmesi ile
+istenilen mod seçilebilir.
+
 ## Minimal Ornek
 
 Asagidaki kod ornegi girdi akisini nasil kullanabileceginizi gosterir:
