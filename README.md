@@ -251,6 +251,11 @@ arayuze ulasabilirsiniz. Arayuz API'ye 8000 portundan istek gönderir.
 - Method (8D, A3, Ishikawa, 5N1K veya DMAIC)
 - Directives (opsiyonel)
 
+Arayuz yeni bir tema ile kart tabanli tasarim sunar ve islemlerin durumu
+icin toast bildirimleri gosterir. Tasarim responsive olup farkli ekran
+genisliklerine uyum saglar ve istege bagli olarak acik ya da koyu mod
+secenegi bulunur.
+
 Form gonderildiginde sirayla `/analyze`, `/review` ve `/report`
 uclari cagrilir. Donen nihai metin ekranda gorunur ve olusan PDF ile
 Excel dosyalari icin indirme baglantilari saglanir.
@@ -365,3 +370,8 @@ filtreleme yapmaniza olanak tanir.
 Onyuzu calistirmak icin yukaridaki komutlardan sonra tarayicinizda
 `http://localhost:5173` adresini acabilirsiniz. Arayuz API'ye 8000
 portundan baglanir.
+
+Arayuz yeni bir tema ile kart tabanli tasarim kullanacak sekilde
+guncellenmistir. Basarili islemler ve hatalar icin toast bildirimleri
+goruntulenir. Tasarim responsive olup farkli ekran genisliklerine uyum
+saglar ve istege bagli olarak acik veya koyu mod secilebilir.
