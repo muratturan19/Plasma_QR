@@ -297,3 +297,14 @@ pyinstaller --onefile run_app.py \
 
 Oluşan `dist/run_app.exe` dosyası müşteri bilgisayarında doğrudan
 çalıştırılabilir.
+
+## Frontend
+
+React tabanli arayuzu calistirmak icin Node.js yüklu olmalidir. Ilk kurulumdan sonra
+asagidaki komutlari calistirarak gelistirme sunucusunu baslatabilirsiniz:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
