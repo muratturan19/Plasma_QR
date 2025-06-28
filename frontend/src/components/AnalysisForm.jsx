@@ -169,7 +169,7 @@ function AnalysisForm() {
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'space-between',
+                gap: 2,
                 height: '100%'
               }}
             >
