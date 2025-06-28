@@ -105,6 +105,19 @@ class ExcelClaimsSearchTest(unittest.TestCase):
                 self.assertTrue(mock_load.called)
                 self.assertEqual(searcher.path, Path("f"))
 
+    def test_year_range(self) -> None:
+        """Records should be filterable by a start and end year."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            file_path = os.path.join(tmpdir, "claims.xlsx")
+            self._create_file(file_path)
+            searcher = ExcelClaimsSearcher(file_path)
+            both = searcher.search({}, start_year=2022, end_year=2023)
+            self.assertEqual(len(both), 2)
+            just_2022 = searcher.search({}, start_year=2022, end_year=2022)
+            self.assertEqual(len(just_2022), 1)
+            overlap = searcher.search({}, year=2023, start_year=2022, end_year=2023)
+            self.assertEqual(len(overlap), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

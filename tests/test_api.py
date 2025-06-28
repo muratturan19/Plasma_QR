@@ -58,7 +58,14 @@ class APITest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"store": [{"id": 1}], "excel": [{"id": 2}]})
         mock_store.assert_called_with("k")
-        mock_excel.assert_called_with({"customer": "c"}, None)
+        mock_excel.assert_called_with({"customer": "c"}, None, start_year=None, end_year=None)
+
+    def test_complaints_endpoint_year_range(self) -> None:
+        params = {"customer": "c", "start_year": 2020, "end_year": 2022}
+        with patch.object(api._excel_searcher, "search", return_value=[]) as mock_excel:
+            response = self.client.get("/complaints", params=params)
+        self.assertEqual(response.status_code, 200)
+        mock_excel.assert_called_with({"customer": "c"}, None, start_year=2020, end_year=2022)
 
     def test_options_endpoint(self) -> None:
         with patch.object(api._excel_searcher, "unique_values", return_value=["a", "b"]) as mock_opts:
