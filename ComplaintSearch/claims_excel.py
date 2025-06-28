@@ -29,8 +29,14 @@ class ExcelClaimsSearcher:
             path = os.getenv("CLAIMS_FILE_PATH", "CC/claims.xlsx")
         self.path = Path(path)
 
-    def search(self, filters: Dict[str, str], year: int | None = None) -> List[Dict[str, Any]]:
-        """Return rows matching ``filters`` and optional ``year`` filter.
+    def search(
+        self,
+        filters: Dict[str, str],
+        year: int | None = None,
+        start_year: int | None = None,
+        end_year: int | None = None,
+    ) -> List[Dict[str, Any]]:
+        """Return rows matching ``filters`` and optional year constraints.
 
         Parameters
         ----------
@@ -39,7 +45,11 @@ class ExcelClaimsSearcher:
             case-insensitively. The ``complaint`` filter performs a substring
             search while other fields must match exactly.
         year:
-            Optional year constraint applied to a ``date`` column when present.
+            Optional single-year constraint applied to a ``date`` column when
+            present. Takes precedence over ``start_year``/``end_year``.
+        start_year, end_year:
+            Optional inclusive date range boundaries applied to a ``date``
+            column.
 
         Returns
         -------
@@ -70,14 +80,24 @@ class ExcelClaimsSearcher:
 
         for row in rows:
             record = {h: row[i] if i < len(row) else None for h, i in indices.items()}
-            if year is not None and "date" in indices:
+            if "date" in indices:
                 value = record.get("date")
                 if isinstance(value, str):
                     try:
                         value = datetime.fromisoformat(value)
                     except ValueError:
                         continue
+            else:
+                value = None
+
+            if year is not None and value is not None:
                 if getattr(value, "year", None) != year:
+                    continue
+            elif value is not None:
+                yr = getattr(value, "year", None)
+                if start_year is not None and yr is not None and yr < start_year:
+                    continue
+                if end_year is not None and yr is not None and yr > end_year:
                     continue
             match = True
             for key, val in filters.items():

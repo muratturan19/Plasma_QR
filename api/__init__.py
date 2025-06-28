@@ -78,6 +78,8 @@ def complaints(
     subject: Optional[str] = None,
     part_code: Optional[str] = None,
     year: Optional[int] = None,
+    start_year: Optional[int] = None,
+    end_year: Optional[int] = None,
 ) -> Dict[str, Any]:
     """Return complaint queries from JSON store and Excel file."""
     store_results = _store.search(keyword) if keyword else []
@@ -90,7 +92,14 @@ def complaints(
         filters["subject"] = subject
     if part_code:
         filters["part_code"] = part_code
-    excel_results = _excel_searcher.search(filters, year) if filters or year else []
+    excel_results = []
+    if filters or year is not None or start_year is not None or end_year is not None:
+        excel_results = _excel_searcher.search(
+            filters,
+            year,
+            start_year=start_year,
+            end_year=end_year,
+        )
     return {"store": store_results, "excel": excel_results}
 
 
