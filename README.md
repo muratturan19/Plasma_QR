@@ -313,6 +313,21 @@ Bagimliliklari kurduktan sonra birim testlerini asagidaki komutla calistirabilir
 python -m unittest discover
 ```
 
+### Hizli Test Kurulumu
+
+Testleri calistirmadan once `requirements.txt` dosyasindaki tum paketleri kurmaniz gerektigini unutmayin. Kurulum icin asagidaki betigi veya komutu kullanabilirsiniz:
+
+```bash
+scripts/setup_env.sh  # veya manual olarak
+pip install -r requirements.txt
+```
+
+Kurulumun ardindan testleri calistirmak icin su komutu kullanin:
+
+```bash
+python -m unittest discover
+```
+
 ## EXE Paketleme
 
 Uygulamayı Windows üzerinde tek bir çalıştırılabilir dosya haline getirmek
