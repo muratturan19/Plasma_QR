@@ -14,7 +14,8 @@ function Home() {
           minWidth: 1100,
           margin: '0 auto',
           p: 3,
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          minHeight: 700
         }}
       >
         <Typography
