@@ -162,7 +162,7 @@ function AnalysisForm() {
                 sx={inputSx}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={12}>
               <Autocomplete
                 fullWidth
                 freeSolo
@@ -280,7 +280,7 @@ function AnalysisForm() {
                 </Alert>
               )}
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={12}>
               <TextField
                 label="Directives"
                 value={directives}
