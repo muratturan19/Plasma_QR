@@ -10,16 +10,26 @@ afterEach(() => {
 })
 
 test('fetches complaints and shows data', async () => {
-  fetch.mockResolvedValueOnce({
-    ok: true,
-    json: async () => ({ msg: 'done' })
-  })
+  fetch
+    .mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ store: [{ complaint: 'a' }], excel: [] })
+    })
+    .mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ store: [], excel: [{ complaint: 'b' }] })
+    })
 
   render(<ComplaintFetcher />)
 
+  const checkboxes = screen.getAllByRole('checkbox')
+  fireEvent.click(checkboxes[0])
+  fireEvent.click(checkboxes[1])
   fireEvent.click(screen.getByRole('button', { name: /fetch complaints/i }))
-  await waitFor(() => expect(fetch).toHaveBeenCalled())
-  await screen.findByText(/done/)
+
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2))
+  await screen.findByText(/"a"/)
+  await screen.findByText(/"b"/)
 })
 
 test('shows error when api fails', async () => {
@@ -27,6 +37,7 @@ test('shows error when api fails', async () => {
 
   render(<ComplaintFetcher />)
 
+  fireEvent.click(screen.getAllByRole('checkbox')[0])
   fireEvent.click(screen.getByRole('button', { name: /fetch complaints/i }))
   await waitFor(() => expect(fetch).toHaveBeenCalled())
   await screen.findByText(/http error 404/i)
