@@ -149,8 +149,8 @@ function AnalysisForm() {
     >
       <CardContent>
         <Box component="form" onSubmit={handleSubmit} noValidate>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={12}>
               <TextField
                 label="Complaint"
                 value={complaint}
@@ -158,7 +158,7 @@ function AnalysisForm() {
                 fullWidth
                 margin="normal"
                 multiline
-                minRows={5}
+                minRows={8}
                 sx={inputSx}
               />
             </Grid>
