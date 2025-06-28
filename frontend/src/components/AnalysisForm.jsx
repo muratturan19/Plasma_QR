@@ -145,6 +145,7 @@ function AnalysisForm() {
         width: '100%',
         maxWidth: 'none',
         minWidth: 1100,
+        height: '100%',
         mx: 'auto',
         boxSizing: 'border-box',
         p: 3,
