@@ -142,6 +142,12 @@ function AnalysisForm() {
   return (
     <Card
       sx={{
+        width: '100%',
+        maxWidth: 1300,
+        minWidth: 1100,
+        mx: 'auto',
+        boxSizing: 'border-box',
+        p: 3,
         mt: 2,
         background: 'linear-gradient(180deg, #ffffff 0%, #f0f4fa 100%)',
         boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
@@ -149,8 +155,19 @@ function AnalysisForm() {
     >
       <CardContent>
         <Box component="form" onSubmit={handleSubmit} noValidate>
-          <Grid container spacing={3} alignItems="stretch">
-            <Grid item xs={12} md={7} sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Grid
+            container
+            spacing={3}
+            alignItems="stretch"
+            wrap="nowrap"
+            sx={{ minHeight: '340px', height: '340px' }}
+          >
+            <Grid
+              item
+              xs={12}
+              md={7}
+              sx={{ display: 'flex', flexDirection: 'column', height: '340px' }}
+            >
               <TextField
                 label="Complaint"
                 value={complaint}
@@ -158,20 +175,23 @@ function AnalysisForm() {
                 fullWidth
                 margin="normal"
                 multiline
-                minRows={14}
-                sx={{ ...inputSx, width: '100%', flexGrow: 1 }}
+                minRows={12}
+                sx={{ ...inputSx, width: '100%', height: '100%', minHeight: 320 }}
               />
             </Grid>
-              <Grid
-                item
-                xs={12}
-                md={5}
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 2
-                }}
-              >
+            <Grid
+              item
+              xs={12}
+              md={5}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                height: '340px',
+                minWidth: 400,
+                maxWidth: 500
+              }}
+            >
               <Autocomplete
                 fullWidth
                 sx={{ width: '100%', mb: 2 }}
@@ -261,7 +281,7 @@ function AnalysisForm() {
               />
               <Autocomplete
                 fullWidth
-                sx={{ width: '100%' }}
+                sx={{ width: '100%', mb: 2 }}
                 options={METHODS}
                 value={method}
                 onChange={(event, newValue) => setMethod(newValue)}
@@ -288,7 +308,11 @@ function AnalysisForm() {
                 )}
               />
               {method && (
-                <Alert severity="info" sx={{ mt: 1 }} data-testid="guide-text">
+                <Alert
+                  severity="info"
+                  sx={{ mt: 1, width: '100%', boxSizing: 'border-box' }}
+                  data-testid="guide-text"
+                >
                   {GUIDE_TEXT[method]}
                 </Alert>
               )}
@@ -301,8 +325,8 @@ function AnalysisForm() {
                 fullWidth
                 margin="normal"
                 multiline
-                minRows={7}
-                sx={{ ...inputSx, width: '100%' }}
+                minRows={4}
+                sx={{ ...inputSx, width: '100%', minHeight: 120 }}
               />
             </Grid>
           </Grid>

@@ -11,7 +11,10 @@ function Home() {
         sx={{
           width: '100%',
           maxWidth: 'none',
+          minWidth: 1100,
           margin: '0 auto',
+          p: 3,
+          boxSizing: 'border-box'
         }}
       >
         <Typography
