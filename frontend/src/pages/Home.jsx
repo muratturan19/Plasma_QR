@@ -12,6 +12,8 @@ function Home() {
           width: '100%',
           maxWidth: 'none',
           minWidth: 1100,
+          height: '100%',
+          overflow: 'auto',
           margin: '0 auto',
           p: 3,
           boxSizing: 'border-box',
