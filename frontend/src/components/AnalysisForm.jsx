@@ -158,12 +158,13 @@ function AnalysisForm() {
                 fullWidth
                 margin="normal"
                 multiline
-                minRows={8}
+                minRows={20}
                 sx={inputSx}
               />
             </Grid>
             <Grid item xs={12} md={6}>
               <Autocomplete
+                fullWidth
                 freeSolo
                 options={customerOptions}
                 inputValue={customer}
@@ -173,6 +174,7 @@ function AnalysisForm() {
                     {...params}
                     label="Customer"
                     margin="normal"
+                    fullWidth
                     sx={inputSx}
                     InputProps={{
                       ...params.InputProps,
@@ -190,6 +192,7 @@ function AnalysisForm() {
                 )}
               />
               <Autocomplete
+                fullWidth
                 freeSolo
                 options={subjectOptions}
                 inputValue={subject}
@@ -199,6 +202,7 @@ function AnalysisForm() {
                     {...params}
                     label="Subject"
                     margin="normal"
+                    fullWidth
                     sx={inputSx}
                     InputProps={{
                       ...params.InputProps,
@@ -216,6 +220,7 @@ function AnalysisForm() {
                 )}
               />
               <Autocomplete
+                fullWidth
                 freeSolo
                 options={partCodeOptions}
                 inputValue={partCode}
@@ -225,6 +230,7 @@ function AnalysisForm() {
                     {...params}
                     label="Part Code"
                     margin="normal"
+                    fullWidth
                     sx={inputSx}
                     InputProps={{
                       ...params.InputProps,
@@ -242,6 +248,7 @@ function AnalysisForm() {
                 )}
               />
               <Autocomplete
+                fullWidth
                 options={METHODS}
                 value={method}
                 onChange={(event, newValue) => setMethod(newValue)}
@@ -250,6 +257,7 @@ function AnalysisForm() {
                     {...params}
                     label="Method"
                     margin="normal"
+                    fullWidth
                     sx={inputSx}
                     InputProps={{
                       ...params.InputProps,
@@ -280,7 +288,7 @@ function AnalysisForm() {
                 fullWidth
                 margin="normal"
                 multiline
-                minRows={3}
+                minRows={20}
                 sx={inputSx}
               />
             </Grid>
