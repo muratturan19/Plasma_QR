@@ -26,11 +26,12 @@ st.set_page_config(
     layout="centered",
 )
 
-st.markdown(
-    """
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
-    <style>
+PAGE_STYLES = """
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap"
+      rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap"
+      rel="stylesheet">
+<style>
         body {
             font-family: 'Open Sans', 'Roboto', sans-serif;
             background: linear-gradient(#ffffff, #f0f0f0);
@@ -84,9 +85,9 @@ st.markdown(
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
     </style>
-    """,
-    unsafe_allow_html=True,
-)
+"""
+
+st.markdown(PAGE_STYLES, unsafe_allow_html=True)
 
 METHODS = ["8D", "5N1K", "A3", "DMAIC", "Ishikawa"]
 PLACEHOLDER = "Lütfen seçiniz"
