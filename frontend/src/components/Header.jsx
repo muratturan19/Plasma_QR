@@ -25,7 +25,7 @@ function Header({ toggleColorMode, mode }) {
         borderBottom: '4px solid #14397c'
       }}
     >
-      <Toolbar>
+      <Toolbar sx={{ minHeight: { xs: 64, sm: 80 } }}>
         <Box component="img" src={logo} alt="Company Logo" sx={{ height: isMobile ? 40 : 50, mr: 2 }} />
         <Typography
           variant={isMobile ? 'h6' : 'h5'}
