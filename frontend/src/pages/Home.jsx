@@ -7,7 +7,14 @@ import Footer from '../components/Footer'
 function Home() {
   return (
     <>
-      <Container maxWidth="sm">
+      <Container
+        sx={{
+          width: { xs: '90%', sm: '70%' },
+          maxWidth: 800,
+          minWidth: { sm: 600 },
+          margin: '0 auto',
+        }}
+      >
         <Typography
           variant="h4"
           component="h1"
