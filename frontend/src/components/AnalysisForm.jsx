@@ -176,7 +176,12 @@ function AnalysisForm() {
                 item
                 xs={12}
                 md={7}
-                sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  height: '100%',
+                  width: { xs: '100%', md: '50%' }
+                }}
               >
                 <TextField
                   label="Complaint"
@@ -193,7 +198,13 @@ function AnalysisForm() {
                 item
                 xs={12}
                 md={5}
-                sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                  height: '100%',
+                  width: { xs: '100%', md: '40%' }
+                }}
               >
                 <Autocomplete
                   fullWidth
