@@ -167,6 +167,7 @@ function AnalysisForm() {
             container
             spacing={3}
             alignItems="stretch"
+            justifyContent="stretch"
             sx={{ flexGrow: 1, height: '100%' }}
           >
             <Grid
