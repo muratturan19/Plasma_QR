@@ -159,12 +159,13 @@ function AnalysisForm() {
                 margin="normal"
                 multiline
                 minRows={20}
-                sx={inputSx}
+                sx={{ ...inputSx, minWidth: 400 }}
               />
             </Grid>
-            <Grid item xs={12} md={12}>
+            <Grid item xs={12} md={8}>
               <Autocomplete
                 fullWidth
+                sx={{ minWidth: 400, maxWidth: '100%' }}
                 freeSolo
                 options={customerOptions}
                 inputValue={customer}
@@ -193,6 +194,7 @@ function AnalysisForm() {
               />
               <Autocomplete
                 fullWidth
+                sx={{ minWidth: 400, maxWidth: '100%' }}
                 freeSolo
                 options={subjectOptions}
                 inputValue={subject}
@@ -221,6 +223,7 @@ function AnalysisForm() {
               />
               <Autocomplete
                 fullWidth
+                sx={{ minWidth: 400, maxWidth: '100%' }}
                 freeSolo
                 options={partCodeOptions}
                 inputValue={partCode}
@@ -249,6 +252,7 @@ function AnalysisForm() {
               />
               <Autocomplete
                 fullWidth
+                sx={{ minWidth: 400, maxWidth: '100%' }}
                 options={METHODS}
                 value={method}
                 onChange={(event, newValue) => setMethod(newValue)}
@@ -289,7 +293,7 @@ function AnalysisForm() {
                 margin="normal"
                 multiline
                 minRows={20}
-                sx={inputSx}
+                sx={{ ...inputSx, minWidth: 400 }}
               />
             </Grid>
           </Grid>
