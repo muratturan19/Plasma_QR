@@ -9,9 +9,8 @@ function Home() {
     <>
       <Container
         sx={{
-          width: { xs: '90%', sm: '70%' },
-          maxWidth: 800,
-          minWidth: { sm: 600 },
+          width: '100%',
+          maxWidth: 'none',
           margin: '0 auto',
         }}
       >

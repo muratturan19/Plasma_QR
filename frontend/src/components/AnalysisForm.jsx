@@ -150,7 +150,7 @@ function AnalysisForm() {
       <CardContent>
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <Grid container spacing={3} alignItems="stretch">
-            <Grid item xs={12} md={7} sx={{ display: 'flex' }}>
+            <Grid item xs={12} md={7} sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
               <TextField
                 label="Complaint"
                 value={complaint}
@@ -158,14 +158,24 @@ function AnalysisForm() {
                 fullWidth
                 margin="normal"
                 multiline
-                minRows={12}
-                sx={{ ...inputSx, width: '100%', flexGrow: 1 }}
+                minRows={14}
+                sx={{ ...inputSx, width: '100%', flexGrow: 1, height: '100%' }}
               />
             </Grid>
-            <Grid item xs={12} md={5} sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Grid
+              item
+              xs={12}
+              md={5}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                height: '100%'
+              }}
+            >
               <Autocomplete
                 fullWidth
-                sx={{ width: '100%' }}
+                sx={{ width: '100%', mb: 2 }}
                 freeSolo
                 options={customerOptions}
                 inputValue={customer}
@@ -194,7 +204,7 @@ function AnalysisForm() {
               />
               <Autocomplete
                 fullWidth
-                sx={{ width: '100%' }}
+                sx={{ width: '100%', mb: 2 }}
                 freeSolo
                 options={subjectOptions}
                 inputValue={subject}
@@ -223,7 +233,7 @@ function AnalysisForm() {
               />
               <Autocomplete
                 fullWidth
-                sx={{ width: '100%' }}
+                sx={{ width: '100%', mb: 2 }}
                 freeSolo
                 options={partCodeOptions}
                 inputValue={partCode}
@@ -292,7 +302,7 @@ function AnalysisForm() {
                 fullWidth
                 margin="normal"
                 multiline
-                minRows={6}
+                minRows={7}
                 sx={{ ...inputSx, width: '100%' }}
               />
             </Grid>
