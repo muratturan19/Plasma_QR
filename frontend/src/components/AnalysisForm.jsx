@@ -155,18 +155,12 @@ function AnalysisForm() {
     >
       <CardContent>
         <Box component="form" onSubmit={handleSubmit} noValidate>
-          <Grid
-            container
-            spacing={3}
-            alignItems="stretch"
-            wrap="nowrap"
-            sx={{ minHeight: '340px', height: '340px' }}
-          >
+          <Grid container spacing={3} alignItems="stretch">
             <Grid
               item
               xs={12}
               md={7}
-              sx={{ display: 'flex', flexDirection: 'column', height: '340px' }}
+              sx={{ display: 'flex', flexDirection: 'column' }}
             >
               <TextField
                 label="Complaint"
@@ -176,25 +170,18 @@ function AnalysisForm() {
                 margin="normal"
                 multiline
                 minRows={12}
-                sx={{ ...inputSx, width: '100%', height: '100%', minHeight: 320 }}
+                sx={inputSx}
               />
             </Grid>
             <Grid
               item
               xs={12}
               md={5}
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                height: '340px',
-                minWidth: 400,
-                maxWidth: 500
-              }}
+              sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
             >
               <Autocomplete
                 fullWidth
-                sx={{ width: '100%', mb: 2 }}
+                sx={{ mb: 2 }}
                 freeSolo
                 options={customerOptions}
                 inputValue={customer}
@@ -223,7 +210,7 @@ function AnalysisForm() {
               />
               <Autocomplete
                 fullWidth
-                sx={{ width: '100%', mb: 2 }}
+                sx={{ mb: 2 }}
                 freeSolo
                 options={subjectOptions}
                 inputValue={subject}
@@ -252,7 +239,7 @@ function AnalysisForm() {
               />
               <Autocomplete
                 fullWidth
-                sx={{ width: '100%', mb: 2 }}
+                sx={{ mb: 2 }}
                 freeSolo
                 options={partCodeOptions}
                 inputValue={partCode}
@@ -281,7 +268,7 @@ function AnalysisForm() {
               />
               <Autocomplete
                 fullWidth
-                sx={{ width: '100%', mb: 2 }}
+                sx={{ mb: 2 }}
                 options={METHODS}
                 value={method}
                 onChange={(event, newValue) => setMethod(newValue)}
@@ -317,7 +304,7 @@ function AnalysisForm() {
                 </Alert>
               )}
             </Grid>
-            <Grid item xs={12} md={12}>
+              <Grid item xs={12}>
               <TextField
                 label="Directives"
                 value={directives}
@@ -326,7 +313,7 @@ function AnalysisForm() {
                 margin="normal"
                 multiline
                 minRows={4}
-                sx={{ ...inputSx, width: '100%', minHeight: 120 }}
+                sx={inputSx}
               />
             </Grid>
           </Grid>
