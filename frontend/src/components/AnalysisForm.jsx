@@ -143,24 +143,36 @@ function AnalysisForm() {
     <Card
       sx={{
         width: '100%',
-        maxWidth: 1300,
+        maxWidth: 'none',
         minWidth: 1100,
         mx: 'auto',
         boxSizing: 'border-box',
         p: 3,
         mt: 2,
+        minHeight: 700,
         background: 'linear-gradient(180deg, #ffffff 0%, #f0f4fa 100%)',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+        overflow: 'auto'
       }}
     >
-      <CardContent>
-        <Box component="form" onSubmit={handleSubmit} noValidate>
-          <Grid container spacing={3} alignItems="stretch">
+      <CardContent sx={{ height: '100%', p: 0 }}>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          noValidate
+          sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+        >
+          <Grid
+            container
+            spacing={3}
+            alignItems="stretch"
+            sx={{ flexGrow: 1, height: '100%' }}
+          >
             <Grid
               item
               xs={12}
               md={7}
-              sx={{ display: 'flex', flexDirection: 'column' }}
+              sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
             >
               <TextField
                 label="Complaint"
@@ -169,7 +181,7 @@ function AnalysisForm() {
                 fullWidth
                 margin="normal"
                 multiline
-                minRows={12}
+                minRows={14}
                 sx={inputSx}
               />
             </Grid>
@@ -177,7 +189,7 @@ function AnalysisForm() {
               item
               xs={12}
               md={5}
-              sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+              sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}
             >
               <Autocomplete
                 fullWidth
@@ -304,7 +316,7 @@ function AnalysisForm() {
                 </Alert>
               )}
             </Grid>
-              <Grid item xs={12}>
+            <Grid item xs={12} sx={{ height: '100%' }}>
               <TextField
                 label="Directives"
                 value={directives}
@@ -312,7 +324,7 @@ function AnalysisForm() {
                 fullWidth
                 margin="normal"
                 multiline
-                minRows={4}
+                minRows={7}
                 sx={inputSx}
               />
             </Grid>
