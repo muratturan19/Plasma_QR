@@ -165,39 +165,41 @@ function AnalysisForm() {
         >
           <Grid
             container
+            direction="column"
             spacing={3}
             alignItems="stretch"
             justifyContent="stretch"
             sx={{ flexGrow: 1, height: '100%' }}
           >
-            <Grid
-              item
-              xs={12}
-              md={7}
-              sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
-            >
-              <TextField
-                label="Complaint"
-                value={complaint}
-                onChange={(e) => setComplaint(e.target.value)}
-                fullWidth
-                margin="normal"
-                multiline
-                minRows={14}
-                sx={{ ...inputSx, overflow: 'auto', height: '100%' }}
-              />
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              md={5}
-              sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}
-            >
-              <Autocomplete
-                fullWidth
-                sx={{ mb: 2 }}
-                freeSolo
-                options={customerOptions}
+            <Grid container item spacing={3} direction="row">
+              <Grid
+                item
+                xs={12}
+                md={7}
+                sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+              >
+                <TextField
+                  label="Complaint"
+                  value={complaint}
+                  onChange={(e) => setComplaint(e.target.value)}
+                  fullWidth
+                  margin="normal"
+                  multiline
+                  minRows={14}
+                  sx={{ ...inputSx, overflow: 'auto', height: '100%' }}
+                />
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                md={5}
+                sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}
+              >
+                <Autocomplete
+                  fullWidth
+                  sx={{ mb: 2 }}
+                  freeSolo
+                  options={customerOptions}
                 inputValue={customer}
                 onInputChange={(e, v) => setCustomer(v)}
                 renderInput={(params) => (
@@ -317,6 +319,7 @@ function AnalysisForm() {
                   {GUIDE_TEXT[method]}
                 </Alert>
               )}
+            </Grid>
             </Grid>
             <Grid item xs={12} sx={{ height: '100%' }}>
               <TextField
