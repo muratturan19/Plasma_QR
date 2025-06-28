@@ -184,7 +184,7 @@ function AnalysisForm() {
                 margin="normal"
                 multiline
                 minRows={14}
-                sx={inputSx}
+                sx={{ ...inputSx, overflow: 'auto', height: '100%' }}
               />
             </Grid>
             <Grid
@@ -327,7 +327,7 @@ function AnalysisForm() {
                 margin="normal"
                 multiline
                 minRows={7}
-                sx={inputSx}
+                sx={{ ...inputSx, overflow: 'auto' }}
               />
             </Grid>
           </Grid>
