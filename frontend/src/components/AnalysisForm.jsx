@@ -285,20 +285,6 @@ function AnalysisForm() {
               />
             </Grid>
           </Grid>
-      {method && (
-        <Alert severity="info" sx={{ mt: 1 }} data-testid="guide-text">
-          {GUIDE_TEXT[method]}
-        </Alert>
-      )}
-      <TextField
-        label="Directives"
-        value={directives}
-        onChange={(e) => setDirectives(e.target.value)}
-        fullWidth
-        margin="normal"
-        multiline
-        minRows={3}
-      />
       <Button
         type="submit"
         variant="contained"
