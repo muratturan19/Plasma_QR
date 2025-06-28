@@ -150,7 +150,7 @@ function AnalysisForm() {
       <CardContent>
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <Grid container spacing={3} alignItems="stretch">
-            <Grid item xs={12} md={7} sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <Grid item xs={12} md={7} sx={{ display: 'flex', flexDirection: 'column' }}>
               <TextField
                 label="Complaint"
                 value={complaint}
@@ -159,20 +159,19 @@ function AnalysisForm() {
                 margin="normal"
                 multiline
                 minRows={14}
-                sx={{ ...inputSx, width: '100%', flexGrow: 1, height: '100%' }}
+                sx={{ ...inputSx, width: '100%', flexGrow: 1 }}
               />
             </Grid>
-            <Grid
-              item
-              xs={12}
-              md={5}
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 2,
-                height: '100%'
-              }}
-            >
+              <Grid
+                item
+                xs={12}
+                md={5}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2
+                }}
+              >
               <Autocomplete
                 fullWidth
                 sx={{ width: '100%', mb: 2 }}
