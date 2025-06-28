@@ -12,39 +12,30 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload'
 function ComplaintFetcher() {
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
-  const [useA, setUseA] = useState(false)
-  const [useB, setUseB] = useState(false)
-  const [useC, setUseC] = useState(false)
+  const [useCustomer, setUseCustomer] = useState(false)
+  const [useSubject, setUseSubject] = useState(false)
+  const [usePartCode, setUsePartCode] = useState(false)
   const currentYear = new Date().getFullYear()
   const years = Array.from({ length: 5 }, (_, i) => `${currentYear - i}`)
-  const [yearA, setYearA] = useState(years[0])
-  const [yearB, setYearB] = useState(years[0])
-  const [yearC, setYearC] = useState(years[0])
+  const [selectedYear, setSelectedYear] = useState('')
 
   const fetchData = async () => {
-    const queries = []
-    if (useA) queries.push(`year=${yearA}`)
-    if (useB) queries.push(`year=${yearB}`)
-    if (useC) queries.push(`year=${yearC}`)
-    const urls =
-      queries.length > 0
-        ? queries.map((q) => `${API_BASE}/complaints?${q}`)
-        : [`${API_BASE}/complaints`]
+    const params = new URLSearchParams()
+    if (useCustomer) params.append('customer', '1')
+    if (useSubject) params.append('subject', '1')
+    if (usePartCode) params.append('part_code', '1')
+    if (selectedYear) params.append('year', selectedYear)
+    const url =
+      params.toString().length > 0
+        ? `${API_BASE}/complaints?${params.toString()}`
+        : `${API_BASE}/complaints`
     try {
-      const responses = await Promise.all(urls.map((u) => fetch(u)))
-      const jsonData = []
-      for (const res of responses) {
-        if (!res.ok) {
-          throw new Error(`HTTP error ${res.status}`)
-        }
-        jsonData.push(await res.json())
+      const res = await fetch(url)
+      if (!res.ok) {
+        throw new Error(`HTTP error ${res.status}`)
       }
-      const merged = { store: [], excel: [] }
-      jsonData.forEach((j) => {
-        merged.store.push(...(j.store || []))
-        merged.excel.push(...(j.excel || []))
-      })
-      setData(merged)
+      const jsonData = await res.json()
+      setData(jsonData)
       setError(null)
     } catch (err) {
       setError(err.message)
@@ -55,41 +46,33 @@ function ComplaintFetcher() {
     <Box sx={{ mt: 2, background: 'linear-gradient(180deg,#ffffff,#f0f4fa)', p: 2, borderRadius: 2, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
       <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2 }}>
         <FormControlLabel
-          control={<Checkbox checked={useA} onChange={(e) => setUseA(e.target.checked)} />}
-          label={
-            <Select value={yearA} onChange={(e) => setYearA(e.target.value)} size="small">
-              {years.map((y) => (
-                <MenuItem key={y} value={y}>
-                  {y}
-                </MenuItem>
-              ))}
-            </Select>
-          }
+          control={<Checkbox checked={useCustomer} onChange={(e) => setUseCustomer(e.target.checked)} />}
+          label="Müşteri"
         />
         <FormControlLabel
-          control={<Checkbox checked={useB} onChange={(e) => setUseB(e.target.checked)} />}
-          label={
-            <Select value={yearB} onChange={(e) => setYearB(e.target.value)} size="small">
-              {years.map((y) => (
-                <MenuItem key={y} value={y}>
-                  {y}
-                </MenuItem>
-              ))}
-            </Select>
-          }
+          control={<Checkbox checked={useSubject} onChange={(e) => setUseSubject(e.target.checked)} />}
+          label="Konu"
         />
         <FormControlLabel
-          control={<Checkbox checked={useC} onChange={(e) => setUseC(e.target.checked)} />}
-          label={
-            <Select value={yearC} onChange={(e) => setYearC(e.target.value)} size="small">
-              {years.map((y) => (
-                <MenuItem key={y} value={y}>
-                  {y}
-                </MenuItem>
-              ))}
-            </Select>
-          }
+          control={<Checkbox checked={usePartCode} onChange={(e) => setUsePartCode(e.target.checked)} />}
+          label="Parça Kodu"
         />
+        <Select
+          value={selectedYear}
+          onChange={(e) => setSelectedYear(e.target.value)}
+          displayEmpty
+          size="small"
+          data-testid="year-select"
+        >
+          <MenuItem value="">
+            <em>Yıl (opsiyonel)</em>
+          </MenuItem>
+          {years.map((y) => (
+            <MenuItem key={y} value={y}>
+              {y}
+            </MenuItem>
+          ))}
+        </Select>
       </Box>
       <Button
         variant="contained"

@@ -10,24 +10,21 @@ afterEach(() => {
 })
 
 test('fetches complaints and shows data', async () => {
-  fetch
-    .mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ store: [{ complaint: 'a' }], excel: [] })
-    })
-    .mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ store: [], excel: [{ complaint: 'b' }] })
-    })
+  fetch.mockResolvedValueOnce({
+    ok: true,
+    json: async () => ({ store: [{ complaint: 'a' }], excel: [{ complaint: 'b' }] })
+  })
 
   render(<ComplaintFetcher />)
 
-  const checkboxes = screen.getAllByRole('checkbox')
-  fireEvent.click(checkboxes[0])
-  fireEvent.click(checkboxes[1])
+  fireEvent.click(screen.getByLabelText('Müşteri'))
+  fireEvent.click(screen.getByLabelText('Konu'))
   fireEvent.click(screen.getByRole('button', { name: /fetch complaints/i }))
 
-  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2))
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(1))
+  const url = fetch.mock.calls[0][0]
+  expect(url).toContain('customer=1')
+  expect(url).toContain('subject=1')
   await screen.findByText(/"a"/)
   await screen.findByText(/"b"/)
 })
@@ -37,8 +34,8 @@ test('shows error when api fails', async () => {
 
   render(<ComplaintFetcher />)
 
-  fireEvent.click(screen.getAllByRole('checkbox')[0])
+  fireEvent.click(screen.getByLabelText('Müşteri'))
   fireEvent.click(screen.getByRole('button', { name: /fetch complaints/i }))
-  await waitFor(() => expect(fetch).toHaveBeenCalled())
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(1))
   await screen.findByText(/http error 404/i)
 })
