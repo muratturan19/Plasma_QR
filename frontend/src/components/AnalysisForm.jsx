@@ -65,6 +65,7 @@ function AnalysisForm() {
   const [customerOptions, setCustomerOptions] = useState([])
   const [subjectOptions, setSubjectOptions] = useState([])
   const [partCodeOptions, setPartCodeOptions] = useState([])
+  const [optionError, setOptionError] = useState('')
 
   useEffect(() => {
     const fetchOptions = async (field, setter) => {
@@ -73,9 +74,12 @@ function AnalysisForm() {
         if (res.ok) {
           const data = await res.json()
           setter(data.values || [])
+        } else {
+          throw new Error(`HTTP ${res.status}`)
         }
-      } catch {
-        // ignore errors
+      } catch (err) {
+        console.error(err)
+        setOptionError('Could not retrieve dropdown values.')
       }
     }
     fetchOptions('customer', setCustomerOptions)
@@ -361,6 +365,12 @@ function AnalysisForm() {
         autoHideDuration={6000}
         onClose={() => setError('')}
         message={error}
+      />
+      <Snackbar
+        open={Boolean(optionError)}
+        autoHideDuration={6000}
+        onClose={() => setOptionError('')}
+        message={optionError}
       />
       <Snackbar
         open={Boolean(success)}
