@@ -10,7 +10,8 @@ from PromptManager import PromptManager
 
 # Default prompt used for 8D analyses when no template is loaded.
 DEFAULT_8D_PROMPT = """
-Sen deneyimli bir kalite mühendisisin. Aşağıdaki müşteri şikayetine göre 8D Problem Çözme metodolojisine uygun detaylı bir rapor hazırla.
+Sen deneyimli bir kalite mühendisisin. Aşağıdaki müşteri şikayetine göre 8D Problem
+Çözme metodolojisine uygun detaylı bir rapor hazırla.
 
 Müşteri Şikayeti: {musteri_sikayeti}
 Parça Kodu: {parca_kodu}
@@ -42,7 +43,8 @@ D7: Önleyici Faaliyetler
 D8: Takdir ve Kapanış
 [...]
 
-❗️Yalnızca yukarıdaki başlıklara uygun teknik içerik üret. Giriş paragrafı, genel yorum ya da metodoloji açıklaması yapma. Her başlığı kendi içeriğiyle doldur, ekstra bilgi verme.
+❗️Yalnızca yukarıdaki başlıklara uygun teknik içerik üret. Giriş paragrafı, genel yorum
+ya da metodoloji açıklaması yapma. Her başlığı kendi içeriğiyle doldur, ekstra bilgi verme.
 """
 
 
