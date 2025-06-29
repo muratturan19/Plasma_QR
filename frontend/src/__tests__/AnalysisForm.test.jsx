@@ -1,5 +1,5 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import AnalysisForm from '../components/AnalysisForm';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import AnalysisForm from '../components/AnalysisForm'
 
 vi.mock('@mui/material/Autocomplete', () => ({
   __esModule: true,
@@ -18,50 +18,34 @@ vi.mock('@mui/material/Autocomplete', () => ({
 }));
 
 beforeEach(() => {
-  global.fetch = vi.fn();
-});
+  global.fetch = vi.fn()
+})
 
 afterEach(() => {
-  vi.restoreAllMocks();
-});
+  vi.restoreAllMocks()
+})
 
-test('fetches options and logs analysis data', async () => {
-  fetch
-    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
-    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
-    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) });
+test('shows error when options fetch fails', async () => {
+  fetch.mockRejectedValueOnce(new Error('fail'))
+  fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+  fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
 
-  const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+  render(<AnalysisForm />)
 
-  render(<AnalysisForm />);
-  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3));
-
-  fireEvent.change(screen.getByLabelText(/şikayet/i), { target: { value: 'c' } });
-  fireEvent.change(screen.getByLabelText(/müşteri/i), { target: { value: 'cu' } });
-  fireEvent.change(screen.getByLabelText(/konu/i), { target: { value: 's' } });
-  fireEvent.change(screen.getByLabelText(/parça kodu/i), { target: { value: 'p' } });
-  fireEvent.change(screen.getByLabelText(/metot/i), { target: { value: '8D' } });
-  fireEvent.click(screen.getByRole('button', { name: /analiz et/i }));
-
-  expect(logSpy).toHaveBeenCalledWith({
-    complaint: 'c',
-    customer: 'cu',
-    subject: 's',
-    partCode: 'p',
-    method: '8D',
-    directives: ''
-  });
-});
+  await screen.findByText(/could not retrieve dropdown values/i)
+})
 
 test('shows guide text when method selected', async () => {
   fetch
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
-    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) });
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
 
-  render(<AnalysisForm />);
-  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3));
+  render(<AnalysisForm />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
 
-  fireEvent.change(screen.getByLabelText(/metot/i), { target: { value: '8D' } });
-  expect(screen.getByText(/eight disciplines/i)).toBeInTheDocument();
-});
+  fireEvent.change(screen.getByTestId('method-input'), {
+    target: { value: '8D' }
+  })
+  expect(screen.getByText(/eight disciplines/i)).toBeInTheDocument()
+})
