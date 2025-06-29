@@ -2,6 +2,7 @@ import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 import AnalysisForm from '../components/AnalysisForm'
 import ComplaintFetcher from '../components/ComplaintFetcher'
+import ComplaintCharts from '../components/ComplaintCharts'
 import Footer from '../components/Footer'
 
 function Home() {
@@ -28,7 +29,7 @@ function Home() {
         >
           Plasma QR
         </Typography>
-        <AnalysisForm />
+        <ComplaintCharts form={<AnalysisForm />} />
         <ComplaintFetcher />
       </Container>
       <Footer />
