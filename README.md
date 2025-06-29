@@ -249,7 +249,7 @@ arayuze ulasabilirsiniz. Arayuz API'ye 8000 portundan istek gönderir.
 - Subject
 - Part Code
 - Method (8D, A3, Ishikawa, 5N1K veya DMAIC)
-- Directives (opsiyonel)
+- Özel Talimatlar (opsiyonel)
 
 Arayuz yeni bir tema ile kart tabanli tasarim sunar ve islemlerin durumu
 icin toast bildirimleri gosterir. Tasarim responsive olup farkli ekran
@@ -373,7 +373,7 @@ Arayuzdeki **AnalysisForm** bileşeni asagidaki alanlari zorunlu tutar:
 - Subject
 - Part Code
 - Method (8D, A3, Ishikawa, 5N1K veya DMAIC)
-- Directives (opsiyonel)
+- Özel Talimatlar (opsiyonel)
 
 Formu gonderdiginizde sirayla `/analyze`, `/review` ve `/report` uclari
 cagrilir. Donen nihai metin ekranda gosterilir ve olusan PDF ile Excel
