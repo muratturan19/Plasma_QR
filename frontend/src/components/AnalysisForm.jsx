@@ -12,6 +12,8 @@ import CardContent from '@mui/material/CardContent'
 import Grow from '@mui/material/Grow'
 import Grid from '@mui/material/Grid'
 import InputAdornment from '@mui/material/InputAdornment'
+import Tooltip from '@mui/material/Tooltip'
+import InfoIcon from '@mui/icons-material/Info'
 import PersonIcon from '@mui/icons-material/Person'
 import LabelIcon from '@mui/icons-material/Label'
 import QrCode2Icon from '@mui/icons-material/QrCode2'
@@ -333,8 +335,17 @@ function AnalysisForm() {
             </Grid>
             </Grid>
             <Grid item xs={12} sx={{ height: '100%' }}>
+              <Box display="flex" alignItems="center" sx={{ mb: 1 }}>
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                  Özel Talimatlar
+                </Typography>
+                <Tooltip
+                  title="Bu alanı raporu özel olarak yönetmek istediğiniz konularda kullanabilirsiniz. Buraya yazdıklarınız raporu oluşturan ChatGPT'ye talimat olarak gidecektir."
+                >
+                  <InfoIcon sx={{ ml: 1 }} fontSize="small" />
+                </Tooltip>
+              </Box>
               <TextField
-                label="Directives"
                 value={directives}
                 onChange={(e) => setDirectives(e.target.value)}
                 fullWidth
