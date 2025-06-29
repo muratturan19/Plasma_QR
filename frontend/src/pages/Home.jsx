@@ -1,12 +1,14 @@
-import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
 import AnalysisForm from '../components/AnalysisForm'
 import Footer from '../components/Footer'
 
 function Home() {
+  const headingMarginTop = 3
+  const headingMarginLeft = 2
   return (
     <>
-      <Container
+      <Box
         sx={{
           width: '100%',
           maxWidth: 'none',
@@ -19,16 +21,18 @@ function Home() {
           minHeight: 700
         }}
       >
-        <Typography
-          variant="h4"
-          component="h1"
-          gutterBottom
-          sx={{ color: '#002855', fontFamily: 'Poppins, Inter, sans-serif' }}
-        >
-          Plasma QR
-        </Typography>
+        <Box sx={{ mt: headingMarginTop, ml: headingMarginLeft }}>
+          <Typography
+            variant="h4"
+            component="h1"
+            gutterBottom
+            sx={{ color: '#002855', fontFamily: 'Poppins, Inter, sans-serif' }}
+          >
+            Plasma QR
+          </Typography>
+        </Box>
         <AnalysisForm />
-      </Container>
+      </Box>
       <Footer />
     </>
   )

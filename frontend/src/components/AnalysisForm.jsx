@@ -135,6 +135,7 @@ function AnalysisForm() {
         background: 'linear-gradient(180deg, #fff 0%, #f4f7fb 100%)'
       }}
     >
+      {/* Sol Form Alanı */}
       <Box
         sx={{
           width: '68%',
@@ -148,8 +149,10 @@ function AnalysisForm() {
           borderRadius: 2
         }}
       >
+        {/* Şikayet ve Müşteri Bilgileri */}
         <Box
           sx={{
+            width: '100%',
             display: 'flex',
             flexDirection: 'row',
             gap: 2,
@@ -158,7 +161,8 @@ function AnalysisForm() {
             minHeight: 120
           }}
         >
-          <Box sx={{ width: '56%', minWidth: 0 }}>
+          {/* Şikayet Alanı */}
+          <Box sx={{ width: '56%', minWidth: 0, height: '100%' }}>
             <TextField
               label="Şikayet (Complaint)"
               multiline
@@ -169,6 +173,7 @@ function AnalysisForm() {
               sx={{ height: '100%' }}
             />
           </Box>
+          {/* Müşteri/Kod/Metot Alanı */}
           <Box
             sx={{
               width: '44%',
@@ -176,7 +181,8 @@ function AnalysisForm() {
               display: 'flex',
               flexDirection: 'column',
               gap: 1,
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
+              height: '100%'
             }}
           >
             <Autocomplete
@@ -273,7 +279,7 @@ function AnalysisForm() {
             )}
           </Box>
         </Box>
-
+        {/* Özel Talimatlar Alanı */}
         <Box
           sx={{
             width: '100%',
@@ -298,7 +304,7 @@ function AnalysisForm() {
             sx={{ height: '100%' }}
           />
         </Box>
-
+        {/* Buton Alanı */}
         <Box
           sx={{
             width: '100%',
@@ -318,7 +324,7 @@ function AnalysisForm() {
           </Button>
         </Box>
       </Box>
-
+      {/* Grafikler Alanı */}
       <Box
         sx={{
           width: '32%',
