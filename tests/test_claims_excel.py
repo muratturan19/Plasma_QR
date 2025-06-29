@@ -105,6 +105,22 @@ class ExcelClaimsSearchTest(unittest.TestCase):
                 self.assertTrue(mock_load.called)
                 self.assertEqual(searcher.path, Path("f"))
 
+    def test_bundled_file_outside_repo(self) -> None:
+        """Bundled Excel file should load when run outside the repo root."""
+        repo_root = Path(__file__).resolve().parents[1]
+        expected = repo_root / "CC" / "claims.xlsx"
+        with tempfile.TemporaryDirectory() as tmpdir:
+            cwd = os.getcwd()
+            try:
+                os.chdir(tmpdir)
+                with patch.dict("os.environ", {}, clear=True), \
+                        patch.object(claims_excel, "load_dotenv"):
+                    searcher = ExcelClaimsSearcher()
+            finally:
+                os.chdir(cwd)
+        self.assertEqual(searcher.path, expected)
+        self.assertTrue(len(searcher.search({})) > 0)
+
     def test_year_range(self) -> None:
         """Records should be filterable by a start and end year."""
         with tempfile.TemporaryDirectory() as tmpdir:

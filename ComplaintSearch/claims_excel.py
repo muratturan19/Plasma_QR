@@ -8,6 +8,7 @@ from datetime import datetime
 import os
 
 from dotenv import load_dotenv
+from importlib import resources
 
 from difflib import SequenceMatcher
 from openpyxl import load_workbook
@@ -22,11 +23,14 @@ class ExcelClaimsSearcher:
         """Initialize with optional Excel file ``path``.
 
         When ``path`` is ``None``, ``CLAIMS_FILE_PATH`` is read from the
-        ``.env`` file. If the variable is unset, ``CC/claims.xlsx`` is used.
+        ``.env`` file. If the variable is unset, the bundled ``claims.xlsx``
+        inside the ``CC`` package is used.
         """
         if path is None:
             load_dotenv()
-            path = os.getenv("CLAIMS_FILE_PATH", "CC/claims.xlsx")
+            path = os.getenv("CLAIMS_FILE_PATH")
+            if path is None:
+                path = resources.files("CC").joinpath("claims.xlsx")
         self.path = Path(path)
 
     def search(
