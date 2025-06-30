@@ -47,7 +47,11 @@ const inputSx = {
     '&.Mui-focused fieldset': { borderColor: 'primary.main' }
   }
 };
-function AnalysisForm() {
+function AnalysisForm({
+  instructionsBoxProps = {},
+  methodBoxProps = {},
+  filterBoxProps = {}
+}) {
   const [customerOptions, setCustomerOptions] = useState([]);
   const [subjectOptions, setSubjectOptions] = useState([]);
   const [partCodeOptions, setPartCodeOptions] = useState([]);
@@ -200,7 +204,8 @@ function AnalysisForm() {
               flexDirection: 'column',
               gap: 1,
               justifyContent: 'space-between',
-              height: '100%'
+              height: '100%',
+              ...methodBoxProps
             }}
           >
             <Autocomplete
@@ -313,7 +318,8 @@ function AnalysisForm() {
             p: 1,
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'flex-start'
+            justifyContent: 'flex-start',
+            ...instructionsBoxProps
           }}
         >
           <Typography sx={{ fontWeight: 'bold', mb: 1 }}>Özel Talimatlar</Typography>
@@ -334,7 +340,8 @@ function AnalysisForm() {
             gap: 2,
             flexWrap: 'wrap',
             alignItems: 'center',
-            mb: 1
+            mb: 1,
+            ...filterBoxProps
           }}
         >
           <FormControlLabel
