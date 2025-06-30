@@ -1,32 +1,30 @@
-import { useState, useEffect } from 'react'
-import Box from '@mui/material/Box'
-import TextField from '@mui/material/TextField'
-import Button from '@mui/material/Button'
-import Autocomplete from '@mui/material/Autocomplete'
-import Alert from '@mui/material/Alert'
-import Snackbar from '@mui/material/Snackbar'
-import CircularProgress from '@mui/material/CircularProgress'
-import Typography from '@mui/material/Typography'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import Grow from '@mui/material/Grow'
-import Grid from '@mui/material/Grid'
-import InputAdornment from '@mui/material/InputAdornment'
-import PersonIcon from '@mui/icons-material/Person'
-import LabelIcon from '@mui/icons-material/Label'
-import QrCode2Icon from '@mui/icons-material/QrCode2'
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
-import FileDownloadIcon from '@mui/icons-material/FileDownload'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Checkbox from '@mui/material/Checkbox'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import { API_BASE } from '../api'
-
-const METHODS = ['8D', 'A3', 'Ishikawa', '5N1K', 'DMAIC']
-
+import React, { useState, useEffect } from 'react';
+import {
+  Card,
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Autocomplete,
+  InputAdornment,
+  Alert,
+  Slider
+} from '@mui/material';
+import PersonIcon from '@mui/icons-material/Person';
+import LabelIcon from '@mui/icons-material/Label';
+import QrCode2Icon from '@mui/icons-material/QrCode2';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid
+} from 'recharts';
+const API_BASE = '/api';
+const METHODS = ['8D', 'A3', 'Ishikawa', '5N1K', 'DMAIC'];
 const GUIDE_TEXT = {
   '8D':
     '8D (Eight Disciplines) metodu, ürün ve süreç kaynaklı problemleri sistematik şekilde çözmek için geliştirilmiş etkili bir problem çözme tekniğidir.',
@@ -38,482 +36,365 @@ const GUIDE_TEXT = {
     '5N1K (5W1H) yöntemi, bir problemi tüm yönleriyle incelemek için kullanılan klasik sorgulama metodudur.',
   DMAIC:
     'DMAIC, süreç iyileştirme için kullanılan sistematik bir problem çözme metodudur.'
-}
-
+};
 const inputSx = {
-  transition: 'border-color 0.3s',
   '& .MuiOutlinedInput-root': {
     '&:hover fieldset': { borderColor: 'primary.main' },
     '&.Mui-focused fieldset': { borderColor: 'primary.main' }
-  },
-  '& .MuiSvgIcon-root': {
-    transition: 'color 0.3s'
-  },
-  '& .MuiOutlinedInput-root.Mui-focused .MuiSvgIcon-root': {
-    color: 'primary.main'
   }
-}
-
+};
 function AnalysisForm() {
-  const [complaint, setComplaint] = useState('')
-  const [customer, setCustomer] = useState('')
-  const [subject, setSubject] = useState('')
-  const [partCode, setPartCode] = useState('')
-  const [method, setMethod] = useState(null)
-  const [directives, setDirectives] = useState('')
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [finalText, setFinalText] = useState('')
-  const [downloads, setDownloads] = useState(null)
-  const [customerOptions, setCustomerOptions] = useState([])
-  const [subjectOptions, setSubjectOptions] = useState([])
-  const [partCodeOptions, setPartCodeOptions] = useState([])
-  const [useCustomerFilter, setUseCustomerFilter] = useState(false)
-  const [usePartCodeFilter, setUsePartCodeFilter] = useState(false)
-  const [useSubjectFilter, setUseSubjectFilter] = useState(false)
-  const currentYear = new Date().getFullYear()
-  const years = Array.from({ length: 10 }, (_, i) => `${currentYear - i}`)
-  const [selectedYear, setSelectedYear] = useState('')
-  const [claims, setClaims] = useState(null)
-  const [claimsError, setClaimsError] = useState('')
-
+  const [customerOptions, setCustomerOptions] = useState([]);
+  const [subjectOptions, setSubjectOptions] = useState([]);
+  const [partCodeOptions, setPartCodeOptions] = useState([]);
+  const [customer, setCustomer] = useState('');
+  const [subject, setSubject] = useState('');
+  const [partCode, setPartCode] = useState('');
+  const [method, setMethod] = useState('');
+  const [complaint, setComplaint] = useState('');
+  const [directives, setDirectives] = useState('');
+  const [monthRange, setMonthRange] = useState([0, 11]);
+  const [yearRange, setYearRange] = useState([2016, 2025]);
+  const months = [
+    'Oca',
+    'Şub',
+    'Mar',
+    'Nis',
+    'May',
+    'Haz',
+    'Tem',
+    'Ağu',
+    'Eyl',
+    'Eki',
+    'Kas',
+    'Ara'
+  ];
+  const monthlyData = months.map((m) => ({
+    name: m,
+    count: Math.floor(Math.random() * 15) + 5
+  }));
+  const filteredMonths = monthlyData.slice(monthRange[0], monthRange[1] + 1);
+  const yearlyData = Array.from({ length: 10 }, (_, idx) => ({
+    name: 2016 + idx,
+    count: Math.floor(Math.random() * 200) + 50
+  }));
+  const filteredYears = yearlyData.filter(
+    (d) => d.name >= yearRange[0] && d.name <= yearRange[1]
+  );
   useEffect(() => {
     const fetchOptions = async (field, setter) => {
       try {
-        const res = await fetch(`${API_BASE}/options/${field}`)
+        const res = await fetch(`${API_BASE}/options/${field}`);
         if (res.ok) {
-          const data = await res.json()
-          setter(data.values || [])
+          const data = await res.json();
+          setter(data.values || data || []);
         }
       } catch {
-        // ignore errors
+        setter([]);
       }
-    }
-    fetchOptions('customer', setCustomerOptions)
-    fetchOptions('subject', setSubjectOptions)
-    fetchOptions('part_code', setPartCodeOptions)
-  }, [])
-
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-    if (!complaint || !customer || !subject || !partCode || !method) {
-      setError('All fields are required.')
-      return
-    }
-    setError('')
-    setSuccess('')
-    setLoading(true)
-    setFinalText('')
-    setDownloads(null)
-    try {
-      const details = { complaint, customer, subject, part_code: partCode }
-      const analyzeBody = { details, guideline: { method }, directives }
-      const analyzeRes = await fetch(`${API_BASE}/analyze`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(analyzeBody)
-      })
-      if (!analyzeRes.ok) {
-        throw new Error(`HTTP ${analyzeRes.status}`)
-      }
-      const analysis = await analyzeRes.json()
-      const reviewRes = await fetch(`${API_BASE}/review`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: JSON.stringify(analysis), context: { method } })
-      })
-      if (!reviewRes.ok) {
-        throw new Error(`HTTP ${reviewRes.status}`)
-      }
-      const { result } = await reviewRes.json()
-      analysis.full_report = { response: result }
-      const reportRes = await fetch(`${API_BASE}/report`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          analysis,
-          complaint_info: { customer, subject, part_code: partCode },
-          output_dir: '.'
-        })
-      })
-      if (!reportRes.ok) {
-        throw new Error(`HTTP ${reportRes.status}`)
-      }
-      const downloadsData = await reportRes.json()
-      setFinalText(result)
-      setDownloads(downloadsData)
-      setSuccess('Report created successfully.')
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleFetchClaims = async () => {
-    const params = new URLSearchParams()
-    if (useCustomerFilter && customer) params.append('customer', customer)
-    if (usePartCodeFilter && partCode) params.append('part_code', partCode)
-    if (useSubjectFilter && subject) params.append('subject', subject)
-    if (selectedYear) params.append('start_year', selectedYear)
-    const url =
-      params.toString().length > 0
-        ? `${API_BASE}/complaints?${params.toString()}`
-        : `${API_BASE}/complaints`
-    try {
-      const res = await fetch(url)
-      if (!res.ok) {
-        throw new Error(`HTTP error ${res.status}`)
-      }
-      const data = await res.json()
-      setClaims(data)
-      setClaimsError('')
-    } catch (err) {
-      setClaimsError(err.message)
-      setClaims(null)
-    }
-  }
-
+    };
+    fetchOptions('customer', setCustomerOptions);
+    fetchOptions('subject', setSubjectOptions);
+    fetchOptions('part_code', setPartCodeOptions);
+  }, []);
+  const handleAnalyze = () => {
+    console.log({
+      complaint,
+      customer,
+      subject,
+      partCode,
+      method,
+      directives
+    });
+  };
   return (
     <Card
       sx={{
-        width: '100%',
-        maxWidth: 'none',
-        minWidth: 1100,
-        height: '100%',
-        mx: 'auto',
-        boxSizing: 'border-box',
-        p: 3,
-        mt: 2,
-        minHeight: 700,
-        background: 'linear-gradient(180deg, #ffffff 0%, #f0f4fa 100%)',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-        overflow: 'auto'
+        width: 1600,
+        margin: '40px auto',
+        minHeight: 650,
+        p: 4,
+        display: 'flex',
+        flexDirection: 'row',
+        boxShadow: 4,
+        background: 'linear-gradient(180deg, #fff 0%, #f4f7fb 100%)'
       }}
     >
-      <CardContent sx={{ height: '100%', p: 0 }}>
+      {/* Sol Form Alanı */}
+      <Box
+        sx={{
+          width: '68%',
+          minWidth: 0,
+          height: 540,
+          display: 'flex',
+          flexDirection: 'column',
+          pr: 3,
+          borderRadius: 2
+        }}
+      >
+        {/* Şikayet ve Müşteri Bilgileri */}
         <Box
-          component="form"
-          onSubmit={handleSubmit}
-          noValidate
-          sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+          sx={{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'row',
+            gap: 2,
+            mb: 2,
+            height: '38%',
+            minHeight: 120
+          }}
         >
-          <Grid
-            container
-            direction="column"
-            spacing={3}
-            alignItems="stretch"
-            justifyContent="stretch"
-            sx={{ flexGrow: 1, height: '100%' }}
+          {/* Şikayet Alanı */}
+          <Box sx={{ width: '56%', minWidth: 0, height: '100%' }}>
+            <TextField
+              label="Şikayet (Complaint)"
+              multiline
+              minRows={6}
+              fullWidth
+              value={complaint}
+              onChange={(e) => setComplaint(e.target.value)}
+              sx={{ height: '100%' }}
+            />
+          </Box>
+          {/* Müşteri/Kod/Metot Alanı */}
+          <Box
+            sx={{
+              width: '44%',
+              minWidth: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1,
+              justifyContent: 'space-between',
+              height: '100%'
+            }}
           >
-            <Grid container item spacing={3} direction="row">
-              <Grid
-                item
-                xs={12}
-                md={7}
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  height: '100%',
-                  width: { xs: '100%', md: '50%' }
-                }}
-              >
+            <Autocomplete
+              fullWidth
+              freeSolo
+              options={customerOptions}
+              inputValue={customer}
+              onInputChange={(e, v) => setCustomer(v)}
+              renderInput={(params) => (
                 <TextField
-                  label="Complaint"
-                  value={complaint}
-                  onChange={(e) => setComplaint(e.target.value)}
-                  fullWidth
-                  margin="normal"
-                  multiline
-                  minRows={14}
-                  sx={{ ...inputSx, overflow: 'auto', height: '100%' }}
+                  {...params}
+                  label="Müşteri"
+                  sx={inputSx}
+                  InputProps={{
+                    ...params.InputProps,
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PersonIcon />
+                      </InputAdornment>
+                    )
+                  }}
                 />
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                md={5}
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 2,
-                  height: '100%',
-                  width: { xs: '100%', md: '40%' }
-                }}
-              >
-                <Autocomplete
-                  fullWidth
-                  sx={{ mb: 2 }}
-                  freeSolo
-                  options={customerOptions}
-                inputValue={customer}
-                onInputChange={(e, v) => setCustomer(v)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Customer"
-                    margin="normal"
-                    fullWidth
-                    sx={inputSx}
-                    InputProps={{
-                      ...params.InputProps,
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <PersonIcon />
-                        </InputAdornment>
-                      )
-                    }}
-                    inputProps={{
-                      ...params.inputProps,
-                      'data-testid': 'customer-input'
-                    }}
-                  />
-                )}
-              />
-              <Autocomplete
-                fullWidth
-                sx={{ mb: 2 }}
-                freeSolo
-                options={subjectOptions}
-                inputValue={subject}
-                onInputChange={(e, v) => setSubject(v)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Subject"
-                    margin="normal"
-                    fullWidth
-                    sx={inputSx}
-                    InputProps={{
-                      ...params.InputProps,
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <LabelIcon />
-                        </InputAdornment>
-                      )
-                    }}
-                    inputProps={{
-                      ...params.inputProps,
-                      'data-testid': 'subject-input'
-                    }}
-                  />
-                )}
-              />
-              <Autocomplete
-                fullWidth
-                sx={{ mb: 2 }}
-                freeSolo
-                options={partCodeOptions}
-                inputValue={partCode}
-                onInputChange={(e, v) => setPartCode(v)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Part Code"
-                    margin="normal"
-                    fullWidth
-                    sx={inputSx}
-                    InputProps={{
-                      ...params.InputProps,
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <QrCode2Icon />
-                        </InputAdornment>
-                      )
-                    }}
-                    inputProps={{
-                      ...params.inputProps,
-                      'data-testid': 'partcode-input'
-                    }}
-                  />
-                )}
-              />
-              <Autocomplete
-                fullWidth
-                sx={{ mb: 2 }}
-                options={METHODS}
-                value={method}
-                onChange={(event, newValue) => setMethod(newValue)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Method"
-                    margin="normal"
-                    fullWidth
-                    sx={inputSx}
-                    InputProps={{
-                      ...params.InputProps,
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <ArrowDropDownIcon />
-                        </InputAdornment>
-                      )
-                    }}
-                    inputProps={{
-                      ...params.inputProps,
-                      'data-testid': 'method-input'
-                    }}
-                  />
-                )}
-              />
-              {method && (
-                <Alert
-                  severity="info"
-                  sx={{ mt: 1, width: '100%', boxSizing: 'border-box' }}
-                  data-testid="guide-text"
-                >
-                  {GUIDE_TEXT[method]}
-                </Alert>
               )}
-            </Grid>
-            </Grid>
-            <Grid item xs={12} sx={{ height: '100%' }}>
-              <Typography component="label" htmlFor="directives-input">
-                Özel Talimatlar
-              </Typography>
-              <TextField
-                id="directives-input"
-                value={directives}
-                onChange={(e) => setDirectives(e.target.value)}
-                fullWidth
-                margin="normal"
-                multiline
-                minRows={7}
-                sx={{ ...inputSx, overflow: 'auto' }}
-              />
-            </Grid>
-          </Grid>
-      <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={useCustomerFilter}
-              onChange={(e) => setUseCustomerFilter(e.target.checked)}
             />
-          }
-          label="Müşteri"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={usePartCodeFilter}
-              onChange={(e) => setUsePartCodeFilter(e.target.checked)}
+            <Autocomplete
+              fullWidth
+              freeSolo
+              options={subjectOptions}
+              inputValue={subject}
+              onInputChange={(e, v) => setSubject(v)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Konu"
+                  sx={inputSx}
+                  InputProps={{
+                    ...params.InputProps,
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LabelIcon />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              )}
             />
-          }
-          label="Parça Kodu"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={useSubjectFilter}
-              onChange={(e) => setUseSubjectFilter(e.target.checked)}
+            <Autocomplete
+              fullWidth
+              freeSolo
+              options={partCodeOptions}
+              inputValue={partCode}
+              onInputChange={(e, v) => setPartCode(v)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Parça Kodu"
+                  sx={inputSx}
+                  InputProps={{
+                    ...params.InputProps,
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <QrCode2Icon />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              )}
             />
-          }
-          label="Konu"
-        />
-        <Select
-          value={selectedYear}
-          onChange={(e) => setSelectedYear(e.target.value)}
-          displayEmpty
-          size="small"
-          sx={{ minWidth: 90 }}
+            <Autocomplete
+              fullWidth
+              options={METHODS}
+              value={method}
+              onChange={(event, newValue) => setMethod(newValue)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Metot"
+                  sx={inputSx}
+                  InputProps={{
+                    ...params.InputProps,
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <ArrowDropDownIcon />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              )}
+            />
+            {method && (
+              <Alert severity="info" sx={{ mt: 1, fontSize: 15 }}>
+                {GUIDE_TEXT[method]}
+              </Alert>
+            )}
+          </Box>
+        </Box>
+        {/* Özel Talimatlar Alanı */}
+        <Box
+          sx={{
+            width: '100%',
+            mb: 2,
+            height: '38%',
+            minHeight: 90,
+            borderRadius: 1,
+            p: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start'
+          }}
         >
-          <MenuItem value="">
-            <em>Yıl</em>
-          </MenuItem>
-          {years.map((y) => (
-            <MenuItem key={y} value={y}>
-              {y}
-            </MenuItem>
-          ))}
-        </Select>
+          <Typography sx={{ fontWeight: 'bold', mb: 1 }}>Özel Talimatlar</Typography>
+          <TextField
+            multiline
+            minRows={3}
+            fullWidth
+            value={directives}
+            onChange={(e) => setDirectives(e.target.value)}
+            sx={{ height: '100%' }}
+          />
+        </Box>
+        {/* Buton Alanı */}
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            gap: 2,
+            mt: 'auto',
+            height: '24%',
+            minHeight: 60,
+            alignItems: 'flex-end'
+          }}
+        >
+          <Button variant="contained" color="primary" onClick={handleAnalyze}>
+            ANALİZ ET
+          </Button>
+          <Button variant="outlined" color="primary">
+            ŞİKAYETLERİ GETİR
+          </Button>
+        </Box>
       </Box>
-      <Button
-        variant="outlined"
-        onClick={handleFetchClaims}
-        sx={{ mt: 2, px: 3, py: 1 }}
+      {/* Grafikler Alanı */}
+      <Box
+        sx={{
+          width: '32%',
+          minWidth: 0,
+          height: 540,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 3,
+          alignItems: 'stretch',
+          pl: 3,
+          borderRadius: 2
+        }}
       >
-        Şikayetleri Getir
-      </Button>
-      {claimsError && (
-        <Alert severity="error" sx={{ mt: 1 }}>
-          {claimsError}
-        </Alert>
-      )}
-      {claims && (
-        <pre style={{ whiteSpace: 'pre-wrap', marginTop: '8px' }}>
-          {JSON.stringify(claims, null, 2)}
-        </pre>
-      )}
-      <Button
-        type="submit"
-        variant="contained"
-        startIcon={<QrCode2Icon />}
-        sx={{ mt: 2, px: 4, py: 1.5, fontSize: '1rem', transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}
-      >
-        Analyze
-      </Button>
-      {loading && (
-        <CircularProgress sx={{ mt: 2 }} data-testid="loading-indicator" />
-      )}
-      <Snackbar
-        open={Boolean(error)}
-        autoHideDuration={6000}
-        onClose={() => setError('')}
-        message={error}
-      />
-      <Snackbar
-        open={Boolean(success)}
-        autoHideDuration={6000}
-        onClose={() => setSuccess('')}
-        message={success}
-      />
-      {finalText && (
-        <Box sx={{ mt: 2 }}>
-          <Grow in={Boolean(success)}>
-            <Box display="flex" justifyContent="center" sx={{ mb: 1 }}>
-              <CheckCircleIcon
-                color="success"
-                fontSize="large"
-                data-testid="CheckCircleIcon"
-              />
-            </Box>
-          </Grow>
-          <Typography variant="h6">Final Report</Typography>
-          <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
-            {finalText}
+        <Box
+          sx={{
+            width: '100%',
+            height: '49%',
+            bgcolor: '#fff',
+            borderRadius: 2,
+            mb: 1,
+            p: 2,
+            display: 'flex',
+            flexDirection: 'column'
+          }}
+        >
+          <Typography variant="h6" gutterBottom>
+            2025 Aylık Şikayet
           </Typography>
-          {downloads && (
-            <Box sx={{ mt: 1 }}>
-              <Button
-                component="a"
-                href={downloads.pdf}
-                download
-                variant="outlined"
-                startIcon={<PictureAsPdfIcon />}
-                sx={{ mr: 1, px: 3, py: 1 }}
-              >
-                PDF
-              </Button>
-              <Button
-                component="a"
-                href={downloads.excel}
-                download
-                variant="outlined"
-                startIcon={<FileDownloadIcon />}
-                sx={{ px: 3, py: 1 }}
-              >
-                Excel
-              </Button>
-            </Box>
-          )}
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={filteredMonths}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="count" fill="#2196f3" />
+            </BarChart>
+          </ResponsiveContainer>
+          <Slider
+            value={monthRange}
+            min={0}
+            max={11}
+            step={1}
+            marks={[
+              { value: 0, label: 'Oca' },
+              { value: 11, label: 'Ara' }
+            ]}
+            valueLabelDisplay="auto"
+            onChange={(_, v) => setMonthRange(v)}
+          />
         </Box>
-      )}
+        <Box
+          sx={{
+            width: '100%',
+            height: '49%',
+            bgcolor: '#fff',
+            borderRadius: 2,
+            p: 2,
+            display: 'flex',
+            flexDirection: 'column'
+          }}
+        >
+          <Typography variant="h6" gutterBottom>
+            Son 10 Yıl Şikayet
+          </Typography>
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={filteredYears}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="count" fill="#90caf9" />
+            </BarChart>
+          </ResponsiveContainer>
+          <Slider
+            value={yearRange}
+            min={2016}
+            max={2025}
+            step={1}
+            marks={[
+              { value: 2016, label: 2016 },
+              { value: 2025, label: 2025 }
+            ]}
+            valueLabelDisplay="auto"
+            onChange={(_, v) => setYearRange(v)}
+          />
         </Box>
-      </CardContent>
+      </Box>
     </Card>
-  )
+  );
 }
-
-export default AnalysisForm
+export default AnalysisForm;
