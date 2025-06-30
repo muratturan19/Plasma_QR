@@ -60,3 +60,28 @@ test('shows guide text when method selected', async () => {
   })
   expect(methodInput.value).toBe('8D')
 })
+
+test('fetches filtered claims', async () => {
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ excel: [{ complaint: 'x' }], store: [] })
+    })
+
+  render(<AnalysisForm />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
+
+  fireEvent.change(screen.getByTestId('customer-input'), {
+    target: { value: 'acme' }
+  })
+  fireEvent.click(screen.getByLabelText('Müşteri'))
+  fireEvent.click(screen.getByRole('button', { name: /şikayetleri getir/i }))
+
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4))
+  const url = fetch.mock.calls[3][0]
+  expect(url).toContain('customer=acme')
+  await screen.findByText(/"x"/)
+})
