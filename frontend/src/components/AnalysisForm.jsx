@@ -324,7 +324,6 @@ function AnalysisForm() {
           sx={{
             width: '100%',
             height: '49%',
-            bgcolor: '#fff',
             borderRadius: 2,
             mb: 1,
             p: 2,
@@ -361,7 +360,6 @@ function AnalysisForm() {
           sx={{
             width: '100%',
             height: '49%',
-            bgcolor: '#fff',
             borderRadius: 2,
             p: 2,
             display: 'flex',
