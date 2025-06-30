@@ -4,6 +4,7 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
+import TextField from '@mui/material/TextField'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import { API_BASE } from '../api'
@@ -15,15 +16,18 @@ function ComplaintFetcher() {
   const [useCustomer, setUseCustomer] = useState(false)
   const [useSubject, setUseSubject] = useState(false)
   const [usePartCode, setUsePartCode] = useState(false)
+  const [customer, setCustomer] = useState('')
+  const [subject, setSubject] = useState('')
+  const [partCode, setPartCode] = useState('')
   const currentYear = new Date().getFullYear()
   const years = Array.from({ length: 5 }, (_, i) => `${currentYear - i}`)
   const [selectedYear, setSelectedYear] = useState('')
 
   const fetchData = async () => {
     const params = new URLSearchParams()
-    if (useCustomer) params.append('customer', '1')
-    if (useSubject) params.append('subject', '1')
-    if (usePartCode) params.append('part_code', '1')
+    if (useCustomer && customer) params.append('customer', customer)
+    if (useSubject && subject) params.append('subject', subject)
+    if (usePartCode && partCode) params.append('part_code', partCode)
     if (selectedYear) params.append('year', selectedYear)
     const url =
       params.toString().length > 0
@@ -47,15 +51,36 @@ function ComplaintFetcher() {
       <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2 }}>
         <FormControlLabel
           control={<Checkbox checked={useCustomer} onChange={(e) => setUseCustomer(e.target.checked)} />}
-          label="Müşteri"
+          label={
+            <TextField
+              label="Müşteri"
+              size="small"
+              value={customer}
+              onChange={(e) => setCustomer(e.target.value)}
+            />
+          }
         />
         <FormControlLabel
           control={<Checkbox checked={useSubject} onChange={(e) => setUseSubject(e.target.checked)} />}
-          label="Konu"
+          label={
+            <TextField
+              label="Konu"
+              size="small"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+            />
+          }
         />
         <FormControlLabel
           control={<Checkbox checked={usePartCode} onChange={(e) => setUsePartCode(e.target.checked)} />}
-          label="Parça Kodu"
+          label={
+            <TextField
+              label="Parça Kodu"
+              size="small"
+              value={partCode}
+              onChange={(e) => setPartCode(e.target.value)}
+            />
+          }
         />
         <Select
           value={selectedYear}
