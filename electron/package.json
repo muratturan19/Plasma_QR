@@ -4,7 +4,9 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder"
+    "build:backend": "pyinstaller --onefile --distpath backend ../run_api.py",
+    "dist": "npm run build:backend && electron-builder",
+    "postinstall": "npm run build:backend"
   },
   "dependencies": {
     "electron": "^30.0.0"
@@ -22,8 +24,8 @@
         "to": "frontend"
       },
       {
-        "from": "../run_api.py",
-        "to": "run_api.py"
+        "from": "backend",
+        "to": "backend"
       }
     ],
     "win": {
