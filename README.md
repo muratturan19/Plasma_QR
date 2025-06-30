@@ -202,8 +202,8 @@ npm install
 npm run dev
 ```
 
-Komutlarin ardindan tarayicida `http://localhost:5173` adresini acarak
-arayuze ulasabilirsiniz. Arayuz API'ye 8000 portundan istek gönderir.
+
+
 
 **AnalysisForm** bileseni su alanlari zorunlu tutar:
 
@@ -302,6 +302,17 @@ cd frontend
 npm install
 npm run dev
 ```
+
+## Masaüstü Uygulama (Electron)
+
+Uygulamanın masaüstü sürümünü üretmek için şu adımları izleyin:
+
+1. React projesini `npm run build` komutuyla derleyin.
+2. Python bağımlılıklarını bir sanal ortamda veya `pyinstaller` ile hazırlayın.
+3. Ardından `cd electron && npm install && npm run dist` komutlarını çalıştırarak
+   `setup.exe` dosyasını oluşturun.
+4. Kurulumdan sonra masaüstündeki simgeye tıkladığınızda uygulama hemen
+   başlar; terminal penceresi görmezsiniz.
 
 ## React UI Calisma Akisi
 
