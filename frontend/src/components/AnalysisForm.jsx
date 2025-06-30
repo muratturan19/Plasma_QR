@@ -27,7 +27,7 @@ import {
   Tooltip,
   CartesianGrid
 } from 'recharts';
-const API_BASE = '/api';
+import { API_BASE } from '../api';
 const METHODS = ['8D', 'A3', 'Ishikawa', '5N1K', 'DMAIC'];
 const GUIDE_TEXT = {
   '8D':
