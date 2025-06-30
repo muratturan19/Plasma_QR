@@ -26,7 +26,8 @@ function Home() {
             variant="h4"
             component="h1"
             gutterBottom
-            sx={{ color: '#002855', fontFamily: 'Poppins, Inter, sans-serif' }}
+            sx={{ fontFamily: 'Poppins, Inter, sans-serif' }}
+            color="text.primary"
           >
             Plasma QR
           </Typography>

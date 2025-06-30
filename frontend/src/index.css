@@ -4,7 +4,6 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: #1a1a1a;
   background: linear-gradient(135deg, #e8edf5 0%, #ffffff 100%);
 
   font-synthesis: none;
@@ -32,7 +31,6 @@ h1 {
   font-size: 3.2em;
   line-height: 1.1;
   font-family: 'Poppins', 'Inter', sans-serif;
-  color: #002855;
 }
 
 button {
