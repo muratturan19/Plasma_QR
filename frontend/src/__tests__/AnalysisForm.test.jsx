@@ -143,3 +143,23 @@ test('runs analyze workflow', async () => {
   await screen.findByTestId('pdf-link')
   await screen.findByTestId('excel-link')
 })
+
+test('shows error alert on analyze failure', async () => {
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ fields: [] }) })
+    .mockRejectedValueOnce(new Error('fail'))
+
+  render(<AnalysisForm initialMethod="8D" />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
+
+  fireEvent.change(screen.getByLabelText('Şikayet (Complaint)'), {
+    target: { value: 'c' }
+  })
+  fireEvent.click(screen.getByRole('button', { name: /analiz et/i }))
+
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(5))
+  expect(screen.getByRole('alert')).toHaveTextContent('fail')
+})
