@@ -112,3 +112,34 @@ test('shows fishbone diagram on Ishikawa method', async () => {
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
   expect(screen.getByTestId('fishbone')).toBeInTheDocument()
 })
+
+test('runs analyze workflow', async () => {
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ fields: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ full_text: 'a' }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ result: 'r' }) })
+    .mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ pdf: '/p', excel: '/e' })
+    })
+
+  render(<AnalysisForm initialMethod="8D" />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
+
+  fireEvent.change(screen.getByLabelText('Şikayet (Complaint)'), {
+    target: { value: 'c' }
+  })
+  fireEvent.click(screen.getByRole('button', { name: /analiz et/i }))
+
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(7))
+  expect(fetch.mock.calls[3][0]).toMatch(/\/guide\/8D/)
+  expect(fetch.mock.calls[4][0]).toMatch(/\/analyze$/)
+  expect(fetch.mock.calls[5][0]).toMatch(/\/review$/)
+  expect(fetch.mock.calls[6][0]).toMatch(/\/report$/)
+  await screen.findByTestId('review-text')
+  await screen.findByTestId('pdf-link')
+  await screen.findByTestId('excel-link')
+})
