@@ -105,6 +105,16 @@ class ExcelClaimsSearchTest(unittest.TestCase):
                 self.assertTrue(mock_load.called)
                 self.assertEqual(searcher.path, Path("f"))
 
+    def test_missing_file_logs_warning(self) -> None:
+        """A warning should be logged when the Excel file is absent."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            file_path = os.path.join(tmpdir, "missing.xlsx")
+            searcher = ExcelClaimsSearcher(file_path)
+            with self.assertLogs(level="WARNING") as log:
+                result = searcher.search({})
+            self.assertEqual(result, [])
+            self.assertIn("Excel file not found", "\n".join(log.output))
+
     def test_bundled_file_outside_repo(self) -> None:
         """Bundled Excel file should load when run outside the repo root."""
         repo_root = Path(__file__).resolve().parents[1]

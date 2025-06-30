@@ -6,6 +6,7 @@ from typing import Any, Dict, List
 from pathlib import Path
 from datetime import datetime
 import os
+import logging
 
 from dotenv import load_dotenv
 from importlib import resources
@@ -61,6 +62,7 @@ class ExcelClaimsSearcher:
             Matching rows as dictionaries with lowercase keys.
         """
         if not self.path.exists():
+            logging.warning("Excel file not found at %s", self.path)
             return []
 
         wb = load_workbook(self.path, read_only=True)
