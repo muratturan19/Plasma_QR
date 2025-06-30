@@ -1,9 +1,7 @@
 fpdf
 openpyxl
 openai
-streamlit>=1.0
 python-dotenv
-streamlit-option-menu
 
 # Web server and client libraries
 fastapi==0.111.0

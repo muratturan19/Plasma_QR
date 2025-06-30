@@ -19,7 +19,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Bu komut arayüz için gerekli ``streamlit`` kütüphanesini de kurar.
+Bu komut gerekli tüm Python bağımlılıklarını kurar.
 Unicode karakterleri içeren PDF çıktısı alınabilmesi için depo kökünde bulunan
 ``Fonts`` klasöründeki ``DejaVuSans.ttf`` dosyası kullanılır. Dosya mevcut
 değilse sistemdeki ``/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf`` yolu
@@ -138,6 +138,7 @@ Bu surec asagidaki sekilde gosterilebilir:
 
 ## Ornek Kullanim
 
+
 Paketleri kendi uygulamaniza dahil ederek asagidaki gibi kullanabilirsiniz:
 
 ```python
@@ -145,44 +146,6 @@ from UI import UI
 
 ui = UI()
 ui.start()
-```
-
-## Streamlit Arayuzu
-
-**Not:** Streamlit tabanli arayuz artik bakimda degildir ve kullanimi desteklenmemektedir.
-
- Bu arayuz icin `streamlit` kutuphanesi gereklidir ve `requirements.txt` dosyasinda yer alir.
- Arayuzun sol panelinden gecmis sikayetlerde anahtar kelime arayabilirsiniz.
- Tarayici tabanli arayuzu calistirmak icin asagidaki komutu kullanabilirsiniz:
-
-```bash
-streamlit run run_app.py
-```
-Bu komut **deponun kok dizininden** calistirildiginda gerekli paketleri
-dogru sekilde bulur ve arayuzu acar. `UI/streamlit_app.py` dosyasini
-daha sonra calistirmak isterseniz, `PYTHONPATH` degiskenini depo kokune
-ayarlamaniz gerekir; aksi halde `ModuleNotFoundError: No module named
-'GuideManager'` hatasiyla karsilasabilirsiniz.
-
-```bash
-export PYTHONPATH="$(pwd)"
-streamlit run UI/streamlit_app.py
-```
-
-Kok dizindeki ``run_app.py`` dosyasini kullanarak arayuzu uyarisiz sekilde acabilirsiniz:
-
-```bash
-python run_app.py
-```
-
-Bu komut arayuzu hicbir uyari gormeden baslatir.
-
-Python kodu icinden `run_streamlit()` fonksiyonunu da cagirabilirsiniz:
-
-```python
-from UI import run_streamlit
-
-run_streamlit()
 ```
 
 ## API Sunucusu
@@ -328,32 +291,6 @@ Kurulumun ardindan testleri calistirmak icin su komutu kullanin:
 python -m unittest discover
 ```
 
-## EXE Paketleme
-
-Uygulamayı Windows üzerinde tek bir çalıştırılabilir dosya haline getirmek
-için `PyInstaller` kullanılabilir. Önce paketi kurun:
-
-```bash
-pip install pyinstaller
-```
-
-Daha sonra aşağıdaki komutla gerekli veri dosyalarıyla birlikte paketleyin:
-
-```bash
-pyinstaller --onefile run_app.py \
-  --copy-metadata streamlit \
-  --add-data 'Guidelines/*:Guidelines' \
-  --add-data 'Prompts/*:Prompts' \
-  --add-data 'Fonts/*:Fonts' \
-  --add-data 'Logo/*:Logo' \
-  --add-data "UI/streamlit_app.py:UI" \
-  --add-data 'CC/*:CC'
-```
-
-Oluşan `dist/run_app.exe` dosyası müşteri bilgisayarında doğrudan
-
-çalıştırılabilir.
-Bu komutlari `scripts/package_exe.sh` betigi ile de calistirabilirsiniz.
 
 ## Frontend
 
