@@ -72,6 +72,20 @@ sonuclari icin yer tutucu metinler dondurulur.
 tanimlayarak kullanilacak model adini belirleyebilirsiniz. Deger
 verilmezse varsayilan `gpt-3.5-turbo` kullanilir.
 
+## Dizin Yapisi
+
+Bu depoyu klonladiginizda klasorlerin amaclari kisaca su sekildedir:
+
+```
+/frontend   -> React (Vite)
+/api        -> FastAPI code (currently in repo)
+/electron   -> Electron config and build scripts
+```
+
+Kok dizindeki `run_api.py` dosyasi Electron tarafindan calistirilir ve API
+sunucusunu baslatir. React derlenmis dosyalar `frontend/dist` altinda, paketlenmis
+masaustu uygulamasi ise `electron/dist` klasorunde olusur.
+
 ## Modul Yapisi
 
 Proje asagidaki paketleri icermektedir:
