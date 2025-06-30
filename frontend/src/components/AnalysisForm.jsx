@@ -82,6 +82,7 @@ function AnalysisForm({
   const [selectedYear, setSelectedYear] = useState('');
   const [claims, setClaims] = useState(null);
   const [claimsError, setClaimsError] = useState('');
+  const [error, setError] = useState('');
   const [reviewText, setReviewText] = useState('');
   const [reportPaths, setReportPaths] = useState(null);
   const [monthRange, setMonthRange] = useState([0, 11]);
@@ -129,6 +130,7 @@ function AnalysisForm({
     fetchOptions('part_code', setPartCodeOptions);
   }, []);
   const handleAnalyze = async () => {
+    setError('');
     const details = {
       complaint,
       customer,
@@ -164,6 +166,7 @@ function AnalysisForm({
       setReportPaths(paths);
     } catch (err) {
       console.error(err);
+      setError(err.message || 'Bir hata oluştu');
     }
   };
   const handleFetchClaims = async () => {
@@ -466,6 +469,11 @@ function AnalysisForm({
           <pre style={{ whiteSpace: 'pre-wrap', marginTop: '8px' }}>
             {JSON.stringify(claims, null, 2)}
           </pre>
+        )}
+        {error && (
+          <Alert severity="error" sx={{ mt: 1 }}>
+            {error}
+          </Alert>
         )}
         {reviewText && (
           <Box sx={{ mt: 2 }}>
