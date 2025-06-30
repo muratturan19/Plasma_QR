@@ -57,7 +57,7 @@ function ComplaintCharts({ form }) {
       <Grid item xs={12} md={6}>
         <Grid container spacing={2} direction="column">
           <Grid item>
-            <Card sx={{ backgroundColor: '#fafafa' }}>
+            <Card sx={{ backgroundColor: '#ccffcc' }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
                   2025 Aylık Şikayet
@@ -87,7 +87,7 @@ function ComplaintCharts({ form }) {
             </Card>
           </Grid>
           <Grid item>
-            <Card sx={{ backgroundColor: '#fafafa' }}>
+            <Card sx={{ backgroundColor: '#ccffcc' }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
                   Son 10 Yıl Şikayet
