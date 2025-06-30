@@ -85,3 +85,16 @@ test('fetches filtered claims', async () => {
   expect(url).toContain('customer=acme')
   await screen.findByText(/"x"/)
 })
+
+test('applies instructionsBoxProps margin', async () => {
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+
+  render(<AnalysisForm instructionsBoxProps={{ mt: 5 }} />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
+
+  const box = screen.getByText(/özel talimatlar/i).parentElement
+  expect(box).toHaveStyle('margin-top: 40px')
+})

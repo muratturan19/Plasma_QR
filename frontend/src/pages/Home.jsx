@@ -31,7 +31,7 @@ function Home() {
             Plasma QR
           </Typography>
         </Box>
-        <AnalysisForm />
+        <AnalysisForm instructionsBoxProps={{ mt: 3 }} />
       </Box>
       <Footer />
     </>
