@@ -82,6 +82,8 @@ function AnalysisForm({
   const [selectedYear, setSelectedYear] = useState('');
   const [claims, setClaims] = useState(null);
   const [claimsError, setClaimsError] = useState('');
+  const [reviewText, setReviewText] = useState('');
+  const [reportPaths, setReportPaths] = useState(null);
   const [monthRange, setMonthRange] = useState([0, 11]);
   const [yearRange, setYearRange] = useState([2016, 2025]);
   const months = [
@@ -126,15 +128,43 @@ function AnalysisForm({
     fetchOptions('subject', setSubjectOptions);
     fetchOptions('part_code', setPartCodeOptions);
   }, []);
-  const handleAnalyze = () => {
-    console.log({
+  const handleAnalyze = async () => {
+    const details = {
       complaint,
       customer,
       subject,
-      partCode,
-      method,
-      directives
-    });
+      part_code: partCode
+    };
+    try {
+      const guideRes = await fetch(`${API_BASE}/guide/${method}`);
+      const guideline = await guideRes.json();
+      const analyzeRes = await fetch(`${API_BASE}/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ details, guideline, directives })
+      });
+      const analysis = await analyzeRes.json();
+      const reviewRes = await fetch(`${API_BASE}/review`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: analysis.full_text || JSON.stringify(analysis) })
+      });
+      const reviewData = await reviewRes.json();
+      const reportRes = await fetch(`${API_BASE}/report`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          analysis,
+          complaint_info: details,
+          output_dir: '.'
+        })
+      });
+      const paths = await reportRes.json();
+      setReviewText(reviewData.result);
+      setReportPaths(paths);
+    } catch (err) {
+      console.error(err);
+    }
   };
   const handleFetchClaims = async () => {
     const params = new URLSearchParams();
@@ -436,6 +466,22 @@ function AnalysisForm({
           <pre style={{ whiteSpace: 'pre-wrap', marginTop: '8px' }}>
             {JSON.stringify(claims, null, 2)}
           </pre>
+        )}
+        {reviewText && (
+          <Box sx={{ mt: 2 }}>
+            <Typography data-testid="review-text">{reviewText}</Typography>
+            {reportPaths && (
+              <Box sx={{ mt: 1 }}>
+                <a href={reportPaths.pdf} data-testid="pdf-link">
+                  PDF indir
+                </a>
+                {' | '}
+                <a href={reportPaths.excel} data-testid="excel-link">
+                  Excel indir
+                </a>
+              </Box>
+            )}
+          </Box>
         )}
       </Box>
       {/* Grafikler Alanı */}
