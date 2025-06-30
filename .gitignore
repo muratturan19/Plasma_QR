@@ -23,3 +23,7 @@ Fonts/*.pkl
 frontend/node_modules/
 frontend/dist/
 complaints.json
+electron/dist/
+
+electron/node_modules/
+
