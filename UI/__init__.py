@@ -1,45 +1,6 @@
-"""User interface utilities."""
+"""User interface utilities for the command-line interface."""
 
 from typing import List, Optional
-import subprocess
-import sys
-import tempfile
-from pathlib import Path
-from importlib import resources
-
-
-def run_streamlit() -> None:
-    """Launch the Streamlit application."""
-
-    from . import streamlit_app
-
-    script = Path(streamlit_app.__file__).resolve()
-    frozen = getattr(sys, "frozen", False)
-
-    if frozen:
-        bundle_root = Path(getattr(sys, "_MEIPASS", Path.cwd()))
-        candidate = bundle_root / "UI" / "streamlit_app.py"
-        if candidate.exists():
-            script = candidate
-        else:
-            tmp_path = Path(tempfile.gettempdir()) / "streamlit_app.py"
-            with resources.files("UI").joinpath("streamlit_app.py").open("rb") as src, \
-                    open(tmp_path, "wb") as dst:
-                dst.write(src.read())
-            script = tmp_path
-    elif not script.exists():
-        tmp_path = Path(tempfile.gettempdir()) / "streamlit_app.py"
-        with resources.files("UI").joinpath("streamlit_app.py").open("rb") as src, \
-                open(tmp_path, "wb") as dst:
-            dst.write(src.read())
-        script = tmp_path
-
-    if frozen:
-        sys.argv = ["streamlit", "run", str(script)]
-        import streamlit.web.cli as stcli
-        stcli.main()
-    else:
-        subprocess.run(["streamlit", "run", str(script)], check=True)
 
 
 def run_cli(args: Optional[List[str]] = None) -> None:
@@ -61,4 +22,4 @@ class UI:
         run_cli()
 
 
-__all__ = ["UI", "run_cli", "run_streamlit"]
+__all__ = ["UI", "run_cli"]

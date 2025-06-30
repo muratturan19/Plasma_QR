@@ -1,1 +1,1 @@
-"""Logo image for the Streamlit UI."""
+"""Logo image for the application UI."""
