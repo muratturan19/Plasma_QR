@@ -1,8 +1,7 @@
-import Fishbone from '@hophiphip/react-fishbone';
-import '@hophiphip/react-fishbone/style.css';
+import FishboneChart from 'fishbone-chart';
 
-function FishboneDiagram({ items }) {
-  return <Fishbone items={items} />;
+function FishboneDiagram({ data }) {
+  return <FishboneChart data={data} />;
 }
 
 export default FishboneDiagram;

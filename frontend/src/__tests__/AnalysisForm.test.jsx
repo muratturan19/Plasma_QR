@@ -16,7 +16,7 @@ vi.mock('@mui/material/Autocomplete', () => ({
     )
   }
 }))
-vi.mock('@hophiphip/react-fishbone', () => ({
+vi.mock('fishbone-chart', () => ({
   default: () => <div data-testid="fishbone">diagram</div>
 }), { virtual: true })
 
