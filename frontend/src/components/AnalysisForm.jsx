@@ -42,16 +42,15 @@ const GUIDE_TEXT = {
   DMAIC:
     'DMAIC, süreç iyileştirme için kullanılan sistematik bir problem çözme metodudur.'
 };
-const FISHBONE_ITEMS = {
-  label: 'Problem',
-  children: [
-    { label: 'Method' },
-    { label: 'Material' },
-    { label: 'Machine' },
-    { label: 'Measurement' },
-    { label: 'Man' },
-    { label: 'Environment' }
-  ]
+const FISHBONE_DATA = {
+  Problem: {
+    Method: [],
+    Material: [],
+    Machine: [],
+    Measurement: [],
+    Man: [],
+    Environment: []
+  }
 };
 const inputSx = {
   '& .MuiOutlinedInput-root': {
@@ -353,7 +352,7 @@ function AnalysisForm({
             )}
             {method === 'Ishikawa' && (
               <Box sx={{ mt: 2 }}>
-                <FishboneDiagram items={FISHBONE_ITEMS} />
+                <FishboneDiagram data={FISHBONE_DATA} />
               </Box>
             )}
           </Box>

@@ -13,7 +13,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@hophiphip/react-fishbone": "^0.5.3",
+    "fishbone-chart": "^1.0.24",
     "@mui/icons-material": "^7.1.2",
     "@mui/material": "^7.1.2",
     "@mui/x-date-pickers": "^8.6.0",
