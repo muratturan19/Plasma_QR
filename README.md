@@ -351,7 +351,9 @@ pyinstaller --onefile run_app.py \
 ```
 
 Oluşan `dist/run_app.exe` dosyası müşteri bilgisayarında doğrudan
+
 çalıştırılabilir.
+Bu komutlari `scripts/package_exe.sh` betigi ile de calistirabilirsiniz.
 
 ## Frontend
 
