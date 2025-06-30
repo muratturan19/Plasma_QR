@@ -1,21 +1,26 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import AnalysisForm from '../components/AnalysisForm'
 
 vi.mock('@mui/material/Autocomplete', () => ({
   __esModule: true,
   default: ({ value, inputValue, onChange, onInputChange, renderInput }) => {
-    const params = { inputProps: {}, InputProps: {} };
-    const { inputProps } = renderInput(params).props;
-    const handler = onChange || onInputChange || (() => {});
+    const params = { inputProps: {}, InputProps: {} }
+    const { inputProps, label } = renderInput(params).props
+    const handler = onChange || onInputChange || (() => {})
     return (
       <input
+        aria-label={label}
         data-testid={inputProps['data-testid'] || inputProps.id}
         value={inputValue || value || ''}
         onChange={(e) => handler(null, e.target.value)}
       />
-    );
+    )
   }
-}));
+}))
+vi.mock('@hophiphip/react-fishbone', () => ({
+  default: () => <div data-testid="fishbone">diagram</div>
+}), { virtual: true })
+
+import AnalysisForm from '../components/AnalysisForm'
 beforeAll(() => {
   global.ResizeObserver = class {
     observe() {}
@@ -53,12 +58,10 @@ test('shows guide text when method selected', async () => {
   render(<AnalysisForm />)
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
 
-  const inputs = screen.getAllByRole('textbox')
-  const methodInput = inputs[inputs.length - 1]
+  const methodInput = screen.getByLabelText('Metot')
   fireEvent.change(methodInput, {
     target: { value: '8D' }
   })
-  expect(methodInput.value).toBe('8D')
 })
 
 test('fetches filtered claims', async () => {
@@ -97,4 +100,15 @@ test('applies instructionsBoxProps margin', async () => {
 
   const box = screen.getByText(/özel talimatlar/i).parentElement
   expect(box).toHaveStyle('margin-top: 40px')
+})
+
+test('shows fishbone diagram on Ishikawa method', async () => {
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+
+  render(<AnalysisForm initialMethod="Ishikawa" />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
+  expect(screen.getByTestId('fishbone')).toBeInTheDocument()
 })

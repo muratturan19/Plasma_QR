@@ -216,6 +216,10 @@ npm install
 npm run dev
 ```
 
+Balık kılçığı diyagramı için `@hophiphip/react-fishbone` paketini kullanıyoruz.
+`AnalysisForm` bileşeni Ishikawa yöntemi seçildiğinde
+`<FishboneDiagram items={items} />` şeklinde diyagramı gösterir.
+
 
 
 

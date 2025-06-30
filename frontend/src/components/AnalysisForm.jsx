@@ -18,6 +18,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import LabelIcon from '@mui/icons-material/Label';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import FishboneDiagram from './FishboneDiagram';
 import {
   ResponsiveContainer,
   BarChart,
@@ -41,6 +42,17 @@ const GUIDE_TEXT = {
   DMAIC:
     'DMAIC, süreç iyileştirme için kullanılan sistematik bir problem çözme metodudur.'
 };
+const FISHBONE_ITEMS = {
+  label: 'Problem',
+  children: [
+    { label: 'Method' },
+    { label: 'Material' },
+    { label: 'Machine' },
+    { label: 'Measurement' },
+    { label: 'Man' },
+    { label: 'Environment' }
+  ]
+};
 const inputSx = {
   '& .MuiOutlinedInput-root': {
     '&:hover fieldset': { borderColor: 'primary.main' },
@@ -50,7 +62,8 @@ const inputSx = {
 function AnalysisForm({
   instructionsBoxProps = {},
   methodBoxProps = {},
-  filterBoxProps = {}
+  filterBoxProps = {},
+  initialMethod = ''
 }) {
   const [customerOptions, setCustomerOptions] = useState([]);
   const [subjectOptions, setSubjectOptions] = useState([]);
@@ -58,7 +71,7 @@ function AnalysisForm({
   const [customer, setCustomer] = useState('');
   const [subject, setSubject] = useState('');
   const [partCode, setPartCode] = useState('');
-  const [method, setMethod] = useState('');
+  const [method, setMethod] = useState(initialMethod);
   const [complaint, setComplaint] = useState('');
   const [directives, setDirectives] = useState('');
   const [useCustomerFilter, setUseCustomerFilter] = useState(false);
@@ -304,6 +317,11 @@ function AnalysisForm({
               <Alert severity="info" sx={{ mt: 1, fontSize: 15 }}>
                 {GUIDE_TEXT[method]}
               </Alert>
+            )}
+            {method === 'Ishikawa' && (
+              <Box sx={{ mt: 2 }}>
+                <FishboneDiagram items={FISHBONE_ITEMS} />
+              </Box>
             )}
           </Box>
         </Box>
