@@ -178,7 +178,7 @@ function AnalysisForm({
             display: 'flex',
             flexDirection: 'row',
             gap: 2,
-            mb: 2,
+            mb: 16,
             height: '38%',
             minHeight: 120
           }}
@@ -188,7 +188,7 @@ function AnalysisForm({
             <TextField
               label="Şikayet (Complaint)"
               multiline
-              minRows={6}
+              minRows={10}
               fullWidth
               value={complaint}
               onChange={(e) => setComplaint(e.target.value)}
@@ -202,7 +202,7 @@ function AnalysisForm({
               minWidth: 0,
               display: 'flex',
               flexDirection: 'column',
-              gap: 1,
+              gap: 2,
               justifyContent: 'space-between',
               height: '100%',
               ...methodBoxProps
@@ -311,7 +311,7 @@ function AnalysisForm({
         <Box
           sx={{
             width: '100%',
-            mb: 2,
+			mt: 6,
             height: '38%',
             minHeight: 90,
             borderRadius: 1,
@@ -337,7 +337,8 @@ function AnalysisForm({
           sx={{
             width: '100%',
             display: 'flex',
-            gap: 2,
+			mt: 12,
+            gap: 16,
             flexWrap: 'wrap',
             alignItems: 'center',
             mb: 1,
@@ -393,8 +394,9 @@ function AnalysisForm({
           sx={{
             width: '100%',
             display: 'flex',
-            gap: 2,
+            gap: 8,
             mt: 'auto',
+			mb: 14,
             height: '24%',
             minHeight: 60,
             alignItems: 'flex-end'
