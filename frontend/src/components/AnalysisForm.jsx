@@ -8,7 +8,11 @@ import {
   Autocomplete,
   InputAdornment,
   Alert,
-  Slider
+  Slider,
+  FormControlLabel,
+  Checkbox,
+  Select,
+  MenuItem
 } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import LabelIcon from '@mui/icons-material/Label';
@@ -53,6 +57,14 @@ function AnalysisForm() {
   const [method, setMethod] = useState('');
   const [complaint, setComplaint] = useState('');
   const [directives, setDirectives] = useState('');
+  const [useCustomerFilter, setUseCustomerFilter] = useState(false);
+  const [usePartCodeFilter, setUsePartCodeFilter] = useState(false);
+  const [useSubjectFilter, setUseSubjectFilter] = useState(false);
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 10 }, (_, i) => `${currentYear - i}`);
+  const [selectedYear, setSelectedYear] = useState('');
+  const [claims, setClaims] = useState(null);
+  const [claimsError, setClaimsError] = useState('');
   const [monthRange, setMonthRange] = useState([0, 11]);
   const [yearRange, setYearRange] = useState([2016, 2025]);
   const months = [
@@ -106,6 +118,29 @@ function AnalysisForm() {
       method,
       directives
     });
+  };
+  const handleFetchClaims = async () => {
+    const params = new URLSearchParams();
+    if (useCustomerFilter && customer) params.append('customer', customer);
+    if (useSubjectFilter && subject) params.append('subject', subject);
+    if (usePartCodeFilter && partCode) params.append('part_code', partCode);
+    if (selectedYear) params.append('start_year', selectedYear);
+    const url =
+      params.toString().length > 0
+        ? `${API_BASE}/complaints?${params.toString()}`
+        : `${API_BASE}/complaints`;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) {
+        throw new Error(`HTTP error ${res.status}`);
+      }
+      const data = await res.json();
+      setClaims(data);
+      setClaimsError('');
+    } catch (err) {
+      setClaimsError(err.message);
+      setClaims(null);
+    }
   };
   return (
     <Card
@@ -177,8 +212,13 @@ function AnalysisForm() {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Müşteri"
+                  label="Müşteri Adı"
                   sx={inputSx}
+                  inputProps={{
+                    ...params.inputProps,
+                    'data-testid': 'customer-input',
+                    'aria-label': 'customer-input'
+                  }}
                   InputProps={{
                     ...params.InputProps,
                     startAdornment: (
@@ -286,6 +326,61 @@ function AnalysisForm() {
             sx={{ height: '100%' }}
           />
         </Box>
+        {/* Filtreler */}
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            gap: 2,
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            mb: 1
+          }}
+        >
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={useCustomerFilter}
+                onChange={(e) => setUseCustomerFilter(e.target.checked)}
+              />
+            }
+            label="Müşteri"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={usePartCodeFilter}
+                onChange={(e) => setUsePartCodeFilter(e.target.checked)}
+              />
+            }
+            label="Parça Kodu"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={useSubjectFilter}
+                onChange={(e) => setUseSubjectFilter(e.target.checked)}
+              />
+            }
+            label="Konu"
+          />
+          <Select
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(e.target.value)}
+            displayEmpty
+            size="small"
+            sx={{ minWidth: 80 }}
+          >
+            <MenuItem value="">
+              <em>Yıl</em>
+            </MenuItem>
+            {years.map((y) => (
+              <MenuItem key={y} value={y}>
+                {y}
+              </MenuItem>
+            ))}
+          </Select>
+        </Box>
         {/* Buton Alanı */}
         <Box
           sx={{
@@ -301,10 +396,20 @@ function AnalysisForm() {
           <Button variant="contained" color="primary" onClick={handleAnalyze}>
             ANALİZ ET
           </Button>
-          <Button variant="outlined" color="primary">
-            ŞİKAYETLERİ GETİR
+          <Button variant="outlined" color="primary" onClick={handleFetchClaims}>
+            Şikayetleri Getir
           </Button>
         </Box>
+        {claimsError && (
+          <Alert severity="error" sx={{ mt: 1 }}>
+            {claimsError}
+          </Alert>
+        )}
+        {claims && (
+          <pre style={{ whiteSpace: 'pre-wrap', marginTop: '8px' }}>
+            {JSON.stringify(claims, null, 2)}
+          </pre>
+        )}
       </Box>
       {/* Grafikler Alanı */}
       <Box
