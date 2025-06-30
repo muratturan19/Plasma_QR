@@ -19,7 +19,9 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-    pythonProcess = spawn('python', ['../run_api.py'], {
+    const exeName = process.platform === 'win32' ? 'run_api.exe' : 'run_api';
+    const exePath = path.join(__dirname, 'backend', exeName);
+    pythonProcess = spawn(exePath, [], {
         stdio: 'ignore',
         detached: true,
     });
