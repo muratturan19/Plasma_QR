@@ -10,3 +10,11 @@ Currently, two official plugins are available:
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+## Error Handling
+
+When the `/analyze` endpoint returns a response that does not contain the
+expected `analysisText` or `full_text` field, the raw JSON payload is shown below
+the analysis area. Likewise, if the `/complaints` endpoint responds with an
+unexpected structure, the raw claims JSON will be displayed under the complaints
+section.
