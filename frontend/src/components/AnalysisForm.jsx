@@ -13,7 +13,12 @@ import {
   Checkbox,
   Select,
   MenuItem,
-  CircularProgress
+  CircularProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow
 } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import LabelIcon from '@mui/icons-material/Label';
@@ -227,7 +232,11 @@ function AnalysisForm({
       }
       const data = await res.json();
       const results = data.results || data;
-      setClaims(results);
+      const combined = [
+        ...(results.store || []),
+        ...(results.excel || [])
+      ];
+      setClaims(combined);
       setClaimsError('');
     } catch (err) {
       setClaimsError(err.message);
@@ -508,10 +517,29 @@ function AnalysisForm({
             {claimsError}
           </Alert>
         )}
-        {claims && (
-          <pre style={{ whiteSpace: 'pre-wrap', marginTop: '8px' }}>
-            {JSON.stringify(claims, null, 2)}
-          </pre>
+        {claims && claims.length > 0 && (
+          <Table size="small" sx={{ mt: 1 }}>
+            <TableHead>
+              <TableRow>
+                <TableCell>Complaint</TableCell>
+                <TableCell>Customer</TableCell>
+                <TableCell>Subject</TableCell>
+                <TableCell>Part Code</TableCell>
+                <TableCell>Date</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {claims.map((r, i) => (
+                <TableRow key={i}>
+                  <TableCell>{r.complaint}</TableCell>
+                  <TableCell>{r.customer}</TableCell>
+                  <TableCell>{r.subject}</TableCell>
+                  <TableCell>{r.part_code}</TableCell>
+                  <TableCell>{r.date}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         )}
         {loading && (
           <Box

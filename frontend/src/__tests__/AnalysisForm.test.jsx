@@ -86,7 +86,9 @@ test('fetches filtered claims', async () => {
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4))
   const url = fetch.mock.calls[3][0]
   expect(url).toContain('customer=acme')
-  await screen.findByText(/"x"/)
+  const rows = await screen.findAllByRole('row')
+  expect(rows.length).toBeGreaterThan(1)
+  await screen.findByText('x')
 })
 
 test('applies instructionsBoxProps margin', async () => {
