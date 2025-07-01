@@ -45,11 +45,25 @@ class APITest(unittest.TestCase):
 
     def test_report_endpoint(self) -> None:
         body = {"analysis": {}, "complaint_info": {}, "output_dir": "."}
-        with patch.object(api.reporter, "generate", return_value={"pdf": "p", "excel": "e"}) as mock_gen:
+        paths = {"pdf": "/tmp/p.pdf", "excel": "/tmp/e.xlsx"}
+        with patch.object(api.reporter, "generate", return_value=paths) as mock_gen:
             response = self.client.post("/report", json=body)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"pdf": "p", "excel": "e"})
-        mock_gen.assert_called_with({}, {}, ".")
+        self.assertEqual(
+            response.json(),
+            {"pdf": "/reports/p.pdf", "excel": "/reports/e.xlsx"},
+        )
+        mock_gen.assert_called_with({}, {}, api.REPORT_DIR)
+
+    def test_reports_static_mount(self) -> None:
+        tmp_file = api.REPORT_DIR / "test.txt"
+        tmp_file.write_text("hi")
+        try:
+            response = self.client.get(f"/reports/{tmp_file.name}")
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.content, b"hi")
+        finally:
+            tmp_file.unlink()
 
     def test_complaints_endpoint(self) -> None:
         with patch.object(api._store, "search", return_value=[{"id": 1}]) as mock_store, \

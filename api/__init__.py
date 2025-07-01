@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from GuideManager import GuideManager
@@ -14,6 +16,9 @@ from Review import Review
 from ReportGenerator import ReportGenerator
 from ComplaintSearch import ComplaintStore, ExcelClaimsSearcher
 
+REPORT_DIR = Path(__file__).resolve().parents[1] / "reports"
+REPORT_DIR.mkdir(parents=True, exist_ok=True)
+
 app = FastAPI(title="Plasma QR API")
 app.add_middleware(
     CORSMiddleware,
@@ -21,6 +26,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.mount("/reports", StaticFiles(directory=str(REPORT_DIR)), name="reports")
 
 # Shared component instances
 _guide_manager = GuideManager()
@@ -67,7 +73,11 @@ class ReportBody(BaseModel):
 @app.post("/report")
 def report(body: ReportBody) -> Dict[str, str]:
     """Generate PDF and Excel reports via ``ReportGenerator``."""
-    return reporter.generate(body.analysis, body.complaint_info, body.output_dir)
+    paths = reporter.generate(body.analysis, body.complaint_info, REPORT_DIR)
+    return {
+        "pdf": f"/reports/{Path(paths['pdf']).name}",
+        "excel": f"/reports/{Path(paths['excel']).name}",
+    }
 
 
 @app.get("/complaints")
