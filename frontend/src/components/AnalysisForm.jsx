@@ -158,16 +158,17 @@ function AnalysisForm({
         return;
       }
       const analysis = await analyzeRes.json();
-      if (!analysis?.full_text) {
+      const text = analysis.full_text || analysis.analysisText;
+      if (!text) {
         setError('Sunucudan beklenmeyen boş yanıt alındı');
         return;
       }
-      setAnalysisText(analysis.full_text);
+      setAnalysisText(text);
 
       const reviewRes = await fetch(`${API_BASE}/review`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: analysis.full_text || JSON.stringify(analysis) })
+        body: JSON.stringify({ text: text || JSON.stringify(analysis) })
       });
       if (!reviewRes.ok) {
         setError(await reviewRes.text());
@@ -225,7 +226,8 @@ function AnalysisForm({
         throw new Error(`HTTP error ${res.status}`);
       }
       const data = await res.json();
-      setClaims(data);
+      const results = data.results || data;
+      setClaims(results);
       setClaimsError('');
     } catch (err) {
       setClaimsError(err.message);
