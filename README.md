@@ -362,6 +362,7 @@ Onyuzu calistirmak icin yukaridaki komutlardan sonra tarayicinizda
 portundan baglanir.
 
 Arayuz yeni bir tema ile kart tabanli tasarim kullanacak sekilde
-guncellenmistir. Basarili islemler ve hatalar icin toast bildirimleri
-goruntulenir. Tasarim responsive olup farkli ekran genisliklerine uyum
-saglar ve istege bagli olarak acik veya koyu mod secilebilir.
+guncellenmistir. Hata mesajlari MUI `Alert` bilesenleriyle
+goruntulenir. Toast/snackbar bildirimleri ileride eklenebilir.
+Tasarim responsive olup farkli ekran genisliklerine uyum saglar ve
+istege bagli olarak acik veya koyu mod secilebilir.
