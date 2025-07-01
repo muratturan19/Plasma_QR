@@ -71,7 +71,7 @@ test('fetches filtered claims', async () => {
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
     .mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ excel: [{ complaint: 'x' }], store: [] })
+      json: async () => ({ results: { excel: [{ complaint: 'x' }], store: [] } })
     })
 
   render(<AnalysisForm />)
@@ -119,7 +119,7 @@ test('runs analyze workflow', async () => {
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
     .mockResolvedValueOnce({ ok: true, json: async () => ({ fields: [] }) })
-    .mockResolvedValueOnce({ ok: true, json: async () => ({ full_text: 'a' }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ analysisText: 'a' }) })
     .mockResolvedValueOnce({ ok: true, json: async () => ({ result: 'r' }) })
     .mockResolvedValueOnce({
       ok: true,
@@ -171,7 +171,7 @@ test('shows error alert on empty report response', async () => {
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
     .mockResolvedValueOnce({ ok: true, json: async () => ({ fields: [] }) })
-    .mockResolvedValueOnce({ ok: true, json: async () => ({ full_text: 'a' }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ analysisText: 'a' }) })
     .mockResolvedValueOnce({ ok: true, json: async () => ({ result: 'r' }) })
     .mockResolvedValueOnce({ ok: true, json: async () => ({}) })
 
@@ -222,7 +222,7 @@ test('shows loading indicator during analyze', async () => {
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
     .mockReturnValueOnce(guidePromise)
-    .mockResolvedValueOnce({ ok: true, json: async () => ({ full_text: 't' }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ analysisText: 't' }) })
     .mockResolvedValueOnce({ ok: true, json: async () => ({ result: 'r' }) })
     .mockResolvedValueOnce({ ok: true, json: async () => ({ pdf: '/p', excel: '/e' }) })
 
