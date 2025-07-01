@@ -176,6 +176,7 @@ function AnalysisForm({
         setError('Sunucudan beklenmeyen boş yanıt alındı');
         return;
       }
+      setReviewText(reviewData.result);
 
       const reportRes = await fetch(`${API_BASE}/report`, {
         method: 'POST',
@@ -188,18 +189,17 @@ function AnalysisForm({
       });
       if (!reportRes.ok) {
         setError(await reportRes.text());
-        return;
+      } else {
+        const paths = await reportRes.json();
+        if (!paths?.pdf) {
+          setError('Sunucudan beklenmeyen boş yanıt alındı');
+        } else {
+          setReportPaths({
+            pdf: `${API_BASE}${paths.pdf}`,
+            excel: `${API_BASE}${paths.excel}`,
+          });
+        }
       }
-      const paths = await reportRes.json();
-      if (!paths?.pdf) {
-        setError('Sunucudan beklenmeyen boş yanıt alındı');
-        return;
-      }
-      setReviewText(reviewData.result);
-      setReportPaths({
-        pdf: `${API_BASE}${paths.pdf}`,
-        excel: `${API_BASE}${paths.excel}`,
-      });
     } catch (err) {
       console.error(err);
       setError(err.message || 'Bir hata oluştu');
