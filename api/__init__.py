@@ -82,7 +82,11 @@ class ReportBody(BaseModel):
 def report(body: ReportBody) -> Dict[str, str]:
     """Generate PDF and Excel reports via ``ReportGenerator``."""
     logger.info("Report request body: %s", body.dict())
-    paths = reporter.generate(body.analysis, body.complaint_info, REPORT_DIR)
+    try:
+        paths = reporter.generate(body.analysis, body.complaint_info, REPORT_DIR)
+    except Exception as exc:  # pragma: no cover - unexpected failure
+        logger.exception("Report generation failed")
+        raise HTTPException(status_code=500, detail="Report generation failed") from exc
     result = {
         "pdf": f"/reports/{Path(paths['pdf']).name}",
         "excel": f"/reports/{Path(paths['excel']).name}",

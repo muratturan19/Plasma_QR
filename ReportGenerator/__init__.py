@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any, Dict
 from pathlib import Path
 import os
+import logging
 
 from fpdf import FPDF
 from openpyxl import Workbook
@@ -13,6 +14,8 @@ from uuid import uuid4
 DEFAULT_FONT_PATH = Path(__file__).resolve().parents[1] / "Fonts" / "DejaVuSans.ttf"
 
 from GuideManager import GuideManager
+
+logger = logging.getLogger(__name__)
 
 
 class ReportGenerator:
@@ -99,7 +102,11 @@ class ReportGenerator:
             line = f"{key}: {response}"
             width = getattr(pdf, "epw", 0)
             pdf.multi_cell(width, 10, txt=line)
-        pdf.output(str(pdf_path))
+        try:
+            pdf.output(str(pdf_path))
+        except Exception:
+            logger.exception("Failed to create report file")
+            raise
 
         # Create Excel
         wb = Workbook()
@@ -111,7 +118,11 @@ class ReportGenerator:
         ws.append(["Step", "Response"])
         for key, response in entries:
             ws.append([key, response])
-        wb.save(str(excel_path))
+        try:
+            wb.save(str(excel_path))
+        except Exception:
+            logger.exception("Failed to create report file")
+            raise
 
         return {"pdf": str(pdf_path), "excel": str(excel_path)}
 

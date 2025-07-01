@@ -144,6 +144,18 @@ class ReportGeneratorTest(unittest.TestCase):
         occurrences = [line for line in pdf.lines if 'dup' in line]
         self.assertEqual(len(occurrences), 1)
 
+    def test_generate_logs_on_pdf_error(self) -> None:
+        """Errors during PDF output should be logged and re-raised."""
+        analysis = {"Step": {"response": "foo"}}
+        info = {"customer": "c"}
+        with tempfile.TemporaryDirectory() as tmpdir, \
+             patch.object(FPDF, "output", side_effect=OSError("boom")), \
+             self.assertLogs("ReportGenerator", level="ERROR") as log:
+            with self.assertRaises(OSError):
+                self.generator.generate(analysis, info, tmpdir)
+
+        self.assertIn("Failed to create report file", "\n".join(log.output))
+
 
 if __name__ == "__main__":
     unittest.main()
