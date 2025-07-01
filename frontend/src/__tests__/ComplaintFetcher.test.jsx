@@ -32,8 +32,10 @@ test('fetches complaints and shows data', async () => {
   expect(url).toContain('customer=cust')
   expect(url).toContain('subject=subj')
   expect(url).toContain('part_code=part')
-  await screen.findByText(/"a"/)
-  await screen.findByText(/"b"/)
+  await screen.findByText('a')
+  await screen.findByText('b')
+  const rows = await screen.findAllByRole('row')
+  expect(rows.length).toBeGreaterThan(1)
 })
 
 test('shows error when api fails', async () => {
