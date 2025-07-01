@@ -84,6 +84,7 @@ function AnalysisForm({
   const [claimsError, setClaimsError] = useState('');
   const [error, setError] = useState('');
   const [reviewText, setReviewText] = useState('');
+  const [analysisText, setAnalysisText] = useState('');
   const [reportPaths, setReportPaths] = useState(null);
   const [loading, setLoading] = useState(false);
   const [monthRange, setMonthRange] = useState([0, 11]);
@@ -161,6 +162,7 @@ function AnalysisForm({
         setError('Sunucudan beklenmeyen boş yanıt alındı');
         return;
       }
+      setAnalysisText(analysis.full_text);
 
       const reviewRes = await fetch(`${API_BASE}/review`, {
         method: 'POST',
@@ -531,6 +533,15 @@ function AnalysisForm({
           <Alert severity="error" sx={{ mt: 1 }}>
             {error}
           </Alert>
+        )}
+        {analysisText && (
+          <Box sx={{ mt: 2 }}>
+            <Card variant="outlined" sx={{ p: 2, backgroundColor: '#f9f9f9' }}>
+              <Typography data-testid="analysis-text" sx={{ whiteSpace: 'pre-line' }}>
+                {analysisText}
+              </Typography>
+            </Card>
+          </Box>
         )}
         {reviewText && (
           <Box sx={{ mt: 2 }}>

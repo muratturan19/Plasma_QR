@@ -139,6 +139,7 @@ test('runs analyze workflow', async () => {
   expect(fetch.mock.calls[4][0]).toMatch(/\/analyze$/)
   expect(fetch.mock.calls[5][0]).toMatch(/\/review$/)
   expect(fetch.mock.calls[6][0]).toMatch(/\/report$/)
+  await screen.findByTestId('analysis-text')
   await screen.findByTestId('review-text')
   await screen.findByTestId('pdf-link')
   await screen.findByTestId('excel-link')
@@ -185,6 +186,7 @@ test('shows error alert on empty report response', async () => {
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(7))
   const alert = await screen.findAllByRole('alert')
   expect(alert[1]).toHaveTextContent('Sunucudan beklenmeyen boş yanıt alındı')
+  await screen.findByTestId('analysis-text')
   expect(await screen.findByTestId('review-text')).toHaveTextContent('r')
 })
 
