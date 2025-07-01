@@ -65,6 +65,16 @@ class APITest(unittest.TestCase):
         )
         mock_gen.assert_called_with({}, {}, api.REPORT_DIR)
 
+    def test_report_endpoint_error(self) -> None:
+        """Errors from ``ReportGenerator`` should return HTTP 500."""
+        body = {"analysis": {}, "complaint_info": {}, "output_dir": "."}
+        with patch.object(api.reporter, "generate", side_effect=RuntimeError("boom")):
+            with self.assertLogs("api", level="ERROR") as cm:
+                response = self.client.post("/report", json=body)
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.json()["detail"], "Report generation failed")
+        self.assertIn("Report generation failed", "\n".join(cm.output))
+
     def test_reports_static_mount(self) -> None:
         tmp_file = api.REPORT_DIR / "test.txt"
         tmp_file.write_text("hi")
