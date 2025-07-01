@@ -240,7 +240,8 @@ function AnalysisForm({
         display: 'flex',
         flexDirection: 'row',
         boxShadow: 4,
-        background: 'linear-gradient(180deg, #fff 0%, #f4f7fb 100%)'
+        background: 'linear-gradient(180deg, #fff 0%, #f4f7fb 100%)',
+        position: 'relative'
       }}
     >
       {/* Sol Form Alanı */}
@@ -509,7 +510,20 @@ function AnalysisForm({
           </pre>
         )}
         {loading && (
-          <Box sx={{ mt: 1, display: 'flex', justifyContent: 'center' }}>
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'rgba(255,255,255,0.6)',
+              zIndex: 2
+            }}
+          >
             <CircularProgress data-testid="loading-indicator" />
           </Box>
         )}

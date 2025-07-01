@@ -132,7 +132,7 @@ test('runs analyze workflow', async () => {
   fireEvent.change(screen.getByLabelText('Şikayet (Complaint)'), {
     target: { value: 'c' }
   })
-  fireEvent.click(screen.getByRole('button', { name: /analiz et/i }))
+  fireEvent.click(screen.getByRole('button', { name: 'ANALİZ ET' }))
 
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(7))
   expect(fetch.mock.calls[3][0]).toMatch(/\/guide\/8D/)
@@ -158,10 +158,10 @@ test('shows error alert on analyze failure', async () => {
   fireEvent.change(screen.getByLabelText('Şikayet (Complaint)'), {
     target: { value: 'c' }
   })
-  fireEvent.click(screen.getByRole('button', { name: /analiz et/i }))
+  fireEvent.click(screen.getByRole('button', { name: 'ANALİZ ET' }))
 
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(5))
-  expect(screen.getByRole('alert')).toHaveTextContent('fail')
+  expect(screen.getAllByRole('alert')[1]).toHaveTextContent('fail')
 })
 
 test('shows error alert on empty report response', async () => {
@@ -180,11 +180,11 @@ test('shows error alert on empty report response', async () => {
   fireEvent.change(screen.getByLabelText('Şikayet (Complaint)'), {
     target: { value: 'c' }
   })
-  fireEvent.click(screen.getByRole('button', { name: /analiz et/i }))
+  fireEvent.click(screen.getByRole('button', { name: 'ANALİZ ET' }))
 
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(7))
-  const alert = await screen.findByRole('alert')
-  expect(alert).toHaveTextContent('Sunucudan beklenmeyen boş yanıt alındı')
+  const alert = await screen.findAllByRole('alert')
+  expect(alert[1]).toHaveTextContent('Sunucudan beklenmeyen boş yanıt alındı')
   expect(await screen.findByTestId('review-text')).toHaveTextContent('r')
 })
 
@@ -202,11 +202,11 @@ test('shows alert when analyze request rejects', async () => {
   fireEvent.change(screen.getByLabelText('Şikayet (Complaint)'), {
     target: { value: 'c' }
   })
-  fireEvent.click(screen.getByRole('button', { name: /analiz et/i }))
+  fireEvent.click(screen.getByRole('button', { name: 'ANALİZ ET' }))
 
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(5))
-  const alert = await screen.findByRole('alert')
-  expect(alert).toHaveTextContent('server error')
+  const alert = await screen.findAllByRole('alert')
+  expect(alert[1]).toHaveTextContent('server error')
 })
 
 test('shows loading indicator during analyze', async () => {
@@ -230,7 +230,7 @@ test('shows loading indicator during analyze', async () => {
   fireEvent.change(screen.getByLabelText('Şikayet (Complaint)'), {
     target: { value: 'c' }
   })
-  fireEvent.click(screen.getByRole('button', { name: /analiz et/i }))
+  fireEvent.click(screen.getByRole('button', { name: 'ANALİZ ET' }))
 
   await screen.findByTestId('loading-indicator')
   resolveGuide({ ok: true, json: async () => ({ fields: [] }) })
