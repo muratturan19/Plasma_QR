@@ -12,7 +12,8 @@ import {
   FormControlLabel,
   Checkbox,
   Select,
-  MenuItem
+  MenuItem,
+  CircularProgress
 } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import LabelIcon from '@mui/icons-material/Label';
@@ -84,6 +85,7 @@ function AnalysisForm({
   const [error, setError] = useState('');
   const [reviewText, setReviewText] = useState('');
   const [reportPaths, setReportPaths] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [monthRange, setMonthRange] = useState([0, 11]);
   const [yearRange, setYearRange] = useState([2016, 2025]);
   const months = [
@@ -130,6 +132,7 @@ function AnalysisForm({
   }, []);
   const handleAnalyze = async () => {
     setError('');
+    setLoading(true);
     const details = {
       complaint,
       customer,
@@ -138,19 +141,34 @@ function AnalysisForm({
     };
     try {
       const guideRes = await fetch(`${API_BASE}/guide/${method}`);
+      if (!guideRes.ok) {
+        setError(await guideRes.text());
+        return;
+      }
       const guideline = await guideRes.json();
+
       const analyzeRes = await fetch(`${API_BASE}/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ details, guideline, directives })
       });
+      if (!analyzeRes.ok) {
+        setError(await analyzeRes.text());
+        return;
+      }
       const analysis = await analyzeRes.json();
+
       const reviewRes = await fetch(`${API_BASE}/review`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: analysis.full_text || JSON.stringify(analysis) })
       });
+      if (!reviewRes.ok) {
+        setError(await reviewRes.text());
+        return;
+      }
       const reviewData = await reviewRes.json();
+
       const reportRes = await fetch(`${API_BASE}/report`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -160,12 +178,18 @@ function AnalysisForm({
           output_dir: '.'
         })
       });
+      if (!reportRes.ok) {
+        setError(await reportRes.text());
+        return;
+      }
       const paths = await reportRes.json();
       setReviewText(reviewData.result);
       setReportPaths(paths);
     } catch (err) {
       console.error(err);
       setError(err.message || 'Bir hata oluştu');
+    } finally {
+      setLoading(false);
     }
   };
   const handleFetchClaims = async () => {
@@ -468,6 +492,9 @@ function AnalysisForm({
           <pre style={{ whiteSpace: 'pre-wrap', marginTop: '8px' }}>
             {JSON.stringify(claims, null, 2)}
           </pre>
+        )}
+        {loading && (
+          <CircularProgress size={24} sx={{ mt: 1 }} data-testid="loading-indicator" />
         )}
         {error && (
           <Alert severity="error" sx={{ mt: 1 }}>

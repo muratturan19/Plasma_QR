@@ -150,7 +150,7 @@ test('shows error alert on analyze failure', async () => {
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
     .mockResolvedValueOnce({ ok: true, json: async () => ({ fields: [] }) })
-    .mockRejectedValueOnce(new Error('fail'))
+    .mockResolvedValueOnce({ ok: false, text: async () => 'fail' })
 
   render(<AnalysisForm initialMethod="8D" />)
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
@@ -183,4 +183,34 @@ test('shows alert when analyze request rejects', async () => {
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(5))
   const alert = await screen.findByRole('alert')
   expect(alert).toHaveTextContent('server error')
+})
+
+test('shows loading indicator during analyze', async () => {
+  let resolveGuide
+  const guidePromise = new Promise((res) => {
+    resolveGuide = res
+  })
+
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockReturnValueOnce(guidePromise)
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ full_text: 't' }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ result: 'r' }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ pdf: '/p', excel: '/e' }) })
+
+  render(<AnalysisForm initialMethod="8D" />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
+
+  fireEvent.change(screen.getByLabelText('Şikayet (Complaint)'), {
+    target: { value: 'c' }
+  })
+  fireEvent.click(screen.getByRole('button', { name: /analiz et/i }))
+
+  await screen.findByTestId('loading-indicator')
+  resolveGuide({ ok: true, json: async () => ({ fields: [] }) })
+
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(7))
+  expect(screen.queryByTestId('loading-indicator')).toBeNull()
 })
