@@ -9,9 +9,14 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import { API_BASE } from '../api'
 import FileDownloadIcon from '@mui/icons-material/FileDownload'
+import Table from '@mui/material/Table'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import TableCell from '@mui/material/TableCell'
+import TableBody from '@mui/material/TableBody'
 
 function ComplaintFetcher() {
-  const [data, setData] = useState(null)
+  const [rows, setRows] = useState([])
   const [error, setError] = useState(null)
   const [useCustomer, setUseCustomer] = useState(false)
   const [useSubject, setUseSubject] = useState(false)
@@ -39,10 +44,15 @@ function ComplaintFetcher() {
         throw new Error(`HTTP error ${res.status}`)
       }
       const jsonData = await res.json()
-      setData(jsonData)
+      const records = [
+        ...(jsonData.store || []),
+        ...(jsonData.excel || [])
+      ]
+      setRows(records)
       setError(null)
     } catch (err) {
       setError(err.message)
+      setRows([])
     }
   }
 
@@ -110,10 +120,29 @@ function ComplaintFetcher() {
       {error && (
         <Typography color="error" variant="body2">{error}</Typography>
       )}
-      {data && (
-        <pre style={{ whiteSpace: 'pre-wrap' }}>
-          {JSON.stringify(data, null, 2)}
-        </pre>
+      {rows.length > 0 && (
+        <Table size="small" sx={{ mt: 2 }}>
+          <TableHead>
+            <TableRow>
+              <TableCell>Complaint</TableCell>
+              <TableCell>Customer</TableCell>
+              <TableCell>Subject</TableCell>
+              <TableCell>Part Code</TableCell>
+              <TableCell>Date</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((r, i) => (
+              <TableRow key={i}>
+                <TableCell>{r.complaint}</TableCell>
+                <TableCell>{r.customer}</TableCell>
+                <TableCell>{r.subject}</TableCell>
+                <TableCell>{r.part_code}</TableCell>
+                <TableCell>{r.date}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       )}
     </Box>
   )
