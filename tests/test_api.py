@@ -5,6 +5,7 @@ from fastapi.testclient import TestClient
 import tempfile
 from pathlib import Path
 from ComplaintSearch import ComplaintStore
+from LLMAnalyzer import OpenAIError
 
 import api
 
@@ -44,6 +45,13 @@ class APITest(unittest.TestCase):
         logs = "\n".join(cm.output)
         self.assertIn("Analyze request body", logs)
         self.assertIn("Analyze result", logs)
+
+    def test_analyze_endpoint_error(self) -> None:
+        payload = {"details": {}, "guideline": {}, "directives": ""}
+        with patch.object(api.analyzer, "analyze", side_effect=OpenAIError("fail")):
+            response = self.client.post("/analyze", json=payload)
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.json()["detail"], "fail")
 
     def test_review_endpoint(self) -> None:
         body = {"text": "t", "context": {"a": "b"}}
