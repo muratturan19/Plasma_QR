@@ -185,6 +185,7 @@ test('shows error alert on empty report response', async () => {
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(7))
   const alert = await screen.findByRole('alert')
   expect(alert).toHaveTextContent('Sunucudan beklenmeyen boş yanıt alındı')
+  expect(await screen.findByTestId('review-text')).toHaveTextContent('r')
 })
 
 test('shows alert when analyze request rejects', async () => {
