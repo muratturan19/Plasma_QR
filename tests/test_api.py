@@ -126,10 +126,14 @@ class APITest(unittest.TestCase):
             "get_format",
             return_value={"method": "8D"},
         ) as mock_get:
-            response = self.client.get("/guide/8D")
+            with self.assertLogs("api", level="DEBUG") as cm:
+                response = self.client.get("/guide/8D")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"method": "8D"})
         mock_get.assert_called_with("8D")
+        logs = "\n".join(cm.output)
+        self.assertIn("Guide method", logs)
+        self.assertIn("Guide result", logs)
 
     def test_add_complaint_endpoint(self) -> None:
         body = {"complaint": "c", "customer": "cust", "subject": "s", "part_code": "p"}

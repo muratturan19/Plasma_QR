@@ -165,9 +165,9 @@ def options(field: str, request: Request) -> Dict[str, Any]:
 @app.get("/guide/{method}")
 def guide(method: str, request: Request) -> Dict[str, Any]:
     """Return guideline data for ``method``."""
-    logger.info("Guide query params: %s", request.query_params)
+    logger.info("Guide method: %s", method)
     result = _guide_manager.get_format(method)
-    logger.info("Guide result: %s", result)
+    logger.debug("Guide result: %s", result)
     return result
 
 
