@@ -4,8 +4,9 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional
 from pathlib import Path
+import logging
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -28,6 +29,8 @@ app.add_middleware(
 )
 app.mount("/reports", StaticFiles(directory=str(REPORT_DIR)), name="reports")
 
+logger = logging.getLogger(__name__)
+
 # Shared component instances
 _guide_manager = GuideManager()
 analyzer = LLMAnalyzer()
@@ -46,7 +49,10 @@ class AnalyzeBody(BaseModel):
 @app.post("/analyze")
 def analyze(body: AnalyzeBody) -> Dict[str, Any]:
     """Return analysis results from ``LLMAnalyzer``."""
-    return analyzer.analyze(body.details, body.guideline, body.directives)
+    logger.info("Analyze request body: %s", body.dict())
+    result = analyzer.analyze(body.details, body.guideline, body.directives)
+    logger.info("Analyze result: %s", result)
+    return result
 
 
 class ReviewBody(BaseModel):
@@ -57,10 +63,12 @@ class ReviewBody(BaseModel):
 @app.post("/review")
 def review(body: ReviewBody) -> Dict[str, str]:
     """Return reviewed text using ``Review``."""
+    logger.info("Review request body: %s", body.dict())
     try:
         result = reviewer.perform(body.text, **body.context)
     except Exception as exc:  # pragma: no cover - network issues
         raise HTTPException(status_code=500, detail=str(exc)) from exc
+    logger.info("Review result: %s", result)
     return {"result": result}
 
 
@@ -73,15 +81,19 @@ class ReportBody(BaseModel):
 @app.post("/report")
 def report(body: ReportBody) -> Dict[str, str]:
     """Generate PDF and Excel reports via ``ReportGenerator``."""
+    logger.info("Report request body: %s", body.dict())
     paths = reporter.generate(body.analysis, body.complaint_info, REPORT_DIR)
-    return {
+    result = {
         "pdf": f"/reports/{Path(paths['pdf']).name}",
         "excel": f"/reports/{Path(paths['excel']).name}",
     }
+    logger.info("Report result: %s", result)
+    return result
 
 
 @app.get("/complaints")
 def complaints(
+    request: Request,
     keyword: Optional[str] = None,
     complaint: Optional[str] = None,
     customer: Optional[str] = None,
@@ -92,6 +104,7 @@ def complaints(
     end_year: Optional[int] = None,
 ) -> Dict[str, Any]:
     """Return complaint queries from JSON store and Excel file."""
+    logger.info("Complaints query params: %s", request.query_params)
     store_results = _store.search(keyword) if keyword else []
     filters: Dict[str, str] = {}
     if complaint:
@@ -110,7 +123,9 @@ def complaints(
             start_year=start_year,
             end_year=end_year,
         )
-    return {"store": store_results, "excel": excel_results}
+    result = {"store": store_results, "excel": excel_results}
+    logger.info("Complaints result: %s", result)
+    return result
 
 
 class ComplaintBody(BaseModel):
@@ -123,20 +138,29 @@ class ComplaintBody(BaseModel):
 @app.post("/complaints")
 def add_complaint(body: ComplaintBody) -> Dict[str, str]:
     """Persist a complaint in the JSON store."""
+    logger.info("Add complaint body: %s", body.dict())
     _store.add_complaint(body.dict())
-    return {"status": "ok"}
+    result = {"status": "ok"}
+    logger.info("Add complaint result: %s", result)
+    return result
 
 
 @app.get("/options/{field}")
-def options(field: str) -> Dict[str, Any]:
+def options(field: str, request: Request) -> Dict[str, Any]:
     """Return unique option values for ``field`` from the Excel claims file."""
-    return {"values": _excel_searcher.unique_values(field)}
+    logger.info("Options query params: %s", request.query_params)
+    result = {"values": _excel_searcher.unique_values(field)}
+    logger.info("Options result: %s", result)
+    return result
 
 
 @app.get("/guide/{method}")
-def guide(method: str) -> Dict[str, Any]:
+def guide(method: str, request: Request) -> Dict[str, Any]:
     """Return guideline data for ``method``."""
-    return _guide_manager.get_format(method)
+    logger.info("Guide query params: %s", request.query_params)
+    result = _guide_manager.get_format(method)
+    logger.info("Guide result: %s", result)
+    return result
 
 
 __all__ = ["app"]

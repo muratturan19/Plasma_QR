@@ -35,6 +35,16 @@ class APITest(unittest.TestCase):
         self.assertEqual(response.json(), {"ok": 1})
         mock_analyze.assert_called_with(payload["details"], payload["guideline"], "")
 
+    def test_analyze_logging(self) -> None:
+        payload = {"details": {"complaint": "c"}, "guideline": {"fields": []}, "directives": ""}
+        with patch.object(api.analyzer, "analyze", return_value={"ok": 1}):
+            with self.assertLogs("api", level="INFO") as cm:
+                response = self.client.post("/analyze", json=payload)
+        self.assertEqual(response.status_code, 200)
+        logs = "\n".join(cm.output)
+        self.assertIn("Analyze request body", logs)
+        self.assertIn("Analyze result", logs)
+
     def test_review_endpoint(self) -> None:
         body = {"text": "t", "context": {"a": "b"}}
         with patch.object(api.reviewer, "perform", return_value="r") as mock_perf:
@@ -82,14 +92,22 @@ class APITest(unittest.TestCase):
         mock_excel.assert_called_with({"customer": "c"}, None, start_year=2020, end_year=2022)
 
     def test_options_endpoint(self) -> None:
-        with patch.object(api._excel_searcher, "unique_values", return_value=["a", "b"]) as mock_opts:
+        with patch.object(
+            api._excel_searcher,
+            "unique_values",
+            return_value=["a", "b"],
+        ) as mock_opts:
             response = self.client.get("/options/customer")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"values": ["a", "b"]})
         mock_opts.assert_called_with("customer")
 
     def test_guide_endpoint(self) -> None:
-        with patch.object(api._guide_manager, "get_format", return_value={"method": "8D"}) as mock_get:
+        with patch.object(
+            api._guide_manager,
+            "get_format",
+            return_value={"method": "8D"},
+        ) as mock_get:
             response = self.client.get("/guide/8D")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"method": "8D"})
