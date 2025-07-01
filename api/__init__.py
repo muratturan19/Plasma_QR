@@ -50,7 +50,11 @@ class AnalyzeBody(BaseModel):
 def analyze(body: AnalyzeBody) -> Dict[str, Any]:
     """Return analysis results from ``LLMAnalyzer``."""
     logger.info("Analyze request body: %s", body.dict())
-    result = analyzer.analyze(body.details, body.guideline, body.directives)
+    try:
+        result = analyzer.analyze(body.details, body.guideline, body.directives)
+    except Exception as exc:  # pragma: no cover - unexpected failure
+        logger.exception("Analyze failed")
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
     logger.info("Analyze result: %s", result)
     return result
 
