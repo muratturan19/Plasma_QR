@@ -85,8 +85,10 @@ function AnalysisForm({
   const [error, setError] = useState('');
   const [reviewText, setReviewText] = useState('');
   const [analysisText, setAnalysisText] = useState('');
+  const [rawAnalysis, setRawAnalysis] = useState('');
   const [reportPaths, setReportPaths] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [rawClaims, setRawClaims] = useState('');
   const [monthRange, setMonthRange] = useState([0, 11]);
   const [yearRange, setYearRange] = useState([2016, 2025]);
   const months = [
@@ -134,6 +136,7 @@ function AnalysisForm({
   const handleAnalyze = async () => {
     setError('');
     setLoading(true);
+    setRawAnalysis('');
     const details = {
       complaint,
       customer,
@@ -160,9 +163,11 @@ function AnalysisForm({
       const analysis = await analyzeRes.json();
       const text = analysis.full_text || analysis.analysisText;
       if (!text) {
+        setRawAnalysis(JSON.stringify(analysis, null, 2));
         setError('Sunucudan beklenmeyen boş yanıt alındı');
         return;
       }
+      setRawAnalysis('');
       setAnalysisText(text);
 
       const reviewRes = await fetch(`${API_BASE}/review`, {
@@ -227,11 +232,23 @@ function AnalysisForm({
       }
       const data = await res.json();
       const results = data.results || data;
-      setClaims(results);
-      setClaimsError('');
+      if (
+        Array.isArray(results) ||
+        results.store !== undefined ||
+        results.excel !== undefined
+      ) {
+        setRawClaims('');
+        setClaims(results);
+        setClaimsError('');
+      } else {
+        setClaims(null);
+        setRawClaims(JSON.stringify(data, null, 2));
+        setClaimsError('');
+      }
     } catch (err) {
       setClaimsError(err.message);
       setClaims(null);
+      setRawClaims('');
     }
   };
   return (
@@ -513,6 +530,14 @@ function AnalysisForm({
             {JSON.stringify(claims, null, 2)}
           </pre>
         )}
+        {rawClaims && (
+          <pre
+            data-testid="raw-claims"
+            style={{ whiteSpace: 'pre-wrap', marginTop: '8px' }}
+          >
+            {rawClaims}
+          </pre>
+        )}
         {loading && (
           <Box
             sx={{
@@ -535,6 +560,14 @@ function AnalysisForm({
           <Alert severity="error" sx={{ mt: 1 }}>
             {error}
           </Alert>
+        )}
+        {rawAnalysis && (
+          <pre
+            data-testid="raw-analysis"
+            style={{ whiteSpace: 'pre-wrap', marginTop: '8px' }}
+          >
+            {rawAnalysis}
+          </pre>
         )}
         {analysisText && (
           <Box sx={{ mt: 2 }}>

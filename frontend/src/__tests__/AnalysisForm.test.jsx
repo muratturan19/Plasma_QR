@@ -240,3 +240,41 @@ test('shows loading indicator during analyze', async () => {
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(7))
   expect(screen.queryByTestId('loading-indicator')).toBeNull()
 })
+
+test('shows raw analysis json when response missing fields', async () => {
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ fields: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ foo: 'bar' }) })
+
+  render(<AnalysisForm initialMethod="8D" />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
+
+  fireEvent.change(screen.getByLabelText('Şikayet (Complaint)'), {
+    target: { value: 'c' }
+  })
+  fireEvent.click(screen.getByRole('button', { name: 'ANALİZ ET' }))
+
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(5))
+  const pre = await screen.findByTestId('raw-analysis')
+  expect(pre).toHaveTextContent('"foo"')
+})
+
+test('shows raw claims json on unexpected response', async () => {
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ strange: true }) })
+
+  render(<AnalysisForm />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
+
+  fireEvent.click(screen.getByRole('button', { name: /şikayetleri getir/i }))
+
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4))
+  const pre = await screen.findByTestId('raw-claims')
+  expect(pre).toHaveTextContent('"strange"')
+})
