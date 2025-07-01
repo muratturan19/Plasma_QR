@@ -9,8 +9,10 @@ class RunAPITest(unittest.TestCase):
     def test_main_invokes_uvicorn(self) -> None:
         module = importlib.import_module("run_api")
         with patch.object(module, "load_dotenv") as mock_load, \
-             patch.object(module, "uvicorn") as mock_uvicorn:
+             patch.object(module, "uvicorn") as mock_uvicorn, \
+             patch.object(module, "configure_logging") as mock_conf:
             module.main()
+            mock_conf.assert_called_once()
             mock_load.assert_called_once()
             mock_uvicorn.run.assert_called_once_with(module.app, host="0.0.0.0", port=8000)
 

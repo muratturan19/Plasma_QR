@@ -176,6 +176,10 @@ pip install -r requirements.txt
 python run_api.py
 ```
 
+Uygulama calisirken log seviyesini `LOG_LEVEL` degiskeniyle
+belirleyebilirsiniz. Varsayilan seviye `INFO` olup ayrintili loglar
+icin `LOG_LEVEL=DEBUG` tanimlayin.
+
 Sunucu varsayilan olarak `http://localhost:8000` adresinde
 asagidaki uclari sunar:
 
