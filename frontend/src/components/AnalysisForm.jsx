@@ -157,6 +157,10 @@ function AnalysisForm({
         return;
       }
       const analysis = await analyzeRes.json();
+      if (!analysis?.full_text) {
+        setError('Sunucudan beklenmeyen boş yanıt alındı');
+        return;
+      }
 
       const reviewRes = await fetch(`${API_BASE}/review`, {
         method: 'POST',
@@ -168,6 +172,10 @@ function AnalysisForm({
         return;
       }
       const reviewData = await reviewRes.json();
+      if (!reviewData?.result) {
+        setError('Sunucudan beklenmeyen boş yanıt alındı');
+        return;
+      }
 
       const reportRes = await fetch(`${API_BASE}/report`, {
         method: 'POST',
@@ -183,6 +191,10 @@ function AnalysisForm({
         return;
       }
       const paths = await reportRes.json();
+      if (!paths?.pdf) {
+        setError('Sunucudan beklenmeyen boş yanıt alındı');
+        return;
+      }
       setReviewText(reviewData.result);
       setReportPaths(paths);
     } catch (err) {

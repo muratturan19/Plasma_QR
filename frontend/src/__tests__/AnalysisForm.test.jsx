@@ -164,6 +164,29 @@ test('shows error alert on analyze failure', async () => {
   expect(screen.getByRole('alert')).toHaveTextContent('fail')
 })
 
+test('shows error alert on empty report response', async () => {
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ fields: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ full_text: 'a' }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ result: 'r' }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({}) })
+
+  render(<AnalysisForm initialMethod="8D" />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
+
+  fireEvent.change(screen.getByLabelText('Şikayet (Complaint)'), {
+    target: { value: 'c' }
+  })
+  fireEvent.click(screen.getByRole('button', { name: /analiz et/i }))
+
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(7))
+  const alert = await screen.findByRole('alert')
+  expect(alert).toHaveTextContent('Sunucudan beklenmeyen boş yanıt alındı')
+})
+
 test('shows alert when analyze request rejects', async () => {
   fetch
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
