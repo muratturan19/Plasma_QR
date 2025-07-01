@@ -69,6 +69,10 @@ class LLMAnalyzer:
     def _query_llm(self, system_prompt: str, user_prompt: str) -> str:
         """Return the LLM response for the given prompt pair."""
         self.logger.debug("LLMAnalyzer._query_llm start")
+        truncated_sys = system_prompt.replace("\n", " ")[:200]
+        truncated_user = user_prompt.replace("\n", " ")[:200]
+        self.logger.debug("system_prompt: %s", truncated_sys)
+        self.logger.debug("user_prompt: %s", truncated_user)
         try:
             from openai import OpenAI  # type: ignore
         except ImportError as exc:  # pragma: no cover - import errors not expected
@@ -91,6 +95,7 @@ class LLMAnalyzer:
             if tokens is not None:
                 self.logger.info("LLMAnalyzer tokens used: %s", tokens)
             result = response.choices[0].message.content.strip()
+            self.logger.debug("LLMAnalyzer returned: %s", result.replace("\n", " ")[:200])
             self.logger.debug("LLMAnalyzer._query_llm end")
             return result
         except Exception as exc:  # pragma: no cover - network issues

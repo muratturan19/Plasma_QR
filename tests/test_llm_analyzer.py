@@ -127,7 +127,7 @@ class LLMAnalyzerTest(unittest.TestCase):
         self.assertEqual(analyzer.model, "gpt-test")
 
     def test_query_llm_logs_tokens(self) -> None:
-        """Successful calls should log start, token usage and end messages."""
+        """Successful calls should emit debug logs with prompts and result."""
         mock_openai = types.ModuleType("openai")
         usage = types.SimpleNamespace(total_tokens=5)
         response = types.SimpleNamespace(
@@ -144,7 +144,10 @@ class LLMAnalyzerTest(unittest.TestCase):
         self.assertEqual(result, "ok")
         messages = "\n".join(log.output)
         self.assertIn("LLMAnalyzer._query_llm start", messages)
+        self.assertIn("system_prompt: sys", messages)
+        self.assertIn("user_prompt: prompt", messages)
         self.assertIn("INFO:LLMAnalyzer:LLMAnalyzer tokens used: 5", messages)
+        self.assertIn("LLMAnalyzer returned: ok", messages)
         self.assertIn("LLMAnalyzer._query_llm end", messages)
 
 
