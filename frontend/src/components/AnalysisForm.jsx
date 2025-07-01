@@ -196,7 +196,10 @@ function AnalysisForm({
         return;
       }
       setReviewText(reviewData.result);
-      setReportPaths(paths);
+      setReportPaths({
+        pdf: `${API_BASE}${paths.pdf}`,
+        excel: `${API_BASE}${paths.excel}`,
+      });
     } catch (err) {
       console.error(err);
       setError(err.message || 'Bir hata oluştu');
@@ -506,7 +509,9 @@ function AnalysisForm({
           </pre>
         )}
         {loading && (
-          <CircularProgress size={24} sx={{ mt: 1 }} data-testid="loading-indicator" />
+          <Box sx={{ mt: 1, display: 'flex', justifyContent: 'center' }}>
+            <CircularProgress data-testid="loading-indicator" />
+          </Box>
         )}
         {error && (
           <Alert severity="error" sx={{ mt: 1 }}>
@@ -515,18 +520,25 @@ function AnalysisForm({
         )}
         {reviewText && (
           <Box sx={{ mt: 2 }}>
-            <Typography data-testid="review-text">{reviewText}</Typography>
-            {reportPaths && (
-              <Box sx={{ mt: 1 }}>
-                <a href={reportPaths.pdf} data-testid="pdf-link">
-                  PDF indir
-                </a>
-                {' | '}
-                <a href={reportPaths.excel} data-testid="excel-link">
-                  Excel indir
-                </a>
-              </Box>
-            )}
+            <Card variant="outlined" sx={{ p: 2, backgroundColor: '#f9f9f9' }}>
+              <Typography
+                data-testid="review-text"
+                sx={{ whiteSpace: 'pre-line' }}
+              >
+                {reviewText}
+              </Typography>
+              {reportPaths && (
+                <Box sx={{ mt: 1 }}>
+                  <a href={reportPaths.pdf} data-testid="pdf-link">
+                    PDF indir
+                  </a>
+                  {' | '}
+                  <a href={reportPaths.excel} data-testid="excel-link">
+                    Excel indir
+                  </a>
+                </Box>
+              )}
+            </Card>
           </Box>
         )}
       </Box>
