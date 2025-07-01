@@ -4,6 +4,7 @@ import unittest
 from unittest.mock import patch
 import os
 from fpdf import FPDF
+from openpyxl import Workbook
 
 from GuideManager import GuideManager
 from ReportGenerator import ReportGenerator
@@ -150,6 +151,18 @@ class ReportGeneratorTest(unittest.TestCase):
         info = {"customer": "c"}
         with tempfile.TemporaryDirectory() as tmpdir, \
              patch.object(FPDF, "output", side_effect=OSError("boom")), \
+             self.assertLogs("ReportGenerator", level="ERROR") as log:
+            with self.assertRaises(OSError):
+                self.generator.generate(analysis, info, tmpdir)
+
+        self.assertIn("Failed to create report file", "\n".join(log.output))
+
+    def test_generate_logs_on_excel_error(self) -> None:
+        """Errors during Excel save should be logged and re-raised."""
+        analysis = {"Step": {"response": "foo"}}
+        info = {"customer": "c"}
+        with tempfile.TemporaryDirectory() as tmpdir, \
+             patch.object(Workbook, "save", side_effect=OSError("boom")), \
              self.assertLogs("ReportGenerator", level="ERROR") as log:
             with self.assertRaises(OSError):
                 self.generator.generate(analysis, info, tmpdir)
