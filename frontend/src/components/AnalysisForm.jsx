@@ -134,6 +134,7 @@ function AnalysisForm({
     fetchOptions('part_code', setPartCodeOptions);
   }, []);
   const handleAnalyze = async () => {
+    // DEBUG: API_BASE kontrolü
     console.log('API_BASE:', API_BASE);
     setError('');
     setLoading(true);
@@ -196,6 +197,8 @@ function AnalysisForm({
       }
       setReviewText(reviewData.result);
 
+      // DEBUG: Report kısmı
+      console.log('Starting report generation...');
       const reportRes = await fetch(`${API_BASE}/report`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -205,23 +208,33 @@ function AnalysisForm({
           output_dir: '.'
         })
       });
+
+      console.log('Report response status:', reportRes.status);
+      console.log('Report response ok:', reportRes.ok);
+
       if (!reportRes.ok) {
-        setError(await reportRes.text());
+        const errorText = await reportRes.text();
+        console.log('Report error:', errorText);
+        setError(errorText);
         setReportPaths(null);
         return;
       } else {
         const paths = await reportRes.json();
         console.log('Backend response paths:', paths);
         console.log('API_BASE value:', API_BASE);
+
         if (!paths?.pdf) {
+          console.log('No PDF path in response');
           setError('Sunucudan beklenmeyen boş yanıt alındı');
         } else {
-          const reportPaths = {
+          const finalReportPaths = {
             pdf: `${API_BASE}${paths.pdf}`,
             excel: `${API_BASE}${paths.excel}`,
           };
-          console.log('Final report URLs:', reportPaths);
-          setReportPaths(reportPaths);
+          console.log('Final report URLs:', finalReportPaths);
+          console.log('Setting reportPaths state...');
+          setReportPaths(finalReportPaths);
+          console.log('reportPaths state set successfully');
         }
       }
     } catch (err) {
@@ -267,6 +280,9 @@ function AnalysisForm({
       setRawClaims('');
     }
   };
+  console.log('analysisText:', analysisText);
+  console.log('reviewText:', reviewText);
+  console.log('reportPaths:', reportPaths);
   return (
     <Card
       sx={{
@@ -603,16 +619,35 @@ function AnalysisForm({
               >
                 {reviewText}
               </Typography>
-              {reportPaths && (
+              {(() => {
+                console.log('Rendering report section, current reportPaths:', reportPaths);
+                return null;
+              })()}
+              {reportPaths ? (
                 <Box sx={{ mt: 1 }}>
-                  <a href={reportPaths.pdf} data-testid="pdf-link">
+                  <a
+                    href={reportPaths.pdf}
+                    data-testid="pdf-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     PDF indir
                   </a>
                   {' | '}
-                  <a href={reportPaths.excel} data-testid="excel-link">
+                  <a
+                    href={reportPaths.excel}
+                    data-testid="excel-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     Excel indir
                   </a>
                 </Box>
+              ) : (
+                <div>
+                  {console.log('reportPaths is null/undefined, not showing links')}
+                  <p>Rapor linkleri henüz hazır değil...</p>
+                </div>
               )}
             </Card>
           </Box>
