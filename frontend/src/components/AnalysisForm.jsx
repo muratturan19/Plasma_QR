@@ -28,6 +28,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import DescriptionIcon from '@mui/icons-material/Description';
 import FishboneDiagram from './FishboneDiagram';
+import ReportGuideModal from './ReportGuideModal';
 import {
   ResponsiveContainer,
   BarChart,
@@ -107,6 +108,7 @@ function AnalysisForm({
     'Fransızca'
   ];
   const [language, setLanguage] = useState('Türkçe');
+  const [guideOpen, setGuideOpen] = useState(false);
   const months = [
     'Oca',
     'Şub',
@@ -309,6 +311,7 @@ function AnalysisForm({
   console.log('reviewText:', reviewText);
   console.log('reportPaths:', reportPaths);
   return (
+    <>
     <Card
       sx={{
         width: 1600,
@@ -581,6 +584,13 @@ function AnalysisForm({
               ))}
             </Select>
           </Box>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => setGuideOpen(true)}
+          >
+            Rapor Kılavuzu
+          </Button>
           <Button variant="contained" color="primary" onClick={handleAnalyze}>
             ANALİZ ET
           </Button>
@@ -826,6 +836,8 @@ function AnalysisForm({
         </Box>
       </Box>
     </Card>
+    <ReportGuideModal open={guideOpen} onClose={() => setGuideOpen(false)} />
+    </>
   );
 }
 export default AnalysisForm;

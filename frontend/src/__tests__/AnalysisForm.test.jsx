@@ -142,6 +142,28 @@ test.skip('runs analyze workflow', async () => {
   await screen.findByTestId('excel-link')
 })
 
+test('opens and closes report guide modal', async () => {
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+
+  render(<AnalysisForm />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
+
+  fireEvent.click(screen.getByRole('button', { name: /rapor kılavuzu/i }))
+  expect(
+    screen.getByText(/Rapor Kılavuzu – Kaliteli ve Anlamlı Çıktı İçin İpuçları/i)
+  ).toBeInTheDocument()
+
+  fireEvent.click(screen.getByLabelText(/close/i))
+  await waitFor(() =>
+    expect(
+      screen.queryByText(/Rapor Kılavuzu – Kaliteli ve Anlamlı Çıktı İçin İpuçları/i)
+    ).toBeNull()
+  )
+})
+
 test('shows error alert on analyze failure', async () => {
   fetch
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
