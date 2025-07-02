@@ -99,6 +99,14 @@ function AnalysisForm({
   const [rawClaims, setRawClaims] = useState('');
   const [monthRange, setMonthRange] = useState([0, 11]);
   const [yearRange, setYearRange] = useState([2016, 2025]);
+  const LANGUAGE_OPTIONS = [
+    'Türkçe',
+    'İngilizce',
+    'İtalyanca',
+    'Almanca',
+    'Fransızca'
+  ];
+  const [language, setLanguage] = useState('Türkçe');
   const months = [
     'Oca',
     'Şub',
@@ -167,7 +175,7 @@ function AnalysisForm({
       const analyzeRes = await fetch(`${API_BASE}/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ details, guideline, directives })
+        body: JSON.stringify({ details, guideline, directives, language })
       });
       if (!analyzeRes.ok) {
         setError(await analyzeRes.text());
@@ -192,7 +200,10 @@ function AnalysisForm({
       const reviewRes = await fetch(`${API_BASE}/review`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: text || JSON.stringify(analysis) })
+        body: JSON.stringify({
+          text: text || JSON.stringify(analysis),
+          context: { language }
+        })
       });
       if (!reviewRes.ok) {
         setError(await reviewRes.text());
@@ -549,12 +560,27 @@ function AnalysisForm({
             display: 'flex',
             gap: 8,
             mt: 'auto',
-			mb: 14,
+                        mb: 14,
             height: '24%',
             minHeight: 60,
             alignItems: 'flex-end'
           }}
         >
+          <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
+            <Typography sx={{ mr: 1 }}>Dil seçimi</Typography>
+            <Select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              size="small"
+              sx={{ minWidth: 120 }}
+            >
+              {LANGUAGE_OPTIONS.map((opt) => (
+                <MenuItem key={opt} value={opt}>
+                  {opt}
+                </MenuItem>
+              ))}
+            </Select>
+          </Box>
           <Button variant="contained" color="primary" onClick={handleAnalyze}>
             ANALİZ ET
           </Button>
@@ -667,7 +693,7 @@ function AnalysisForm({
             {rawAnalysis}
           </pre>
         )}
-        {analysisText && (
+        {analysisText && !reviewText && (
           <Box sx={{ mt: 2 }}>
             <Card variant="outlined" sx={{ p: 2, backgroundColor: '#f9f9f9' }}>
               <Typography data-testid="analysis-text" sx={{ whiteSpace: 'pre-line' }}>

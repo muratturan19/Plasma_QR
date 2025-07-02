@@ -110,8 +110,21 @@ class LLMAnalyzer:
         details: Dict[str, Any],
         guideline: Dict[str, Any],
         directives: str = "",
+        language: str = "Türkçe",
     ) -> Dict[str, Any]:
-        """Return analysis using complaint details and optional directives."""
+        """Return analysis using complaint details.
+
+        Parameters
+        ----------
+        details
+            Complaint information such as text and customer.
+        guideline
+            Guideline describing the report format.
+        directives
+            Optional user directives to customize the report.
+        language
+            Desired language for the response.
+        """
         complaint_text = details.get("complaint", "")
         customer = details.get("customer", "")
         subject = details.get("subject", "")
@@ -133,6 +146,8 @@ class LLMAnalyzer:
                     f"{directives}\n\n"
                     "Lütfen yukarıdaki taleplere ve kısıtlamalara mutlaka uy."
                 )
+            if language:
+                user_prompt += f"\nRaporu {language} dilinde yaz."
             answer = self._query_llm(DEFAULT_8D_PROMPT, user_prompt)
             return {"full_text": answer}
 
@@ -150,6 +165,8 @@ class LLMAnalyzer:
                     f"{directives}\n\n"
                     "Lütfen yukarıdaki taleplere ve kısıtlamalara mutlaka uy."
                 )
+            if language:
+                user_prompt += f"\nRaporu {language} dilinde yaz."
             answer = self._query_llm("", user_prompt)
             return {"full_text": answer}
 
@@ -193,6 +210,8 @@ class LLMAnalyzer:
                     f"{directives}\n\n"
                     "Lütfen yukarıdaki taleplere ve kısıtlamalara mutlaka uy."
                 )
+            if language:
+                user_prompt += f"\nRaporu {language} dilinde yaz."
 
             answer = self._query_llm(system_prompt, user_prompt)
             results[step_id] = {"response": answer}
