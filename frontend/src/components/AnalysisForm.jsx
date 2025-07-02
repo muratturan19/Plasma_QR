@@ -161,7 +161,13 @@ function AnalysisForm({
         return;
       }
       const analysis = await analyzeRes.json();
-      const text = analysis.full_text || analysis.analysisText;
+      let text = analysis.full_text || analysis.analysisText;
+      if (!text) {
+        const steps = Object.values(analysis)
+          .map((s) => (s && typeof s === 'object' ? s.response : undefined))
+          .filter(Boolean);
+        text = steps.join('\n\n');
+      }
       if (!text) {
         setRawAnalysis(JSON.stringify(analysis, null, 2));
         setError('Sunucudan beklenmeyen boş yanıt alındı');
