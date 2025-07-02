@@ -305,7 +305,7 @@ function AnalysisForm({
         sx={{
           width: '68%',
           minWidth: 0,
-          height: 540,
+          height: { xs: 'auto', md: 540 },
           display: 'flex',
           flexDirection: 'column',
           pr: 3,
@@ -320,7 +320,7 @@ function AnalysisForm({
             flexDirection: 'row',
             gap: 2,
             mb: 16,
-            height: '38%',
+            height: { xs: 'auto', md: '38%' },
             minHeight: 120
           }}
         >
@@ -344,7 +344,7 @@ function AnalysisForm({
               display: 'flex',
               flexDirection: 'column',
               gap: 2,
-              justifyContent: 'space-between',
+              justifyContent: 'flex-start',
               height: '100%',
               ...methodBoxProps
             }}
@@ -442,7 +442,7 @@ function AnalysisForm({
               )}
             />
             {method && (
-              <Alert severity="info" sx={{ mt: 1, fontSize: 15 }}>
+              <Alert severity="info" sx={{ mt: 1, mb: 2, fontSize: 15 }}>
                 {GUIDE_TEXT[method]}
               </Alert>
             )}
@@ -457,8 +457,8 @@ function AnalysisForm({
         <Box
           sx={{
             width: '100%',
-			mt: 6,
-            height: '38%',
+            mt: 6,
+            height: { xs: 'auto', md: '38%' },
             minHeight: 90,
             borderRadius: 1,
             p: 1,
