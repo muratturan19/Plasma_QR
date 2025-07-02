@@ -19,6 +19,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import LabelIcon from '@mui/icons-material/Label';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import DescriptionIcon from '@mui/icons-material/Description';
 import FishboneDiagram from './FishboneDiagram';
 import {
   ResponsiveContainer,
@@ -618,56 +620,31 @@ function AnalysisForm({
                 {reviewText}
               </Typography>
 
-              {/* ZORUNLU DEBUG - Her zaman görünmeli */}
-              <div
-                style={{
-                  marginTop: '10px',
-                  padding: '10px',
-                  backgroundColor: '#ffeb3b',
-                  border: '2px solid red'
-                }}
-              >
-                <strong>DEBUG:</strong> reportPaths = {JSON.stringify(reportPaths, null, 2)}
-              </div>
-
-              {/* Test - reportPaths varlığını farklı yollarla kontrol et */}
-              {reportPaths ? (
-                <Box sx={{ mt: 1, backgroundColor: '#c8e6c9', p: 1 }}>
-                  <strong>RAPOR LİNKLERİ BULUNDU:</strong>
-                  <br />
-                  <a
+              {reportPaths && (
+                <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
                     href={reportPaths.pdf}
-                    data-testid="pdf-link"
                     target="_blank"
                     rel="noopener noreferrer"
+                    download
+                    startIcon={<PictureAsPdfIcon />}
                   >
-                    PDF indir ({reportPaths.pdf})
-                  </a>
-                  <br />
-                  <a
+                    PDF indir
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="success"
                     href={reportPaths.excel}
-                    data-testid="excel-link"
                     target="_blank"
                     rel="noopener noreferrer"
+                    download
+                    startIcon={<DescriptionIcon />}
                   >
-                    Excel indir ({reportPaths.excel})
-                  </a>
+                    Excel indir
+                  </Button>
                 </Box>
-              ) : (
-                <div style={{ backgroundColor: '#ffcdd2', padding: '10px', marginTop: '10px' }}>
-                  <strong>RAPOR LİNKLERİ BULUNAMADI!</strong>
-                  <br />
-                  reportPaths değeri: {String(reportPaths)}
-                </div>
-              )}
-
-              {/* Alternatif kontrol */}
-              {reportPaths && reportPaths.pdf && (
-                <div style={{ backgroundColor: '#e1f5fe', padding: '10px', marginTop: '10px' }}>
-                  <strong>ALTERNATİF KONTROL:</strong>
-                  <br />
-                  <a href={reportPaths.pdf}>PDF Link (Alternatif)</a>
-                </div>
               )}
             </Card>
           </Box>
