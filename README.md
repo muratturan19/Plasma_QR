@@ -17,7 +17,17 @@ source venv/bin/activate
 
 ```bash
 pip install -r requirements.txt
+pip install pre-commit
 ```
+
+4. Git kancalarini kurmak icin `pre-commit install` komutunu calistirin:
+
+```bash
+pre-commit install
+```
+
+Bu adimlarin ardindan yapacaginiz her commit oncesinde `pre-commit` otomatik
+calisacak ve kodunuzun sekilsel kontrolleri ile birim testleri gerceklestirilecektir.
 
 Bu komut gerekli tüm Python bağımlılıklarını kurar.
 Unicode karakterleri içeren PDF çıktısı alınabilmesi için depo kökünde bulunan
@@ -306,6 +316,13 @@ Bagimliliklari kurduktan sonra birim testlerini asagidaki komutla calistirabilir
 python -m unittest discover
 ```
 
+Kod gondermeden once asagidaki komutla tum kancalari manuel olarak calistirarak
+degisikliklerinizi dogrulayabilirsiniz:
+
+```bash
+pre-commit run --all-files
+```
+
 ### Hizli Test Kurulumu
 
 Testleri calistirmadan once `requirements.txt` dosyasindaki tum paketleri kurmaniz gerektigini unutmayin. Kurulum icin asagidaki betigi veya komutu kullanabilirsiniz:
@@ -319,6 +336,13 @@ Kurulumun ardindan testleri calistirmak icin su komutu kullanin:
 
 ```bash
 python -m unittest discover
+```
+
+Bir commit olusturmadan once `pre-commit` komutu calisarak kod formatinin dogru
+oldugundan ve testlerin gectiginden emin olun:
+
+```bash
+pre-commit
 ```
 
 
