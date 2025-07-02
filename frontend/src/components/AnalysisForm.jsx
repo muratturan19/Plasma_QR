@@ -302,7 +302,7 @@ function AnalysisForm({
       sx={{
         width: 1600,
         margin: '40px auto',
-        minHeight: 650,
+        minHeight: 700,
         p: 4,
         display: 'flex',
         flexDirection: 'row',
