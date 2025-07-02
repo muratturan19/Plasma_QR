@@ -332,7 +332,7 @@ function AnalysisForm({
             flexDirection: 'row',
             gap: 2,
             mb: 16,
-            height: { xs: 'auto', md: '38%' },
+            height: 'auto',
             minHeight: 120
           }}
         >
