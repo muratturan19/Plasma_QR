@@ -309,3 +309,54 @@ test('uses step responses when analysisText missing', async () => {
   await screen.findByTestId('pdf-link')
   await screen.findByTestId('excel-link')
 })
+
+test('clears previous results when analyzing again', async () => {
+  let resolveGuide
+  const guidePromise = new Promise((res) => {
+    resolveGuide = res
+  })
+
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ fields: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ analysisText: 'a1' }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ result: 'r1' }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ pdf: '/p1', excel: '/e1' }) })
+    .mockReturnValueOnce(guidePromise)
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ analysisText: 'a2' }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ result: 'r2' }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ pdf: '/p2', excel: '/e2' }) })
+
+  render(<AnalysisForm initialMethod="8D" />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
+
+  fireEvent.change(screen.getByLabelText('Şikayet (Complaint)'), {
+    target: { value: 'c1' }
+  })
+  fireEvent.click(screen.getByRole('button', { name: 'ANALİZ ET' }))
+
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(7))
+  await screen.findByTestId('analysis-text')
+  await screen.findByTestId('review-text')
+  await screen.findByTestId('pdf-link')
+  await screen.findByTestId('excel-link')
+
+  fireEvent.change(screen.getByLabelText('Şikayet (Complaint)'), {
+    target: { value: 'c2' }
+  })
+  fireEvent.click(screen.getByRole('button', { name: 'ANALİZ ET' }))
+
+  expect(screen.queryByTestId('analysis-text')).toBeNull()
+  expect(screen.queryByTestId('review-text')).toBeNull()
+  expect(screen.queryByTestId('pdf-link')).toBeNull()
+  expect(screen.queryByTestId('excel-link')).toBeNull()
+
+  resolveGuide({ ok: true, json: async () => ({ fields: [] }) })
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(11))
+  await screen.findByTestId('analysis-text')
+  await screen.findByTestId('review-text')
+  await screen.findByTestId('pdf-link')
+  await screen.findByTestId('excel-link')
+})

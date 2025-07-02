@@ -137,6 +137,9 @@ function AnalysisForm({
     setError('');
     setLoading(true);
     setRawAnalysis('');
+    setAnalysisText('');
+    setReviewText('');
+    setReportPaths(null);
     const details = {
       complaint,
       customer,
