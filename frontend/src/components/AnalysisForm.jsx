@@ -206,6 +206,8 @@ function AnalysisForm({
       });
       if (!reportRes.ok) {
         setError(await reportRes.text());
+        setReportPaths(null);
+        return;
       } else {
         const paths = await reportRes.json();
         if (!paths?.pdf) {
