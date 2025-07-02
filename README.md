@@ -227,9 +227,10 @@ Varsayilan ayar API'ye `http://localhost:8000` adresinden baglanir. API farkli
 bir sunucuda veya portta calisiyorsa `.env` dosyasindaki `VITE_API_URL`
 degerini bu adrese gore degistirin.
 
-Balık kılçığı diyagramı için `fishbone-chart` paketini kullanıyoruz.
-`AnalysisForm` bileşeni Ishikawa yöntemi seçildiğinde
-`<FishboneDiagram data={data} />` şeklinde diyagramı gösterir.
+
+> **Not:** Fishbone (Ishikawa) diyagramı özelliği şu anda React 19 ile
+> uyumsuz olan `fishbone-chart` paketine bağlı olduğu için devre dışı
+> bırakılmıştır. Uygun bir çözüm bulunduğunda yeniden etkinleştirilecektir.
 
 
 
