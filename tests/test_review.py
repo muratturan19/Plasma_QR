@@ -21,7 +21,7 @@ class ReviewTest(unittest.TestCase):
             review = Review()
         with patch.object(Review, "_query_llm") as mock_query:
             mock_query.return_value = "ok"
-            review.perform("data")
+            review.perform("data", language="Türkçe")
             mock_query.assert_called_with("prefix data suffix")
 
     def test_query_llm_logs_error(self) -> None:

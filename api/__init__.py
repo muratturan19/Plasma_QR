@@ -44,6 +44,7 @@ class AnalyzeBody(BaseModel):
     details: Dict[str, Any]
     guideline: Dict[str, Any]
     directives: str = ""
+    language: str = "Türkçe"
 
 
 @app.post("/analyze")
@@ -51,7 +52,12 @@ def analyze(body: AnalyzeBody) -> Dict[str, Any]:
     """Return analysis results from ``LLMAnalyzer``."""
     logger.info("Analyze request body: %s", body.dict())
     try:
-        result = analyzer.analyze(body.details, body.guideline, body.directives)
+        result = analyzer.analyze(
+            body.details,
+            body.guideline,
+            body.directives,
+            body.language,
+        )
     except Exception as exc:  # pragma: no cover - unexpected failure
         logger.exception("Analyze failed")
         raise HTTPException(status_code=500, detail=str(exc)) from exc

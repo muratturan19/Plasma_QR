@@ -76,6 +76,15 @@ class LLMAnalyzerTest(unittest.TestCase):
         call_args = mock_query.call_args[0]
         self.assertIn("Kullanıcıdan gelen özel talimatlar:\nd", call_args[1])
 
+    @patch.object(LLMAnalyzer, "_query_llm", return_value="ok")
+    def test_language_added_to_prompt(self, mock_query) -> None:  # type: ignore
+        """Selected language should be included in the prompt."""
+        guideline = {"method": "A3", "fields": []}
+        details = {"complaint": "c"}
+        self.analyzer.analyze(details, guideline, language="İngilizce")
+        call_args = mock_query.call_args[0]
+        self.assertIn("İngilizce", call_args[1])
+
     def test_query_llm_fallback(self) -> None:
         """``_query_llm`` should return a placeholder for non-auth errors."""
         mock_openai = types.ModuleType("openai")

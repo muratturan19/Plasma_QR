@@ -29,15 +29,30 @@ class APITest(unittest.TestCase):
         self.assertIn("access-control-allow-origin", response.headers)
 
     def test_analyze_endpoint(self) -> None:
-        payload = {"details": {"complaint": "c"}, "guideline": {"fields": []}, "directives": ""}
+        payload = {
+            "details": {"complaint": "c"},
+            "guideline": {"fields": []},
+            "directives": "",
+            "language": "Türkçe",
+        }
         with patch.object(api.analyzer, "analyze", return_value={"ok": 1}) as mock_analyze:
             response = self.client.post("/analyze", json=payload)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"ok": 1})
-        mock_analyze.assert_called_with(payload["details"], payload["guideline"], "")
+        mock_analyze.assert_called_with(
+            payload["details"],
+            payload["guideline"],
+            "",
+            "Türkçe",
+        )
 
     def test_analyze_logging(self) -> None:
-        payload = {"details": {"complaint": "c"}, "guideline": {"fields": []}, "directives": ""}
+        payload = {
+            "details": {"complaint": "c"},
+            "guideline": {"fields": []},
+            "directives": "",
+            "language": "Türkçe",
+        }
         with patch.object(api.analyzer, "analyze", return_value={"ok": 1}):
             with self.assertLogs("api", level="INFO") as cm:
                 response = self.client.post("/analyze", json=payload)
@@ -47,7 +62,12 @@ class APITest(unittest.TestCase):
         self.assertIn("Analyze result", logs)
 
     def test_analyze_endpoint_error(self) -> None:
-        payload = {"details": {}, "guideline": {}, "directives": ""}
+        payload = {
+            "details": {},
+            "guideline": {},
+            "directives": "",
+            "language": "Türkçe",
+        }
         with patch.object(api.analyzer, "analyze", side_effect=OpenAIError("fail")):
             response = self.client.post("/analyze", json=payload)
         self.assertEqual(response.status_code, 500)

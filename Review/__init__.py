@@ -67,11 +67,16 @@ class Review:
             "part_code": context.get("part_code", ""),
             "initial_report_text": text,
             "guideline_json": context.get("guideline_json", ""),
+            "language": context.get("language", ""),
         }
         return self.template.format(**params)
 
     def perform(self, text: str, **context: str) -> str:
-        """Return a reviewed version of the provided ``text``."""
+        """Return a reviewed version of ``text``.
+
+        ``context`` may include a ``language`` key specifying the desired
+        response language.
+        """
         prompt = self._build_prompt(text, **context)
         return self._query_llm(prompt)
 
