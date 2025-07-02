@@ -15,6 +15,12 @@ import {
   MenuItem,
   CircularProgress
 } from '@mui/material';
+import Table from '@mui/material/Table';
+import TableHead from '@mui/material/TableHead';
+import TableBody from '@mui/material/TableBody';
+import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
+import MuiTooltip from '@mui/material/Tooltip';
 import PersonIcon from '@mui/icons-material/Person';
 import LabelIcon from '@mui/icons-material/Label';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
@@ -268,12 +274,18 @@ function AnalysisForm({
         results.store !== undefined ||
         results.excel !== undefined
       ) {
+        const records = Array.isArray(results)
+          ? results
+          : [...(results.store || []), ...(results.excel || [])];
+        console.log('claims data', records);
         setRawClaims('');
-        setClaims(results);
+        setClaims(records);
         setClaimsError('');
       } else {
-        setClaims(null);
-        setRawClaims(JSON.stringify(data, null, 2));
+        setClaims([]);
+        const raw = JSON.stringify(data, null, 2);
+        console.log('raw claims', raw);
+        setRawClaims(raw);
         setClaimsError('');
       }
     } catch (err) {
@@ -560,19 +572,70 @@ function AnalysisForm({
             {claimsError}
           </Alert>
         )}
-        {claims && (
-          <pre style={{ whiteSpace: 'pre-wrap', marginTop: '8px' }}>
-            {JSON.stringify(claims, null, 2)}
-          </pre>
+        {claims && claims.length > 0 && (
+          <Table size="small" sx={{ mt: 2 }}>
+            <TableHead>
+              <TableRow>
+                <TableCell>Tarih</TableCell>
+                <TableCell>Müşteri</TableCell>
+                <TableCell>Şikayet</TableCell>
+                <TableCell>Konu</TableCell>
+                <TableCell>Parça Kodu</TableCell>
+                <TableCell>Açıklama</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {claims.map((c, i) => (
+                <TableRow key={i}>
+                  <TableCell>
+                    {new Date(c.date).toLocaleDateString('tr-TR', {
+                      day: '2-digit',
+                      month: 'long',
+                      year: 'numeric',
+                    })}
+                  </TableCell>
+                  <TableCell>{c.customer}</TableCell>
+                  <TableCell>
+                    <MuiTooltip title={c.complaint || ''}>
+                      <span
+                        style={{
+                          maxWidth: 150,
+                          display: 'inline-block',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {c.complaint}
+                      </span>
+                    </MuiTooltip>
+                  </TableCell>
+                  <TableCell>{c.subject}</TableCell>
+                  <TableCell>{c.part_code}</TableCell>
+                  <TableCell>
+                    <MuiTooltip title={c.description || ''}>
+                      <span
+                        style={{
+                          maxWidth: 150,
+                          display: 'inline-block',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {c.description}
+                      </span>
+                    </MuiTooltip>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         )}
-        {rawClaims && (
-          <pre
-            data-testid="raw-claims"
-            style={{ whiteSpace: 'pre-wrap', marginTop: '8px' }}
-          >
-            {rawClaims}
-          </pre>
+        {claims && claims.length === 0 && (
+          <Typography sx={{ mt: 2 }}>Şikayet bulunamadı</Typography>
         )}
+        {rawClaims && console.log('raw claims', rawClaims)}
         {loading && (
           <Box
             sx={{

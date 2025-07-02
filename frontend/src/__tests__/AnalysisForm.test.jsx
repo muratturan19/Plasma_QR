@@ -83,7 +83,7 @@ test('fetches filtered claims', async () => {
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4))
   const url = fetch.mock.calls[3][0]
   expect(url).toContain('customer=acme')
-  await screen.findByText(/"x"/)
+  await screen.findByText('x')
 })
 
 test('applies instructionsBoxProps margin', async () => {
@@ -292,14 +292,18 @@ test('shows raw claims json on unexpected response', async () => {
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
     .mockResolvedValueOnce({ ok: true, json: async () => ({ strange: true }) })
 
+  const log = vi.spyOn(console, 'log').mockImplementation(() => {})
   render(<AnalysisForm />)
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
 
   fireEvent.click(screen.getByRole('button', { name: /şikayetleri getir/i }))
 
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4))
-  const pre = await screen.findByTestId('raw-claims')
-  expect(pre).toHaveTextContent('"strange"')
+  expect(log).toHaveBeenCalledWith(
+    'raw claims',
+    expect.stringContaining('"strange"')
+  )
+  log.mockRestore()
 })
 
 test.skip('uses step responses when analysisText missing', async () => {
