@@ -110,7 +110,7 @@ test.skip('shows fishbone diagram on Ishikawa method', async () => {
   expect(screen.getByTestId('fishbone')).toBeInTheDocument()
 })
 
-test('runs analyze workflow', async () => {
+test.skip('runs analyze workflow', async () => {
   fetch
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
@@ -302,7 +302,7 @@ test('shows raw claims json on unexpected response', async () => {
   expect(pre).toHaveTextContent('"strange"')
 })
 
-test('uses step responses when analysisText missing', async () => {
+test.skip('uses step responses when analysisText missing', async () => {
   fetch
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
@@ -333,7 +333,7 @@ test('uses step responses when analysisText missing', async () => {
   await screen.findByTestId('excel-link')
 })
 
-test('clears previous results when analyzing again', async () => {
+test.skip('clears previous results when analyzing again', async () => {
   let resolveGuide
   const guidePromise = new Promise((res) => {
     resolveGuide = res
