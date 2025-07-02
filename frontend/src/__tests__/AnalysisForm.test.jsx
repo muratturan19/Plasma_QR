@@ -278,3 +278,34 @@ test('shows raw claims json on unexpected response', async () => {
   const pre = await screen.findByTestId('raw-claims')
   expect(pre).toHaveTextContent('"strange"')
 })
+
+test('uses step responses when analysisText missing', async () => {
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ fields: [] }) })
+    .mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        Step1: { response: 'one' },
+        Step2: { response: 'two' }
+      })
+    })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ result: 'rev' }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ pdf: '/p', excel: '/e' }) })
+
+  render(<AnalysisForm initialMethod="8D" />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
+
+  fireEvent.change(screen.getByLabelText('Şikayet (Complaint)'), {
+    target: { value: 'c' }
+  })
+  fireEvent.click(screen.getByRole('button', { name: 'ANALİZ ET' }))
+
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(7))
+  expect(await screen.findByTestId('analysis-text')).toHaveTextContent('one')
+  expect(await screen.findByTestId('review-text')).toHaveTextContent('rev')
+  await screen.findByTestId('pdf-link')
+  await screen.findByTestId('excel-link')
+})
