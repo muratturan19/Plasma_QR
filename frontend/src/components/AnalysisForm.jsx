@@ -453,11 +453,6 @@ function AnalysisForm({
                 />
               )}
             />
-            {method && (
-              <Alert severity="info" sx={{ mt: 1, mb: 2, fontSize: 15 }}>
-                {GUIDE_TEXT[method]}
-              </Alert>
-            )}
             {method === 'Ishikawa' && (
               <Box sx={{ mt: 2 }}>
                 <FishboneDiagram data={FISHBONE_DATA} />
@@ -567,6 +562,11 @@ function AnalysisForm({
             Şikayetleri Getir
           </Button>
         </Box>
+        {method && (
+          <Alert severity="info" sx={{ mt: 2, mb: 2, fontSize: 15 }}>
+            {GUIDE_TEXT[method]}
+          </Alert>
+        )}
         {claimsError && (
           <Alert severity="error" sx={{ mt: 1 }}>
             {claimsError}
