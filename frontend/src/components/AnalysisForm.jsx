@@ -613,40 +613,59 @@ function AnalysisForm({
         {reviewText && (
           <Box sx={{ mt: 2 }}>
             <Card variant="outlined" sx={{ p: 2, backgroundColor: '#f9f9f9' }}>
-              <Typography
-                data-testid="review-text"
-                sx={{ whiteSpace: 'pre-line' }}
-              >
+              <Typography data-testid="review-text" sx={{ whiteSpace: 'pre-line' }}>
                 {reviewText}
               </Typography>
-              {(() => {
-                console.log('Rendering report section, current reportPaths:', reportPaths);
-                return null;
-              })()}
+
+              {/* ZORUNLU DEBUG - Her zaman görünmeli */}
+              <div
+                style={{
+                  marginTop: '10px',
+                  padding: '10px',
+                  backgroundColor: '#ffeb3b',
+                  border: '2px solid red'
+                }}
+              >
+                <strong>DEBUG:</strong> reportPaths = {JSON.stringify(reportPaths, null, 2)}
+              </div>
+
+              {/* Test - reportPaths varlığını farklı yollarla kontrol et */}
               {reportPaths ? (
-                <Box sx={{ mt: 1 }}>
+                <Box sx={{ mt: 1, backgroundColor: '#c8e6c9', p: 1 }}>
+                  <strong>RAPOR LİNKLERİ BULUNDU:</strong>
+                  <br />
                   <a
                     href={reportPaths.pdf}
                     data-testid="pdf-link"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    PDF indir
+                    PDF indir ({reportPaths.pdf})
                   </a>
-                  {' | '}
+                  <br />
                   <a
                     href={reportPaths.excel}
                     data-testid="excel-link"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Excel indir
+                    Excel indir ({reportPaths.excel})
                   </a>
                 </Box>
               ) : (
-                <div>
-                  {console.log('reportPaths is null/undefined, not showing links')}
-                  <p>Rapor linkleri henüz hazır değil...</p>
+                <div style={{ backgroundColor: '#ffcdd2', padding: '10px', marginTop: '10px' }}>
+                  <strong>RAPOR LİNKLERİ BULUNAMADI!</strong>
+                  <br />
+                  reportPaths değeri: {String(reportPaths)}
+                </div>
+              )}
+
+              {/* Alternatif kontrol */}
+              {reportPaths && reportPaths.pdf && (
+                <div style={{ backgroundColor: '#e1f5fe', padding: '10px', marginTop: '10px' }}>
+                  <strong>ALTERNATİF KONTROL:</strong>
+                  <br />
+                  <a href={reportPaths.pdf}>PDF Link (Alternatif)</a>
                 </div>
               )}
             </Card>
