@@ -220,8 +220,12 @@ React tabanli onyuzu calistirmak icin Node.js yüklü olmalidir.
 ```bash
 cd frontend
 npm install
+cp .env.example .env  # API baska bir sunucu veya portta ise URL'yi guncelleyin
 npm run dev
 ```
+Varsayilan ayar API'ye `http://localhost:8000` adresinden baglanir. API farkli
+bir sunucuda veya portta calisiyorsa `.env` dosyasindaki `VITE_API_URL`
+degerini bu adrese gore degistirin.
 
 Balık kılçığı diyagramı için `fishbone-chart` paketini kullanıyoruz.
 `AnalysisForm` bileşeni Ishikawa yöntemi seçildiğinde
@@ -325,8 +329,12 @@ asagidaki komutlari calistirarak gelistirme sunucusunu baslatabilirsiniz:
 ```bash
 cd frontend
 npm install
+cp .env.example .env  # API baska bir sunucu veya portta ise URL'yi guncelleyin
 npm run dev
 ```
+Varsayilan ayar API'ye `http://localhost:8000` adresinden baglanir. API farkli
+bir sunucuda veya portta calisiyorsa `.env` dosyasindaki `VITE_API_URL`
+degerini buna gore degistirin.
 
 ## Masaüstü Uygulama (Electron)
 
