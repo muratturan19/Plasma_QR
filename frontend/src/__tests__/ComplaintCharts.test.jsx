@@ -15,3 +15,8 @@ test('renders form and chart titles', () => {
   expect(screen.getByText(/2025 Aylık Şikayet/i)).toBeInTheDocument()
   expect(screen.getByText(/Son 10 Yıl Şikayet/i)).toBeInTheDocument()
 })
+
+test('renders range sliders', () => {
+  render(<ComplaintCharts form={<div />} />)
+  expect(screen.getAllByRole('slider').length).toBeGreaterThanOrEqual(2)
+})
