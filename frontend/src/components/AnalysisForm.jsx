@@ -134,6 +134,7 @@ function AnalysisForm({
     fetchOptions('part_code', setPartCodeOptions);
   }, []);
   const handleAnalyze = async () => {
+    console.log('API_BASE:', API_BASE);
     setError('');
     setLoading(true);
     setRawAnalysis('');
@@ -210,13 +211,17 @@ function AnalysisForm({
         return;
       } else {
         const paths = await reportRes.json();
+        console.log('Backend response paths:', paths);
+        console.log('API_BASE value:', API_BASE);
         if (!paths?.pdf) {
           setError('Sunucudan beklenmeyen boş yanıt alındı');
         } else {
-          setReportPaths({
+          const reportPaths = {
             pdf: `${API_BASE}${paths.pdf}`,
             excel: `${API_BASE}${paths.excel}`,
-          });
+          };
+          console.log('Final report URLs:', reportPaths);
+          setReportPaths(reportPaths);
         }
       }
     } catch (err) {
