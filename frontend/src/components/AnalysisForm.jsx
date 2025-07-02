@@ -91,7 +91,6 @@ function AnalysisForm({
   const [rawClaims, setRawClaims] = useState('');
   const [monthRange, setMonthRange] = useState([0, 11]);
   const [yearRange, setYearRange] = useState([2016, 2025]);
-  const [greeting, setGreeting] = useState('');
   const months = [
     'Oca',
     'Şub',
@@ -138,7 +137,6 @@ function AnalysisForm({
     // DEBUG: API_BASE kontrolü
     console.log('API_BASE:', API_BASE);
     setError('');
-    setGreeting('Merhaba');
     setLoading(true);
     setRawAnalysis('');
     setAnalysisText('');
@@ -300,22 +298,6 @@ function AnalysisForm({
         overflowY: 'auto'
       }}
     >
-      {greeting && (
-        <Typography
-          variant="h2"
-          data-testid="greeting"
-          sx={{
-            position: 'absolute',
-            top: 16,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            color: 'primary.main',
-            zIndex: 3
-          }}
-        >
-          {greeting}
-        </Typography>
-      )}
       {/* Sol Form Alanı */}
       <Box
         sx={{
