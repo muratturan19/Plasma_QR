@@ -176,7 +176,8 @@ def add_complaint(body: ComplaintBody) -> Dict[str, str]:
 def options(field: str, request: Request) -> Dict[str, Any]:
     """Return unique option values for ``field`` from the Excel claims file."""
     logger.info("Options query params: %s", request.query_params)
-    result = {"values": _excel_searcher.unique_values(field)}
+    mapped_field = ALIAS_TO_HEADER.get(normalize_text(field), field)
+    result = {"values": _excel_searcher.unique_values(mapped_field)}
     logger.info("Options result: %s", result)
     return result
 
