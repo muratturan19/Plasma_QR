@@ -284,6 +284,7 @@ function AnalysisForm({
         ? `${API_BASE}/complaints?${params.toString()}`
         : `${API_BASE}/complaints`;
     try {
+      setClaimsError('');
       const res = await fetch(url);
       if (!res.ok) {
         throw new Error(`HTTP error ${res.status}`);
@@ -310,7 +311,8 @@ function AnalysisForm({
         setClaimsError('');
       }
     } catch (err) {
-      setClaimsError(err.message);
+      console.error(err);
+      setClaimsError(err.message || 'Şikayetler alınamadı');
       setClaims(null);
       setRawClaims('');
     }

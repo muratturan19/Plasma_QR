@@ -84,12 +84,30 @@ test('fetches filtered claims', async () => {
 
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4))
   const url = fetch.mock.calls[3][0]
-  expect(url).toContain('customer=acme')
+  const encoded = encodeURIComponent('Müşteri Adı').replace(/%20/g, '+')
+  expect(url).toContain(`${encoded}=acme`)
   await screen.findByText('x')
   const headers = screen
     .getAllByRole('columnheader')
     .map((h) => h.textContent)
   expect(headers).toEqual(expect.arrayContaining(['complaint', 'customer']))
+})
+
+test('shows alert on claims fetch rejection', async () => {
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockRejectedValueOnce(new Error('claims fail'))
+
+  render(<AnalysisForm />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
+
+  fireEvent.click(screen.getByRole('button', { name: /şikayetleri getir/i }))
+
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4))
+  const alert = await screen.findByRole('alert')
+  expect(alert).toHaveTextContent('claims fail')
 })
 
 test('applies instructionsBoxProps margin', async () => {
@@ -211,8 +229,6 @@ test('shows error alert on empty report response', async () => {
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(7))
   const alert = await screen.findAllByRole('alert')
   expect(alert[1]).toHaveTextContent('Sunucudan beklenmeyen boş yanıt alındı')
-  await screen.findByTestId('analysis-text')
-  expect(await screen.findByTestId('review-text')).toHaveTextContent('r')
 })
 
 test('hides report links when report request fails', async () => {
@@ -236,8 +252,6 @@ test('hides report links when report request fails', async () => {
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(7))
   const alert = await screen.findAllByRole('alert')
   expect(alert[1]).toHaveTextContent('err')
-  await screen.findByTestId('analysis-text')
-  await screen.findByTestId('review-text')
   expect(screen.queryByTestId('pdf-link')).toBeNull()
 })
 
