@@ -94,6 +94,10 @@ test('fetches filtered claims', async () => {
   expect(
     screen.getByText(/Fetched 1 claims/)
   ).toBeInTheDocument()
+  expect(screen.getByTestId('claims-json')).toHaveTextContent('"x"')
+  expect(screen.getByTestId('claim-columns')).toHaveTextContent(
+    'complaint, customer'
+  )
 })
 
 test('shows alert on claims fetch rejection', async () => {
