@@ -315,6 +315,7 @@ function AnalysisForm({
         console.log('claims data', records);
         setRawClaims('');
         setClaims(records);
+        console.log(records);
         setClaimsError('');
         setDebugMessages((m) => [...m, `Fetched ${records.length} claims`]);
       } else {
@@ -335,6 +336,7 @@ function AnalysisForm({
   console.log('analysisText:', analysisText);
   console.log('reviewText:', reviewText);
   console.log('reportPaths:', reportPaths);
+  console.log('columns', Object.keys(claims?.[0] || {}));
   return (
     <>
     <Card
@@ -688,6 +690,10 @@ function AnalysisForm({
                 )}
               </TableBody>
             </Table>
+            <pre data-testid="claims-json">{JSON.stringify(claims)}</pre>
+            <div data-testid="claim-columns">
+              {Object.keys(claims[0] || {}).join(', ')}
+            </div>
           </Box>
         )}
         {claims && claims.length === 0 && (
@@ -858,6 +864,8 @@ function AnalysisForm({
         </Box>
       </Box>
     </Card>
+    <div>ALAKASIZ TEST YAZISI</div>
+    <p>{Math.random()}</p>
     <ReportGuideModal open={guideOpen} onClose={() => setGuideOpen(false)} />
     </>
   );
