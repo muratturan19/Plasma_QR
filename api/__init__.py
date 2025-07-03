@@ -15,7 +15,7 @@ from GuideManager import GuideManager
 from LLMAnalyzer import LLMAnalyzer
 from Review import Review
 from ReportGenerator import ReportGenerator
-from ComplaintSearch import ComplaintStore, ExcelClaimsSearcher
+from ComplaintSearch import ComplaintStore, ExcelClaimsSearcher, normalize_text
 
 REPORT_DIR = Path(__file__).resolve().parents[1] / "reports"
 REPORT_DIR.mkdir(parents=True, exist_ok=True)
@@ -30,6 +30,20 @@ app.add_middleware(
 app.mount("/reports", StaticFiles(directory=str(REPORT_DIR)), name="reports")
 
 logger = logging.getLogger(__name__)
+
+# Map common query aliases to Excel header names
+ALIAS_TO_HEADER = {
+    normalize_text("customer"): "Müşteri Adı",
+    normalize_text("musteri"): "Müşteri Adı",
+    normalize_text("musteri adi"): "Müşteri Adı",
+    normalize_text("subject"): "Hata Tanımı - Kök Neden",
+    normalize_text("konu"): "Konu",
+    normalize_text("hata tanımı - kök neden"): "Hata Tanımı - Kök Neden",
+    normalize_text("part_code"): "Parça Numarası",
+    normalize_text("parca kodu"): "Parça Numarası",
+    normalize_text("parça kodu"): "Parça Numarası",
+    normalize_text("parça numarası"): "Parça Numarası",
+}
 
 # Shared component instances
 _guide_manager = GuideManager()
@@ -120,10 +134,17 @@ def complaints(
     filters: Dict[str, str] = {
         k: v for k, v in request.query_params.items() if k not in known
     }
+    normalized: Dict[str, str] = {}
+    for key, val in filters.items():
+        norm = normalize_text(key)
+        mapped = ALIAS_TO_HEADER.get(norm, key)
+        if isinstance(val, str):
+            val = val.strip()
+        normalized[mapped] = val
     excel_results = []
-    if filters or year is not None or start_year is not None or end_year is not None:
+    if normalized or year is not None or start_year is not None or end_year is not None:
         excel_results = _excel_searcher.search(
-            filters,
+            normalized,
             year,
             start_year=start_year,
             end_year=end_year,

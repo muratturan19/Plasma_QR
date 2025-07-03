@@ -39,6 +39,11 @@ import {
   CartesianGrid
 } from 'recharts';
 import { API_BASE } from '../api';
+const FIELD_MAP = {
+  customer: 'Müşteri Adı',
+  subject: 'Hata Tanımı - Kök Neden',
+  part_code: 'Parça Numarası'
+};
 const METHODS = ['8D', 'A3', 'Ishikawa', '5N1K', 'DMAIC'];
 const GUIDE_TEXT = {
   '8D':
@@ -267,9 +272,12 @@ function AnalysisForm({
   };
   const handleFetchClaims = async () => {
     const params = new URLSearchParams();
-    if (useCustomerFilter && customer) params.append('customer', customer);
-    if (useSubjectFilter && subject) params.append('subject', subject);
-    if (usePartCodeFilter && partCode) params.append('part_code', partCode);
+    if (useCustomerFilter && customer)
+      params.append(FIELD_MAP.customer, customer);
+    if (useSubjectFilter && subject)
+      params.append(FIELD_MAP.subject, subject);
+    if (usePartCodeFilter && partCode)
+      params.append(FIELD_MAP.part_code, partCode);
     if (selectedYear) params.append('start_year', selectedYear);
     const url =
       params.toString().length > 0
