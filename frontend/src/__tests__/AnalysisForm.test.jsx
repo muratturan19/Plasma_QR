@@ -91,6 +91,9 @@ test('fetches filtered claims', async () => {
     .getAllByRole('columnheader')
     .map((h) => h.textContent)
   expect(headers).toEqual(expect.arrayContaining(['complaint', 'customer']))
+  expect(
+    screen.getByText(/Fetched 1 claims/)
+  ).toBeInTheDocument()
 })
 
 test('shows alert on claims fetch rejection', async () => {
@@ -106,8 +109,7 @@ test('shows alert on claims fetch rejection', async () => {
   fireEvent.click(screen.getByRole('button', { name: /şikayetleri getir/i }))
 
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4))
-  const alert = await screen.findByRole('alert')
-  expect(alert).toHaveTextContent('claims fail')
+  expect(await screen.findByText('claims fail')).toBeInTheDocument()
 })
 
 test('applies instructionsBoxProps margin', async () => {
@@ -205,7 +207,7 @@ test('shows error alert on analyze failure', async () => {
   fireEvent.click(screen.getByRole('button', { name: 'ANALİZ ET' }))
 
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(5))
-  expect(screen.getAllByRole('alert')[1]).toHaveTextContent('fail')
+  expect(await screen.findByText('fail')).toBeInTheDocument()
 })
 
 test('shows error alert on empty report response', async () => {
@@ -227,8 +229,9 @@ test('shows error alert on empty report response', async () => {
   fireEvent.click(screen.getByRole('button', { name: 'ANALİZ ET' }))
 
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(7))
-  const alert = await screen.findAllByRole('alert')
-  expect(alert[1]).toHaveTextContent('Sunucudan beklenmeyen boş yanıt alındı')
+  expect(
+    await screen.findByText('Sunucudan beklenmeyen boş yanıt alındı')
+  ).toBeInTheDocument()
 })
 
 test('hides report links when report request fails', async () => {
@@ -250,8 +253,7 @@ test('hides report links when report request fails', async () => {
   fireEvent.click(screen.getByRole('button', { name: 'ANALİZ ET' }))
 
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(7))
-  const alert = await screen.findAllByRole('alert')
-  expect(alert[1]).toHaveTextContent('err')
+  expect(await screen.findByText('err')).toBeInTheDocument()
   expect(screen.queryByTestId('pdf-link')).toBeNull()
 })
 
@@ -272,8 +274,7 @@ test('shows alert when analyze request rejects', async () => {
   fireEvent.click(screen.getByRole('button', { name: 'ANALİZ ET' }))
 
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(5))
-  const alert = await screen.findAllByRole('alert')
-  expect(alert[1]).toHaveTextContent('server error')
+  expect(await screen.findByText('server error')).toBeInTheDocument()
 })
 
 test('shows loading indicator during analyze', async () => {
@@ -304,6 +305,28 @@ test('shows loading indicator during analyze', async () => {
 
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(7))
   expect(screen.queryByTestId('loading-indicator')).toBeNull()
+})
+
+test('shows debug alert after successful analyze', async () => {
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ fields: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ analysisText: 't' }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ result: 'r' }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ pdf: '/p', excel: '/e' }) })
+
+  render(<AnalysisForm initialMethod="8D" />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
+
+  fireEvent.change(screen.getByLabelText('Şikayet (Complaint)'), {
+    target: { value: 'c' }
+  })
+  fireEvent.click(screen.getByRole('button', { name: 'ANALİZ ET' }))
+
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(7))
+  expect(screen.getByText(/Report generated/)).toBeInTheDocument()
 })
 
 test('shows raw analysis json when response missing fields', async () => {
