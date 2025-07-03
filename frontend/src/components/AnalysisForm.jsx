@@ -339,7 +339,7 @@ function AnalysisForm({
     <>
     <Card
       sx={{
-        width: 1600,
+        maxWidth: '100%',
         margin: '40px auto',
         minHeight: 700,
         p: 4,
