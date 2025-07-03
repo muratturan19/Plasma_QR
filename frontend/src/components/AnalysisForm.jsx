@@ -329,7 +329,7 @@ function AnalysisForm({
     } catch (err) {
       console.error(err);
       setClaimsError(err.message || 'Şikayetler alınamadı');
-      setClaims(null);
+      setClaims([]);
       setRawClaims('');
     }
   };

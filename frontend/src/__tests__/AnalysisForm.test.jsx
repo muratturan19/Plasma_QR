@@ -114,6 +114,10 @@ test('shows alert on claims fetch rejection', async () => {
 
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4))
   expect(await screen.findByText('claims fail')).toBeInTheDocument()
+
+  const rows = screen.getAllByRole('row', { hidden: true })
+  const placeholderRow = rows.find((r) => r.classList.contains('placeholder-row'))
+  expect(placeholderRow).toBeDefined()
 })
 
 test('renders placeholder table when no claims returned', async () => {
