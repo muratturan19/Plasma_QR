@@ -66,7 +66,8 @@ export OPENAI_API_KEY="sk-..."
 
 Anahtari ve sikayet kaydi Excel dosyasinin yolunu kolayca tanimlamak icin
 `configure_env.py` betigini calistirabilirsiniz. Betik istenen bilgileri
-sorarak `.env` dosyasina yazar.
+sorarak `.env` dosyasina yazar. Varsayilan ornek dosya
+``CC/F160_Customer_Claims.xlsx`` konumunda bulunur.
 
 ```bash
 python configure_env.py

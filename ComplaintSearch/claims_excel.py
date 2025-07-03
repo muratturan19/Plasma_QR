@@ -24,14 +24,16 @@ class ExcelClaimsSearcher:
         """Initialize with optional Excel file ``path``.
 
         When ``path`` is ``None``, ``CLAIMS_FILE_PATH`` is read from the
-        ``.env`` file. If the variable is unset, the bundled ``claims.xlsx``
-        inside the ``CC`` package is used.
+        ``.env`` file. If the variable is unset, the bundled
+        ``F160_Customer_Claims.xlsx`` inside the ``CC`` package is used.
         """
         if path is None:
             load_dotenv()
             path = os.getenv("CLAIMS_FILE_PATH")
             if path is None:
-                path = resources.files("CC").joinpath("claims.xlsx")
+                path = resources.files("CC").joinpath(
+                    "F160_Customer_Claims.xlsx"
+                )
         self.path = Path(path)
 
     def _load_headers(

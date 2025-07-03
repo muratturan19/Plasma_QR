@@ -12,7 +12,7 @@ ENV_PATH = Path(".env")
 def main() -> None:
     """Prompt for configuration values and store them in ``.env``."""
     api_key = input("OpenAI API key: ").strip()
-    claims_path = input("Path to claims.xlsx: ").strip()
+    claims_path = input("Path to F160_Customer_Claims.xlsx: ").strip()
     model_choice = input(
         "OpenAI Model (1: gpt-4o, 2: gpt-4o-mini, 3: gpt-4-turbo, 4: gpt-3.5-turbo): "
     ).strip()
