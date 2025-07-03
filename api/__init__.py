@@ -35,6 +35,7 @@ logger = logging.getLogger(__name__)
 ALIAS_TO_HEADER = {
     normalize_text("customer"): "Müşteri Adı",
     normalize_text("musteri"): "Müşteri Adı",
+    normalize_text("müşteri adı"): "Müşteri Adı",
     normalize_text("musteri adi"): "Müşteri Adı",
     normalize_text("subject"): "Hata Tanımı - Kök Neden",
     normalize_text("konu"): "Konu",
