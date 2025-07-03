@@ -401,7 +401,10 @@ cagrilir. Donen nihai metin ekranda gosterilir ve olusan PDF ile Excel
 dosyalari icin indirme baglantilari saglanir.
 
 **AnalysisForm** bileşeni `GET /complaints` ucunu kullanarak dinamik
-filtreleme yapar.
+filtreleme yapar. Sorguya yalnızca işaretli filtre kutularındaki alanlar
+eklenir. Müşteri, Parça Kodu veya Konu seçiminden sonra ilgili kutuyu
+işaretlemeyi (veya yıl filtresi seçmeyi) unutursanız arama parametresi
+gönderilmez ve tablo boş dönebilir.
 
 Onyuzu calistirmak icin yukaridaki komutlardan sonra tarayicinizda
 `http://localhost:5173` adresini acabilirsiniz. Arayuz API'ye 8000
