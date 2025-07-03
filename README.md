@@ -231,12 +231,18 @@ React tabanli onyuzu calistirmak icin Node.js yüklü olmalidir.
 ```bash
 cd frontend
 npm install
-cp .env.example .env  # API baska bir sunucu veya portta ise URL'yi guncelleyin
+cp .env.example .env
 npm run dev
 ```
 Varsayilan ayar API'ye `http://localhost:8000` adresinden baglanir. API farkli
 bir sunucuda veya portta calisiyorsa `.env` dosyasindaki `VITE_API_URL`
 degerini bu adrese gore degistirin.
+
+- `.env.example` dosyasini `.env` olarak kopyalayin.
+- API baska bir sunucu veya portta calisiyorsa bu dosyadaki
+  `VITE_API_URL` degerini guncelleyin.
+- Bu degisken eksik ya da hatali ise arayuz API'den aldigi verileri
+  gostermez.
 
 
 > **Not:** Fishbone (Ishikawa) diyagramı özelliği şu anda React 19 ile
@@ -355,12 +361,18 @@ asagidaki komutlari calistirarak gelistirme sunucusunu baslatabilirsiniz:
 ```bash
 cd frontend
 npm install
-cp .env.example .env  # API baska bir sunucu veya portta ise URL'yi guncelleyin
+cp .env.example .env
 npm run dev
 ```
 Varsayilan ayar API'ye `http://localhost:8000` adresinden baglanir. API farkli
 bir sunucuda veya portta calisiyorsa `.env` dosyasindaki `VITE_API_URL`
 degerini buna gore degistirin.
+
+- `.env.example` dosyasini `.env` olarak kopyalayin.
+- API baska bir sunucuda veya portta calisiyorsa `VITE_API_URL`
+  degerini guncelleyin.
+- Yanlis ya da eksik bir API URL'si, arayuzun API'den veri cekip
+  gostermesini engeller.
 
 ## Masaüstü Uygulama (Electron)
 
