@@ -103,6 +103,7 @@ function AnalysisForm({
   const [reportPaths, setReportPaths] = useState(null);
   const [loading, setLoading] = useState(false);
   const [rawClaims, setRawClaims] = useState('');
+  const [debugMessages, setDebugMessages] = useState([]);
   const [monthRange, setMonthRange] = useState([0, 11]);
   const [yearRange, setYearRange] = useState([2016, 2025]);
   const LANGUAGE_OPTIONS = [
@@ -160,6 +161,7 @@ function AnalysisForm({
     // DEBUG: API_BASE kontrolü
     console.log('API_BASE:', API_BASE);
     setError('');
+    setDebugMessages([]);
     setLoading(true);
     setRawAnalysis('');
     setAnalysisText('');
@@ -178,6 +180,7 @@ function AnalysisForm({
         return;
       }
       const guideline = await guideRes.json();
+      setDebugMessages((m) => [...m, `Guide fetched for method ${method}`]);
 
       const analyzeRes = await fetch(`${API_BASE}/analyze`, {
         method: 'POST',
@@ -203,6 +206,7 @@ function AnalysisForm({
       }
       setRawAnalysis('');
       setAnalysisText(text);
+      setDebugMessages((m) => [...m, 'Analysis completed']);
 
       const reviewRes = await fetch(`${API_BASE}/review`, {
         method: 'POST',
@@ -222,6 +226,7 @@ function AnalysisForm({
         return;
       }
       setReviewText(reviewData.result);
+      setDebugMessages((m) => [...m, 'Review received']);
 
       // DEBUG: Report kısmı
       console.log('Starting report generation...');
@@ -261,6 +266,7 @@ function AnalysisForm({
           console.log('Setting reportPaths state...');
           setReportPaths(finalReportPaths);
           console.log('reportPaths state set successfully');
+          setDebugMessages((m) => [...m, 'Report generated']);
         }
       }
     } catch (err) {
@@ -303,12 +309,14 @@ function AnalysisForm({
         setRawClaims('');
         setClaims(records);
         setClaimsError('');
+        setDebugMessages((m) => [...m, `Fetched ${records.length} claims`]);
       } else {
         setClaims([]);
         const raw = JSON.stringify(data, null, 2);
         console.log('raw claims', raw);
         setRawClaims(raw);
         setClaimsError('');
+        setDebugMessages((m) => [...m, 'Fetched claims response was unexpected']);
       }
     } catch (err) {
       console.error(err);
@@ -336,6 +344,13 @@ function AnalysisForm({
         overflowY: 'auto'
       }}
     >
+      <Box sx={{ position: 'absolute', top: 8, left: 8, right: 8, zIndex: 3 }}>
+        {debugMessages.map((msg, idx) => (
+          <Alert key={idx} severity="info" sx={{ mb: 1 }}>
+            {msg}
+          </Alert>
+        ))}
+      </Box>
       {/* Sol Form Alanı */}
       <Box
         sx={{
