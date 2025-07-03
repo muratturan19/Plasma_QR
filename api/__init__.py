@@ -108,27 +108,18 @@ def report(body: ReportBody) -> Dict[str, str]:
 @app.get("/complaints")
 def complaints(
     request: Request,
-    keyword: Optional[str] = None,
-    complaint: Optional[str] = None,
-    customer: Optional[str] = None,
-    subject: Optional[str] = None,
-    part_code: Optional[str] = None,
     year: Optional[int] = None,
     start_year: Optional[int] = None,
     end_year: Optional[int] = None,
 ) -> Dict[str, Any]:
     """Return complaint queries from JSON store and Excel file."""
     logger.info("Complaints query params: %s", request.query_params)
+    keyword = request.query_params.get("keyword")
     store_results = _store.search(keyword) if keyword else []
-    filters: Dict[str, str] = {}
-    if complaint:
-        filters["complaint"] = complaint
-    if customer:
-        filters["customer"] = customer
-    if subject:
-        filters["subject"] = subject
-    if part_code:
-        filters["part_code"] = part_code
+    known = {"keyword", "year", "start_year", "end_year"}
+    filters: Dict[str, str] = {
+        k: v for k, v in request.query_params.items() if k not in known
+    }
     excel_results = []
     if filters or year is not None or start_year is not None or end_year is not None:
         excel_results = _excel_searcher.search(
