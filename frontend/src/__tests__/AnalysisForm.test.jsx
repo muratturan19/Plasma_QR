@@ -112,6 +112,25 @@ test('shows alert on claims fetch rejection', async () => {
   expect(await screen.findByText('claims fail')).toBeInTheDocument()
 })
 
+test('renders placeholder table when no claims returned', async () => {
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ results: { excel: [], store: [] } }) })
+
+  render(<AnalysisForm />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
+
+  fireEvent.click(screen.getByRole('button', { name: /şikayetleri getir/i }))
+
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4))
+
+  const rows = screen.getAllByRole('row', { hidden: true })
+  const placeholderRow = rows.find((r) => r.classList.contains('placeholder-row'))
+  expect(placeholderRow).toBeDefined()
+})
+
 test('applies instructionsBoxProps margin', async () => {
   fetch
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
