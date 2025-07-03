@@ -94,7 +94,7 @@ function AnalysisForm({
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 10 }, (_, i) => `${currentYear - i}`);
   const [selectedYear, setSelectedYear] = useState('');
-  const [claims, setClaims] = useState(null);
+  const [claims, setClaims] = useState([]);
   const [claimsError, setClaimsError] = useState('');
   const [error, setError] = useState('');
   const [reviewText, setReviewText] = useState('');
@@ -115,6 +115,13 @@ function AnalysisForm({
   ];
   const [language, setLanguage] = useState('Türkçe');
   const [guideOpen, setGuideOpen] = useState(false);
+  const PLACEHOLDER_CLAIMS = [
+    {
+      complaint: 'placeholder',
+      customer: 'placeholder',
+      part_code: '0000'
+    }
+  ];
   const months = [
     'Oca',
     'Şub',
@@ -633,12 +640,14 @@ function AnalysisForm({
             {claimsError}
           </Alert>
         )}
-        {claims && claims.length > 0 && (
+        {(claims && claims.length >= 0) && (
           <Box sx={{ overflowX: 'auto' }}>
             <Table size="small" sx={{ mt: 2 }}>
               <TableHead>
                 <TableRow>
-                  {Object.keys(claims[0]).map((col) => (
+                  {Object.keys(
+                    (claims && claims.length > 0 ? claims : PLACEHOLDER_CLAIMS)[0]
+                  ).map((col) => (
                     <TableCell key={col}>
                       <MuiTooltip title={col} placement="top">
                         <span
@@ -658,13 +667,25 @@ function AnalysisForm({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {claims.map((c, i) => (
-                  <TableRow key={i}>
-                    {Object.keys(claims[0]).map((col) => (
-                      <TableCell key={col}>{c[col]}</TableCell>
-                    ))}
-                  </TableRow>
-                ))}
+                {(claims && claims.length > 0 ? claims : PLACEHOLDER_CLAIMS).map(
+                  (c, i) => (
+                    <TableRow
+                      key={i}
+                      data-placeholder={claims && claims.length > 0 ? undefined : true}
+                      className={
+                        claims && claims.length > 0 ? undefined : 'placeholder-row'
+                      }
+                    >
+                      {Object.keys(
+                        (claims && claims.length > 0
+                          ? claims
+                          : PLACEHOLDER_CLAIMS)[0]
+                      ).map((col) => (
+                        <TableCell key={col}>{c[col]}</TableCell>
+                      ))}
+                    </TableRow>
+                  )
+                )}
               </TableBody>
             </Table>
           </Box>
