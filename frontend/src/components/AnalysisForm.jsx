@@ -691,7 +691,7 @@ function AnalysisForm({
           </Box>
         )}
         {claims && claims.length === 0 && (
-          <Typography sx={{ mt: 2 }}>Şikayet bulunamadı</Typography>
+          <Typography sx={{ mt: 2 }}>Kayıt bulunamadı</Typography>
         )}
         {rawClaims && console.log('raw claims', rawClaims)}
         {loading && (
