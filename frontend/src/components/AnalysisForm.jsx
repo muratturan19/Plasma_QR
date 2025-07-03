@@ -339,6 +339,14 @@ function AnalysisForm({
   console.log('columns', Object.keys(claims?.[0] || {}));
   return (
     <>
+	{/* DEBUG: API'den gelen claims veri setini ve kolonlarını ham olarak ekranda göster */}
+    <pre style={{background:'#ffe', color:'#333', fontSize:'14px', padding:'8px', border:'1px solid #ccc', marginBottom: '8px'}}>
+      {JSON.stringify(claims, null, 2)}
+    </pre>
+    <div style={{background:'#eef', color:'#444', padding:'4px', fontSize:'15px', marginBottom:'12px'}}>
+      {claims && claims[0] && Object.keys(claims[0]).join(', ')}
+    </div>
+
     <Card
       sx={{
         maxWidth: '100%',
