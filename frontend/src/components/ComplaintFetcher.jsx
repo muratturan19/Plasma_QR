@@ -14,6 +14,7 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import TableBody from '@mui/material/TableBody'
+import Tooltip from '@mui/material/Tooltip'
 
 function ComplaintFetcher() {
   const [rows, setRows] = useState([])
@@ -121,28 +122,40 @@ function ComplaintFetcher() {
         <Typography color="error" variant="body2">{error}</Typography>
       )}
       {rows.length > 0 && (
-        <Table size="small" sx={{ mt: 2 }}>
-          <TableHead>
-            <TableRow>
-              <TableCell>Complaint</TableCell>
-              <TableCell>Customer</TableCell>
-              <TableCell>Subject</TableCell>
-              <TableCell>Part Code</TableCell>
-              <TableCell>Date</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((r, i) => (
-              <TableRow key={i}>
-                <TableCell>{r.complaint}</TableCell>
-                <TableCell>{r.customer}</TableCell>
-                <TableCell>{r.subject}</TableCell>
-                <TableCell>{r.part_code}</TableCell>
-                <TableCell>{r.date}</TableCell>
+        <Box sx={{ overflowX: 'auto' }}>
+          <Table size="small" sx={{ mt: 2 }}>
+            <TableHead>
+              <TableRow>
+                {Object.keys(rows[0]).map((col) => (
+                  <TableCell key={col}>
+                    <Tooltip title={col} placement="top">
+                      <span
+                        style={{
+                          maxWidth: 120,
+                          display: 'inline-block',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
+                        {col}
+                      </span>
+                    </Tooltip>
+                  </TableCell>
+                ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody>
+              {rows.map((r, i) => (
+                <TableRow key={i}>
+                  {Object.keys(rows[0]).map((col) => (
+                    <TableCell key={col}>{r[col]}</TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Box>
       )}
     </Box>
   )

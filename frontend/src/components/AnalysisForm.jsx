@@ -609,64 +609,40 @@ function AnalysisForm({
           </Alert>
         )}
         {claims && claims.length > 0 && (
-          <Table size="small" sx={{ mt: 2 }}>
-            <TableHead>
-              <TableRow>
-                <TableCell>Tarih</TableCell>
-                <TableCell>Müşteri</TableCell>
-                <TableCell>Şikayet</TableCell>
-                <TableCell>Konu</TableCell>
-                <TableCell>Parça Kodu</TableCell>
-                <TableCell>Açıklama</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {claims.map((c, i) => (
-                <TableRow key={i}>
-                  <TableCell>
-                    {new Date(c.date).toLocaleDateString('tr-TR', {
-                      day: '2-digit',
-                      month: 'long',
-                      year: 'numeric',
-                    })}
-                  </TableCell>
-                  <TableCell>{c.customer}</TableCell>
-                  <TableCell>
-                    <MuiTooltip title={c.complaint || ''}>
-                      <span
-                        style={{
-                          maxWidth: 150,
-                          display: 'inline-block',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {c.complaint}
-                      </span>
-                    </MuiTooltip>
-                  </TableCell>
-                  <TableCell>{c.subject}</TableCell>
-                  <TableCell>{c.part_code}</TableCell>
-                  <TableCell>
-                    <MuiTooltip title={c.description || ''}>
-                      <span
-                        style={{
-                          maxWidth: 150,
-                          display: 'inline-block',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {c.description}
-                      </span>
-                    </MuiTooltip>
-                  </TableCell>
+          <Box sx={{ overflowX: 'auto' }}>
+            <Table size="small" sx={{ mt: 2 }}>
+              <TableHead>
+                <TableRow>
+                  {Object.keys(claims[0]).map((col) => (
+                    <TableCell key={col}>
+                      <MuiTooltip title={col} placement="top">
+                        <span
+                          style={{
+                            maxWidth: 120,
+                            display: 'inline-block',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {col}
+                        </span>
+                      </MuiTooltip>
+                    </TableCell>
+                  ))}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {claims.map((c, i) => (
+                  <TableRow key={i}>
+                    {Object.keys(claims[0]).map((col) => (
+                      <TableCell key={col}>{c[col]}</TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
         )}
         {claims && claims.length === 0 && (
           <Typography sx={{ mt: 2 }}>Şikayet bulunamadı</Typography>

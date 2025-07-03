@@ -12,7 +12,10 @@ afterEach(() => {
 test('fetches complaints and shows data', async () => {
   fetch.mockResolvedValueOnce({
     ok: true,
-    json: async () => ({ store: [{ complaint: 'a' }], excel: [{ complaint: 'b' }] })
+    json: async () => ({
+      store: [{ complaint: 'a', customer: 'one' }],
+      excel: [{ complaint: 'b', customer: 'two' }]
+    })
   })
 
   render(<ComplaintFetcher />)
@@ -34,6 +37,8 @@ test('fetches complaints and shows data', async () => {
   expect(url).toContain('part_code=part')
   await screen.findByText('a')
   await screen.findByText('b')
+  const headers = screen.getAllByRole('columnheader').map((h) => h.textContent)
+  expect(headers).toEqual(expect.arrayContaining(['complaint', 'customer']))
   const rows = await screen.findAllByRole('row')
   expect(rows.length).toBeGreaterThan(1)
 })

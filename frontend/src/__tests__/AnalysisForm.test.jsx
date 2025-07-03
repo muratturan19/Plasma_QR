@@ -68,7 +68,9 @@ test('fetches filtered claims', async () => {
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
     .mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ results: { excel: [{ complaint: 'x' }], store: [] } })
+      json: async () => ({
+        results: { excel: [{ complaint: 'x', customer: 'y' }], store: [] }
+      })
     })
 
   render(<AnalysisForm />)
@@ -84,6 +86,10 @@ test('fetches filtered claims', async () => {
   const url = fetch.mock.calls[3][0]
   expect(url).toContain('customer=acme')
   await screen.findByText('x')
+  const headers = screen
+    .getAllByRole('columnheader')
+    .map((h) => h.textContent)
+  expect(headers).toEqual(expect.arrayContaining(['complaint', 'customer']))
 })
 
 test('applies instructionsBoxProps margin', async () => {
