@@ -127,7 +127,7 @@ class ExcelClaimsSearchTest(unittest.TestCase):
     def test_bundled_file_outside_repo(self) -> None:
         """Bundled Excel file should load when run outside the repo root."""
         repo_root = Path(__file__).resolve().parents[1]
-        expected = repo_root / "CC" / "claims.xlsx"
+        expected = repo_root / "CC" / "F160_Customer_Claims.xlsx"
         with tempfile.TemporaryDirectory() as tmpdir:
             cwd = os.getcwd()
             try:
