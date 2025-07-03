@@ -139,6 +139,13 @@ class APITest(unittest.TestCase):
         mock_store.assert_not_called()
         mock_excel.assert_called_with({"foo": "bar", "Müşteri Adı": "c"}, None, start_year=None, end_year=None)
 
+    def test_complaints_alias_turkish_key(self) -> None:
+        params = {"Müşteri Adı": "c"}
+        with patch.object(api._excel_searcher, "search", return_value=[]) as mock_excel:
+            response = self.client.get("/complaints", params=params)
+        self.assertEqual(response.status_code, 200)
+        mock_excel.assert_called_with({"Müşteri Adı": "c"}, None, start_year=None, end_year=None)
+
     def test_options_endpoint(self) -> None:
         with patch.object(
             api._excel_searcher,
