@@ -155,7 +155,7 @@ class APITest(unittest.TestCase):
             response = self.client.get("/options/customer")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"values": ["a", "b"]})
-        mock_opts.assert_called_with("customer")
+        mock_opts.assert_called_with("Müşteri Adı")
 
     def test_guide_endpoint(self) -> None:
         with patch.object(
