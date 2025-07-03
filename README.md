@@ -264,8 +264,8 @@ Form gonderildiginde sirayla `/analyze`, `/review` ve `/report`
 uclari cagrilir. Donen nihai metin ekranda gorunur ve olusan PDF ile
 Excel dosyalari icin indirme baglantilari saglanir.
 
-**ComplaintQuery** bileseni `GET /complaints` ucunu kullanarak
-dinamik filtreleme yapmaniza olanak tanir. Drop-down menulerdeki degerler
+**AnalysisForm** bileseni `GET /complaints` ucunu kullanarak
+dinamik filtreleme yapar. Drop-down menulerdeki degerler
 `/options/{field}` ucu ile doldurulur.
 
 ## Minimal Ornek
@@ -388,8 +388,8 @@ Formu gonderdiginizde sirayla `/analyze`, `/review` ve `/report` uclari
 cagrilir. Donen nihai metin ekranda gosterilir ve olusan PDF ile Excel
 dosyalari icin indirme baglantilari saglanir.
 
-**ComplaintQuery** bileşeni `GET /complaints` ucunu kullanarak dinamik
-filtreleme yapmaniza olanak tanir.
+**AnalysisForm** bileşeni `GET /complaints` ucunu kullanarak dinamik
+filtreleme yapar.
 
 Onyuzu calistirmak icin yukaridaki komutlardan sonra tarayicinizda
 `http://localhost:5173` adresini acabilirsiniz. Arayuz API'ye 8000

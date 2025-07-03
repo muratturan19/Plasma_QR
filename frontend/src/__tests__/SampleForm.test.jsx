@@ -9,7 +9,7 @@ beforeAll(() => {
   }
 })
 
-it('renders analysis and query forms', () => {
+it('renders analysis form', () => {
   render(<SampleForm />)
   const buttons = screen.getAllByRole('button')
   expect(buttons.length).toBeGreaterThanOrEqual(2)
