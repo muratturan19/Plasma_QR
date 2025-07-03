@@ -67,10 +67,19 @@ class ExcelClaimsSearchTest(unittest.TestCase):
             file_path = os.path.join(tmpdir, "claims.xlsx")
             self._create_file(file_path, headers=headers)
             searcher = ExcelClaimsSearcher(file_path)
-            result = searcher.search({"customer": "ACME"}, year=2023)
+            result = searcher.search({"müşteri": "ACME"}, year=2023)
             self.assertEqual(len(result), 1)
-            self.assertIn("customer", result[0])
-            self.assertEqual(result[0]["customer"], "ACME")
+            self.assertIn("musteri", result[0])
+            self.assertEqual(result[0]["musteri"], "ACME")
+
+    def test_dynamic_header_detection(self) -> None:
+        """Headers should be detected after initial metadata rows."""
+        file_path = Path("CC/F160_Customer_Claims.xlsx")
+        searcher = ExcelClaimsSearcher(file_path)
+        result = searcher.search({"PPM Adet": 1})
+        self.assertTrue(len(result) > 0)
+        for rec in result:
+            self.assertEqual(rec["ppm adet"], 1)
 
     def test_unique_values(self) -> None:
         """``unique_values`` should return sorted distinct entries."""

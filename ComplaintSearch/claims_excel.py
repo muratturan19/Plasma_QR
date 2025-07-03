@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any, Dict, Iterable, List, Tuple
 from pathlib import Path
 from datetime import datetime
 import os
@@ -34,6 +34,20 @@ class ExcelClaimsSearcher:
                 path = resources.files("CC").joinpath("claims.xlsx")
         self.path = Path(path)
 
+    def _load_headers(
+        self, rows: Iterable[tuple[Any, ...]]
+    ) -> Tuple[List[str], Dict[str, int]]:
+        """Return header names and mapping from normalized keys to column index."""
+        for row in rows:
+            non_empty = [c for c in row if c not in (None, "")]
+            if len(non_empty) >= 3:
+                headers = [str(c) if c is not None else "" for c in row]
+                mapping = {
+                    normalize_text(h): idx for idx, h in enumerate(headers)
+                }
+                return headers, mapping
+        return [], {}
+
     def search(
         self,
         filters: Dict[str, str],
@@ -59,7 +73,7 @@ class ExcelClaimsSearcher:
         Returns
         -------
         List[Dict[str, Any]]
-            Matching rows as dictionaries with lowercase keys.
+            Matching rows as dictionaries keyed by normalized headers.
         """
         if not self.path.exists():
             logging.warning("Excel file not found at %s", self.path)
@@ -68,24 +82,17 @@ class ExcelClaimsSearcher:
         wb = load_workbook(self.path, read_only=True)
         ws = wb.active
         rows = ws.iter_rows(values_only=True)
-        try:
-            headers = [str(c).strip().lower() if c is not None else "" for c in next(rows)]
-            mapping = {
-                "müşteri şikayeti": "complaint",
-                "müşteri": "customer",
-                "konu": "subject",
-                "parça kodu": "part_code",
-                "tarih": "date",
-            }
-            headers = [mapping.get(h, h) for h in headers]
-        except StopIteration:
+        headers, indices = self._load_headers(rows)
+        if not headers:
             wb.close()
             return []
-        indices = {h: i for i, h in enumerate(headers)}
         results: List[Dict[str, Any]] = []
 
         for row in rows:
-            record = {h: row[i] if i < len(row) else None for h, i in indices.items()}
+            record = {
+                key: row[idx] if idx < len(row) else None
+                for key, idx in indices.items()
+            }
             if "date" in indices:
                 value = record.get("date")
                 if isinstance(value, str):
@@ -109,7 +116,7 @@ class ExcelClaimsSearcher:
             for key, val in filters.items():
                 if not val:
                     continue
-                key = key.lower()
+                key = normalize_text(key)
                 cell_raw = str(record.get(key, ""))
                 cell = normalize_text(cell_raw)
                 val_norm = normalize_text(str(val))
@@ -137,8 +144,8 @@ class ExcelClaimsSearcher:
         Parameters
         ----------
         field:
-            Column name to extract unique values from. Turkish headers are
-            automatically mapped to their English counterparts.
+            Column name to extract unique values from. The name is
+            normalized using :func:`normalize_text` before matching headers.
 
         Returns
         -------
@@ -151,25 +158,17 @@ class ExcelClaimsSearcher:
         wb = load_workbook(self.path, read_only=True)
         ws = wb.active
         rows = ws.iter_rows(values_only=True)
-        try:
-            headers = [str(c).strip().lower() if c is not None else "" for c in next(rows)]
-            mapping = {
-                "müşteri şikayeti": "complaint",
-                "müşteri": "customer",
-                "konu": "subject",
-                "parça kodu": "part_code",
-                "tarih": "date",
-            }
-            headers = [mapping.get(h, h) for h in headers]
-        except StopIteration:
+        headers, indices = self._load_headers(rows)
+        if not headers:
             wb.close()
             return []
 
-        if field not in headers:
+        key = normalize_text(field)
+        if key not in indices:
             wb.close()
             return []
 
-        index = headers.index(field)
+        index = indices[key]
         values = set()
         for row in rows:
             if index >= len(row):
