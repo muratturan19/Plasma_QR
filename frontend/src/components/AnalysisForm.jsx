@@ -328,15 +328,36 @@ function AnalysisForm({
   console.log('reviewText:', reviewText);
   console.log('reportPaths:', reportPaths);
   console.log('columns', Object.keys(claims?.[0] || {}));
+  console.log('Tablo render\u0131nda claims:', claims, 'length:', claims?.length);
   return (
     <>
-	{/* DEBUG: API'den gelen claims veri setini ve kolonlarını ham olarak ekranda göster */}
+        {/* DEBUG: API'den gelen claims veri setini ve kolonlarını ham olarak ekranda göster */}
     <pre style={{background:'#ffe', color:'#333', fontSize:'14px', padding:'8px', border:'1px solid #ccc', marginBottom: '8px'}}>
       {JSON.stringify(claims, null, 2)}
     </pre>
     <div style={{background:'#eef', color:'#444', padding:'4px', fontSize:'15px', marginBottom:'12px'}}>
       {claims && claims[0] && Object.keys(claims[0]).join(', ')}
     </div>
+    {claims && claims.length > 0 && (
+      <table border="1" style={{ background: 'yellow', marginBottom: '12px' }}>
+        <thead>
+          <tr>
+            {Object.keys(claims[0]).map((col) => (
+              <th key={col}>{col}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {claims.map((c, i) => (
+            <tr key={i}>
+              {Object.keys(claims[0]).map((col) => (
+                <td key={col}>{c[col]}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )}
 
     <Card
       sx={{
@@ -641,7 +662,7 @@ function AnalysisForm({
             {claimsError}
           </Alert>
         )}
-        {(claims && claims.length >= 0) && (
+        {(claims && claims.length > 0) && (
           <Box sx={{ overflowX: 'auto' }}>
             <Table size="small" sx={{ mt: 2 }}>
               <TableHead>
