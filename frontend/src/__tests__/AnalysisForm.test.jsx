@@ -100,6 +100,32 @@ test('fetches filtered claims', async () => {
   )
 })
 
+test('handles single claim object response', async () => {
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ complaint: 'x', customer: 'y' })
+    })
+
+  render(<AnalysisForm />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
+
+  fireEvent.click(screen.getByRole('button', { name: /şikayetleri getir/i }))
+
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4))
+
+  const headers = screen
+    .getAllByRole('columnheader')
+    .map((h) => h.textContent)
+  expect(headers).toEqual(expect.arrayContaining(['complaint', 'customer']))
+  await screen.findByText('x')
+  await screen.findByText('y')
+  expect(screen.getByText(/Fetched 1 claims/)).toBeInTheDocument()
+})
+
 test('shows alert on claims fetch rejection', async () => {
   fetch
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
