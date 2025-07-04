@@ -39,6 +39,14 @@ import {
   CartesianGrid
 } from 'recharts';
 import { API_BASE } from '../api';
+
+function prettify(str) {
+  return str
+    .replace(/_/g, ' ')
+    .split(' ')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(' ');
+}
 const FIELD_MAP = {
   customer: 'Müşteri Adı',
   subject: 'Hata Tanımı - Kök Neden',
@@ -613,7 +621,7 @@ function AnalysisForm({
                             whiteSpace: 'nowrap',
                           }}
                         >
-                          {col}
+                          {prettify(col)}
                         </span>
                       </MuiTooltip>
                     </TableCell>
