@@ -385,7 +385,7 @@ function AnalysisForm({
         sx={{
           width: '68%',
           minWidth: 0,
-          height: { xs: 'auto', md: 540 },
+          height: 'auto',
           display: 'flex',
           flexDirection: 'column',
           pr: 3,
@@ -664,7 +664,10 @@ function AnalysisForm({
         )}
         {(claims && claims.length > 0) && (
           <Box sx={{ overflowX: 'auto' }}>
-            <Table size="small" sx={{ mt: 2 }}>
+            <Table
+              size="small"
+              sx={{ mt: 2, backgroundColor: '#fff', border: '1px solid #ccc' }}
+            >
               <TableHead>
                 <TableRow>
                   {Object.keys(
