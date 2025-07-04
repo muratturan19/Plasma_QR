@@ -126,6 +126,27 @@ test('handles single claim object response', async () => {
   expect(screen.getByText(/Fetched 1 claims/)).toBeInTheDocument()
 })
 
+test('formats iso date strings in claims table', async () => {
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        results: { excel: [{ when: '2024-01-24T00:00:00' }], store: [] }
+      })
+    })
+
+  render(<AnalysisForm />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
+
+  fireEvent.click(screen.getByRole('button', { name: /şikayetleri getir/i }))
+
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4))
+  await screen.findByText('2024-01-24')
+})
+
 test('shows alert on claims fetch rejection', async () => {
   fetch
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
