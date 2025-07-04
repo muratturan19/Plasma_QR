@@ -304,28 +304,19 @@ function AnalysisForm({
       }
       const data = await res.json();
       const results = data.results || data;
-      if (
-        Array.isArray(results) ||
-        results.store !== undefined ||
-        results.excel !== undefined
-      ) {
-        const records = Array.isArray(results)
-          ? results
-          : [...(results.store || []), ...(results.excel || [])];
-        console.log('claims data', records);
-        setRawClaims('');
-        setClaims(records);
-        console.log(records);
-        setClaimsError('');
-        setDebugMessages((m) => [...m, `Fetched ${records.length} claims`]);
-      } else {
-        setClaims([]);
-        const raw = JSON.stringify(data, null, 2);
-        console.log('raw claims', raw);
-        setRawClaims(raw);
-        setClaimsError('');
-        setDebugMessages((m) => [...m, 'Fetched claims response was unexpected']);
-      }
+      const records = Array.isArray(results)
+        ? results
+        : results && typeof results === 'object'
+          ? results.store !== undefined || results.excel !== undefined
+            ? [...(results.store || []), ...(results.excel || [])]
+            : [results]
+          : [];
+      console.log('claims data', records);
+      setRawClaims('');
+      setClaims(records);
+      console.log(records);
+      setClaimsError('');
+      setDebugMessages((m) => [...m, `Fetched ${records.length} claims`]);
     } catch (err) {
       console.error(err);
       setClaimsError(err.message || 'Şikayetler alınamadı');
