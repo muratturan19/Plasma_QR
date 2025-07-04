@@ -1,4 +1,8 @@
-"""Module providing analysis via Large Language Models."""
+"""Generate analysis reports using a Large Language Model.
+
+This package defines :class:`LLMAnalyzer` which interacts with an LLM to
+produce structured reports from complaint data.
+"""
 
 from __future__ import annotations
 
