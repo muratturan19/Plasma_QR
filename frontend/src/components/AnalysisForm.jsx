@@ -592,10 +592,10 @@ function AnalysisForm({
           </Alert>
         )}
         {(claims && claims.length > 0) && (
-          <Box sx={{ overflowX: 'auto' }}>
+          <Box sx={{ minHeight: 250, overflowX: 'auto' }}>
             <Table
               size="small"
-              sx={{ mt: 1, backgroundColor: '#fff', border: '1px solid #ccc' }}
+              sx={{ mt: 1, backgroundColor: '#fff', border: '1px solid #ccc', minWidth: 1000 }}
             >
               <TableHead>
                 <TableRow>
