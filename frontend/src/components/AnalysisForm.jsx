@@ -47,6 +47,13 @@ function prettify(str) {
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
     .join(' ');
 }
+
+function formatDate(value) {
+  if (typeof value === 'string' && /\d{4}-\d{2}-\d{2}T00:00:00/.test(value)) {
+    return value.replace(/T00:00:00.*$/, '');
+  }
+  return value;
+}
 const FIELD_MAP = {
   customer: 'Müşteri Adı',
   subject: 'Hata Tanımı - Kök Neden',
@@ -643,7 +650,7 @@ function AnalysisForm({
                           ? claims
                           : PLACEHOLDER_CLAIMS)[0]
                       ).map((col) => (
-                        <TableCell key={col}>{c[col]}</TableCell>
+                        <TableCell key={col}>{formatDate(c[col])}</TableCell>
                       ))}
                     </TableRow>
                   )
