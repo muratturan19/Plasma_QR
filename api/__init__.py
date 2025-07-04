@@ -1,4 +1,8 @@
-"""FastAPI server exposing core Quality Reporter functionality."""
+"""Expose the FastAPI application and route handlers for the API.
+
+The module creates the :class:`FastAPI` instance and defines HTTP endpoints
+used by the Quality Reporter service.
+"""
 
 from __future__ import annotations
 
