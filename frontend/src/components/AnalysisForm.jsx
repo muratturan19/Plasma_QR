@@ -489,7 +489,7 @@ function AnalysisForm({
           sx={{
             width: '100%',
             display: 'flex',
-            mt: 3,
+            mt: 1,
             gap: 2,
             flexWrap: 'wrap',
             alignItems: 'center',
@@ -547,8 +547,8 @@ function AnalysisForm({
             width: '100%',
             display: 'flex',
             gap: 2,
-            mt: 3,
-            mb: 3,
+            mt: 1,
+            mb: 2,
             alignItems: 'center'
           }}
         >
@@ -582,7 +582,7 @@ function AnalysisForm({
           </Button>
         </Box>
         {method && (
-          <Alert severity="info" sx={{ mt: 2, mb: 2, fontSize: 15 }}>
+          <Alert severity="info" sx={{ mt: 1, mb: 2, fontSize: 15 }}>
             {GUIDE_TEXT[method]}
           </Alert>
         )}
@@ -595,7 +595,7 @@ function AnalysisForm({
           <Box sx={{ overflowX: 'auto' }}>
             <Table
               size="small"
-              sx={{ mt: 2, backgroundColor: '#fff', border: '1px solid #ccc' }}
+              sx={{ mt: 1, backgroundColor: '#fff', border: '1px solid #ccc' }}
             >
               <TableHead>
                 <TableRow>
