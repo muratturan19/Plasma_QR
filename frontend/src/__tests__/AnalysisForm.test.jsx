@@ -90,13 +90,13 @@ test('fetches filtered claims', async () => {
   const headers = screen
     .getAllByRole('columnheader')
     .map((h) => h.textContent)
-  expect(headers).toEqual(expect.arrayContaining(['complaint', 'customer']))
+  expect(headers).toEqual(expect.arrayContaining(['Complaint', 'Customer']))
   expect(
     screen.getByText(/Fetched 1 claims/)
   ).toBeInTheDocument()
   expect(screen.getByTestId('claims-json')).toHaveTextContent('"x"')
   expect(screen.getByTestId('claim-columns')).toHaveTextContent(
-    'complaint, customer'
+    'Complaint, Customer'
   )
 })
 
@@ -120,7 +120,7 @@ test('handles single claim object response', async () => {
   const headers = screen
     .getAllByRole('columnheader')
     .map((h) => h.textContent)
-  expect(headers).toEqual(expect.arrayContaining(['complaint', 'customer']))
+  expect(headers).toEqual(expect.arrayContaining(['Complaint', 'Customer']))
   await screen.findByText('x')
   await screen.findByText('y')
   expect(screen.getByText(/Fetched 1 claims/)).toBeInTheDocument()
