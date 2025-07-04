@@ -99,11 +99,8 @@ function AnalysisForm({
   const [error, setError] = useState('');
   const [reviewText, setReviewText] = useState('');
   const [analysisText, setAnalysisText] = useState('');
-  const [rawAnalysis, setRawAnalysis] = useState('');
   const [reportPaths, setReportPaths] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [rawClaims, setRawClaims] = useState('');
-  const [debugMessages, setDebugMessages] = useState([]);
   const [monthRange, setMonthRange] = useState([0, 11]);
   const [yearRange, setYearRange] = useState([2016, 2025]);
   const LANGUAGE_OPTIONS = [
@@ -165,12 +162,8 @@ function AnalysisForm({
     fetchOptions('part_code', setPartCodeOptions);
   }, []);
   const handleAnalyze = async () => {
-    // DEBUG: API_BASE kontrolü
-    console.log('API_BASE:', API_BASE);
     setError('');
-    setDebugMessages([]);
     setLoading(true);
-    setRawAnalysis('');
     setAnalysisText('');
     setReviewText('');
     setReportPaths(null);
@@ -187,7 +180,6 @@ function AnalysisForm({
         return;
       }
       const guideline = await guideRes.json();
-      setDebugMessages((m) => [...m, `Guide fetched for method ${method}`]);
 
       const analyzeRes = await fetch(`${API_BASE}/analyze`, {
         method: 'POST',
@@ -207,13 +199,10 @@ function AnalysisForm({
         text = steps.join('\n\n');
       }
       if (!text) {
-        setRawAnalysis(JSON.stringify(analysis, null, 2));
         setError('Sunucudan beklenmeyen boş yanıt alındı');
         return;
       }
-      setRawAnalysis('');
       setAnalysisText(text);
-      setDebugMessages((m) => [...m, 'Analysis completed']);
 
       const reviewRes = await fetch(`${API_BASE}/review`, {
         method: 'POST',
@@ -233,10 +222,7 @@ function AnalysisForm({
         return;
       }
       setReviewText(reviewData.result);
-      setDebugMessages((m) => [...m, 'Review received']);
 
-      // DEBUG: Report kısmı
-      console.log('Starting report generation...');
       const reportRes = await fetch(`${API_BASE}/report`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -247,33 +233,22 @@ function AnalysisForm({
         })
       });
 
-      console.log('Report response status:', reportRes.status);
-      console.log('Report response ok:', reportRes.ok);
-
       if (!reportRes.ok) {
         const errorText = await reportRes.text();
-        console.log('Report error:', errorText);
         setError(errorText);
         setReportPaths(null);
         return;
       } else {
         const paths = await reportRes.json();
-        console.log('Backend response paths:', paths);
-        console.log('API_BASE value:', API_BASE);
 
         if (!paths?.pdf) {
-          console.log('No PDF path in response');
           setError('Sunucudan beklenmeyen boş yanıt alındı');
         } else {
           const finalReportPaths = {
             pdf: `${API_BASE}${paths.pdf}`,
-            excel: `${API_BASE}${paths.excel}`,
+            excel: `${API_BASE}${paths.excel}`
           };
-          console.log('Final report URLs:', finalReportPaths);
-          console.log('Setting reportPaths state...');
           setReportPaths(finalReportPaths);
-          console.log('reportPaths state set successfully');
-          setDebugMessages((m) => [...m, 'Report generated']);
         }
       }
     } catch (err) {
@@ -311,60 +286,24 @@ function AnalysisForm({
             ? [...(results.store || []), ...(results.excel || [])]
             : [results]
           : [];
-      console.log('claims data', records);
-      setRawClaims('');
       setClaims(records);
-      console.log(records);
       setClaimsError('');
-      setDebugMessages((m) => [...m, `Fetched ${records.length} claims`]);
     } catch (err) {
       console.error(err);
       setClaimsError(err.message || 'Şikayetler alınamadı');
       setClaims([]);
-      setRawClaims('');
     }
   };
-  console.log('analysisText:', analysisText);
-  console.log('reviewText:', reviewText);
-  console.log('reportPaths:', reportPaths);
-  console.log('columns', Object.keys(claims?.[0] || {}));
-  console.log('Tablo render\u0131nda claims:', claims, 'length:', claims?.length);
   return (
     <>
         {/* DEBUG: API'den gelen claims veri setini ve kolonlarını ham olarak ekranda göster */}
-    <pre style={{background:'#ffe', color:'#333', fontSize:'14px', padding:'8px', border:'1px solid #ccc', marginBottom: '8px'}}>
-      {JSON.stringify(claims, null, 2)}
-    </pre>
-    <div style={{background:'#eef', color:'#444', padding:'4px', fontSize:'15px', marginBottom:'12px'}}>
-      {claims && claims[0] && Object.keys(claims[0]).join(', ')}
-    </div>
-    {claims && claims.length > 0 && (
-      <table border="1" style={{ background: 'yellow', marginBottom: '12px' }}>
-        <thead>
-          <tr>
-            {Object.keys(claims[0]).map((col) => (
-              <th key={col}>{col}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {claims.map((c, i) => (
-            <tr key={i}>
-              {Object.keys(claims[0]).map((col) => (
-                <td key={col}>{c[col]}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    )}
+
 
     <Card
       sx={{
         maxWidth: '100%',
-        margin: '40px auto',
-        minHeight: 700,
-        p: 4,
+        margin: '20px auto',
+        p: 3,
         display: 'flex',
         flexDirection: 'row',
         boxShadow: 4,
@@ -373,13 +312,6 @@ function AnalysisForm({
         overflowY: 'auto'
       }}
     >
-      <Box sx={{ position: 'absolute', top: 8, left: 8, right: 8, zIndex: 3 }}>
-        {debugMessages.map((msg, idx) => (
-          <Alert key={idx} severity="info" sx={{ mb: 1 }}>
-            {msg}
-          </Alert>
-        ))}
-      </Box>
       {/* Sol Form Alanı */}
       <Box
         sx={{
@@ -399,9 +331,8 @@ function AnalysisForm({
             display: 'flex',
             flexDirection: 'row',
             gap: 2,
-            mb: 16,
-            height: 'auto',
-            minHeight: 120
+            mb: 4,
+            height: 'auto'
           }}
         >
           {/* Şikayet Alanı */}
@@ -532,7 +463,7 @@ function AnalysisForm({
         <Box
           sx={{
             width: '100%',
-            mt: 6,
+            mt: 2,
             height: { xs: 'auto', md: '38%' },
             minHeight: 90,
             borderRadius: 1,
@@ -558,8 +489,8 @@ function AnalysisForm({
           sx={{
             width: '100%',
             display: 'flex',
-			mt: 12,
-            gap: 16,
+            mt: 3,
+            gap: 2,
             flexWrap: 'wrap',
             alignItems: 'center',
             mb: 1,
@@ -615,12 +546,10 @@ function AnalysisForm({
           sx={{
             width: '100%',
             display: 'flex',
-            gap: 8,
-            mt: 'auto',
-                        mb: 14,
-            height: '24%',
-            minHeight: 60,
-            alignItems: 'flex-end'
+            gap: 2,
+            mt: 3,
+            mb: 3,
+            alignItems: 'center'
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
@@ -713,16 +642,11 @@ function AnalysisForm({
                 )}
               </TableBody>
             </Table>
-            <pre data-testid="claims-json">{JSON.stringify(claims)}</pre>
-            <div data-testid="claim-columns">
-              {Object.keys(claims[0] || {}).join(', ')}
-            </div>
           </Box>
         )}
         {claims && claims.length === 0 && (
           <Typography sx={{ mt: 2 }}>Kayıt bulunamadı</Typography>
         )}
-        {rawClaims && console.log('raw claims', rawClaims)}
         {loading && (
           <Box
             sx={{
@@ -745,14 +669,6 @@ function AnalysisForm({
           <Alert severity="error" sx={{ mt: 1 }}>
             {error}
           </Alert>
-        )}
-        {rawAnalysis && (
-          <pre
-            data-testid="raw-analysis"
-            style={{ whiteSpace: 'pre-wrap', marginTop: '8px' }}
-          >
-            {rawAnalysis}
-          </pre>
         )}
         {analysisText && !reviewText && (
           <Box sx={{ mt: 2 }}>
@@ -887,8 +803,6 @@ function AnalysisForm({
         </Box>
       </Box>
     </Card>
-    <div>ALAKASIZ TEST YAZISI</div>
-    <p>{Math.random()}</p>
     <ReportGuideModal open={guideOpen} onClose={() => setGuideOpen(false)} />
     </>
   );
