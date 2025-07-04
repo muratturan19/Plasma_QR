@@ -14,6 +14,9 @@ from importlib import resources
 from difflib import SequenceMatcher
 from openpyxl import load_workbook
 
+# Normalized header names considered as date columns
+DATE_KEYS = {"date", "tarih", "hata tarihi"}
+
 from . import normalize_text
 
 
@@ -90,13 +93,14 @@ class ExcelClaimsSearcher:
             return []
         results: List[Dict[str, Any]] = []
 
+        date_key = next((k for k in DATE_KEYS if k in indices), None)
         for row in rows:
             record = {
                 key: row[idx] if idx < len(row) else None
                 for key, idx in indices.items()
             }
-            if "date" in indices:
-                value = record.get("date")
+            if date_key is not None:
+                value = record.get(date_key)
                 if isinstance(value, str):
                     try:
                         value = datetime.fromisoformat(value)

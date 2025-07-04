@@ -72,6 +72,25 @@ class ExcelClaimsSearchTest(unittest.TestCase):
             self.assertIn("musteri", result[0])
             self.assertEqual(result[0]["musteri"], "ACME")
 
+    def test_hata_tarihi_header(self) -> None:
+        """Year filters should work with 'Hata Tarihi' header."""
+        headers = [
+            "müşteri şikayeti",
+            "müşteri",
+            "konu",
+            "parça kodu",
+            "hata tarihi",
+        ]
+        with tempfile.TemporaryDirectory() as tmpdir:
+            file_path = os.path.join(tmpdir, "claims.xlsx")
+            self._create_file(file_path, headers=headers)
+            searcher = ExcelClaimsSearcher(file_path)
+            result = searcher.search({"müşteri": "ACME"}, year=2023)
+            self.assertEqual(len(result), 1)
+            self.assertEqual(result[0]["musteri"], "ACME")
+            empty = searcher.search({"müşteri": "ACME"}, year=2022)
+            self.assertEqual(empty, [])
+
     def test_dynamic_header_detection(self) -> None:
         """Headers should be detected after initial metadata rows."""
         file_path = Path("CC/F160_Customer_Claims.xlsx")
