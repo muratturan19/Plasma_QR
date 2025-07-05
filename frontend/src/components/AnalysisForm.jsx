@@ -127,13 +127,6 @@ function AnalysisForm({
   ];
   const [language, setLanguage] = useState('Türkçe');
   const [guideOpen, setGuideOpen] = useState(false);
-  const PLACEHOLDER_CLAIMS = [
-    {
-      complaint: 'placeholder',
-      customer: 'placeholder',
-      part_code: '0000'
-    }
-  ];
   const months = [
     'Oca',
     'Şub',
@@ -606,17 +599,22 @@ function AnalysisForm({
             {claimsError}
           </Alert>
         )}
-        {(claims && claims.length > 0) && (
-          <Box sx={{ minHeight: 250, overflowX: 'auto' }}>
+        {claims && claims.length > 0 && (
+          <Box sx={{ minHeight: 250, maxHeight: 650, overflow: 'auto' }}>
             <Table
               size="small"
-              sx={{ mt: 1, backgroundColor: '#fff', border: '1px solid #ccc', minWidth: 1000 }}
+              sx={{
+                mt: 0,
+                backgroundColor: '#fff',
+                border: '1px solid #ccc',
+                minWidth: 650,
+                width: '100%',
+                tableLayout: 'fixed'
+              }}
             >
               <TableHead>
                 <TableRow>
-                  {Object.keys(
-                    (claims && claims.length > 0 ? claims : PLACEHOLDER_CLAIMS)[0]
-                  ).map((col) => (
+                  {Object.keys(claims[0]).map((col) => (
                     <TableCell key={col}>
                       <MuiTooltip title={col} placement="top">
                         <span
@@ -625,7 +623,7 @@ function AnalysisForm({
                             display: 'inline-block',
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
+                            whiteSpace: 'nowrap'
                           }}
                         >
                           {prettify(col)}
@@ -636,25 +634,23 @@ function AnalysisForm({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {(claims && claims.length > 0 ? claims : PLACEHOLDER_CLAIMS).map(
-                  (c, i) => (
-                    <TableRow
-                      key={i}
-                      data-placeholder={claims && claims.length > 0 ? undefined : true}
-                      className={
-                        claims && claims.length > 0 ? undefined : 'placeholder-row'
-                      }
-                    >
-                      {Object.keys(
-                        (claims && claims.length > 0
-                          ? claims
-                          : PLACEHOLDER_CLAIMS)[0]
-                      ).map((col) => (
-                        <TableCell key={col}>{formatDate(c[col])}</TableCell>
-                      ))}
-                    </TableRow>
-                  )
-                )}
+                {claims.map((c, i) => (
+                  <TableRow key={i}>
+                    {Object.keys(claims[0]).map((col) => (
+                      <TableCell
+                        key={col}
+                        sx={{
+                          maxWidth: 200,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
+                        {formatDate(c[col])}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </Box>
