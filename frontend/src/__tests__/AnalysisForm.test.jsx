@@ -180,6 +180,26 @@ test('shows message when no claims returned', async () => {
   expect(screen.getByText('Kayıt bulunamadı')).toBeInTheDocument()
 })
 
+test('claims table uses sticky header', async () => {
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ results: { excel: [{ complaint: 'x' }], store: [] } })
+    })
+
+  render(<AnalysisForm />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
+
+  fireEvent.click(screen.getByRole('button', { name: /şikayetleri getir/i }))
+
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4))
+  const table = await screen.findByRole('table')
+  expect(table.className).toMatch(/MuiTable-stickyHeader/)
+})
+
 test('applies instructionsBoxProps margin', async () => {
   fetch
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
