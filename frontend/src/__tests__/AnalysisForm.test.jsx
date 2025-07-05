@@ -161,13 +161,10 @@ test('shows alert on claims fetch rejection', async () => {
 
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4))
   expect(await screen.findByText('claims fail')).toBeInTheDocument()
-
-  const rows = screen.getAllByRole('row', { hidden: true })
-  const placeholderRow = rows.find((r) => r.classList.contains('placeholder-row'))
-  expect(placeholderRow).toBeDefined()
+  expect(screen.getByText('Kayıt bulunamadı')).toBeInTheDocument()
 })
 
-test('renders placeholder table when no claims returned', async () => {
+test('shows message when no claims returned', async () => {
   fetch
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
@@ -180,10 +177,7 @@ test('renders placeholder table when no claims returned', async () => {
   fireEvent.click(screen.getByRole('button', { name: /şikayetleri getir/i }))
 
   await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4))
-
-  const rows = screen.getAllByRole('row', { hidden: true })
-  const placeholderRow = rows.find((r) => r.classList.contains('placeholder-row'))
-  expect(placeholderRow).toBeDefined()
+  expect(screen.getByText('Kayıt bulunamadı')).toBeInTheDocument()
 })
 
 test('applies instructionsBoxProps margin', async () => {
