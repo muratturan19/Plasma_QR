@@ -600,9 +600,12 @@ function AnalysisForm({
           </Alert>
         )}
         {claims && claims.length > 0 && (
-          <Box sx={{ minHeight: 250, maxHeight: 650, overflow: 'auto' }}>
+          <Box
+            sx={{ mt: 2, minHeight: 150, maxHeight: 400, overflowY: 'auto' }}
+          >
             <Table
               size="small"
+              stickyHeader
               sx={{
                 mt: 0,
                 backgroundColor: '#fff',
