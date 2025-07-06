@@ -24,7 +24,14 @@ function App() {
         },
         shape: { borderRadius: 12 },
         typography: {
-          fontFamily: "'Poppins','Inter','Roboto','Helvetica','Arial',sans-serif"
+          fontFamily: "'Poppins','Inter','Roboto','Helvetica','Arial',sans-serif",
+          fontSize: 14
+        },
+        components: {
+          MuiButton: { defaultProps: { size: 'small' } },
+          MuiTextField: { defaultProps: { size: 'small' } },
+          MuiSelect: { defaultProps: { size: 'small' } },
+          MuiAutocomplete: { defaultProps: { size: 'small' } }
         }
       }),
     [mode]
