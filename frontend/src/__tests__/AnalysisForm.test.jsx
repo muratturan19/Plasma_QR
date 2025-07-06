@@ -200,6 +200,30 @@ test('claims table uses sticky header', async () => {
   expect(table.className).toMatch(/MuiTable-stickyHeader/)
 })
 
+test('table container has expected spacing and scrolls', async () => {
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ results: { excel: [{ complaint: 'x' }], store: [] } })
+    })
+
+  render(<AnalysisForm />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
+
+  fireEvent.click(screen.getByRole('button', { name: /şikayetleri getir/i }))
+
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4))
+  const table = await screen.findByRole('table')
+  const container = table.parentElement
+  const mt = parseInt(getComputedStyle(container).marginTop)
+  expect(mt).toBeGreaterThanOrEqual(16)
+  expect(mt).toBeLessThanOrEqual(24)
+  expect(container).toHaveStyle({ maxHeight: '400px', overflowY: 'auto' })
+})
+
 test('applies instructionsBoxProps margin', async () => {
   fetch
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
