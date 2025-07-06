@@ -612,7 +612,7 @@ function AnalysisForm({
                 border: '1px solid #ccc',
                 minWidth: 650,
                 width: '100%',
-                tableLayout: 'fixed'
+                tableLayout: 'auto'
               }}
             >
               <TableHead>
@@ -624,9 +624,7 @@ function AnalysisForm({
                           style={{
                             maxWidth: 120,
                             display: 'inline-block',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap'
+                            
                           }}
                         >
                           {prettify(col)}
@@ -640,15 +638,7 @@ function AnalysisForm({
                 {claims.map((c, i) => (
                   <TableRow key={i}>
                     {Object.keys(claims[0]).map((col) => (
-                      <TableCell
-                        key={col}
-                        sx={{
-                          maxWidth: 200,
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap'
-                        }}
-                      >
+                      <TableCell key={col}>
                         {formatDate(c[col])}
                       </TableCell>
                     ))}
