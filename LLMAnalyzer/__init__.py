@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import os
 import logging
+from pathlib import Path
 from typing import Any, Dict
 
 from PromptManager import PromptManager
@@ -15,7 +16,8 @@ from PromptManager import PromptManager
 # Default prompt used for 8D analyses when no template is loaded.
 DEFAULT_8D_PROMPT = """
 Sen deneyimli bir kalite mühendisisin. Aşağıdaki müşteri şikayetine göre 8D Problem
-Çözme metodolojisine uygun detaylı bir rapor hazırla.
+Çözme metodolojisine uygun detaylı bir rapor hazırla. Cümleleri geçmiş zamanda ve
+eylemler gerçekleşmiş gibi yaz. "meli" ya da "malı" ekleriyle öneri vermekten kaçın.
 
 Müşteri Şikayeti: {musteri_sikayeti}
 Parça Kodu: {parca_kodu}
@@ -69,6 +71,7 @@ class LLMAnalyzer:
             model = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
         self.model = model
         self.logger = logging.getLogger(__name__)
+        self._8d_prompt: str | None = None
 
     def _query_llm(self, system_prompt: str, user_prompt: str) -> str:
         """Return the LLM response for the given prompt pair."""
@@ -108,6 +111,18 @@ class LLMAnalyzer:
             self.logger.error("LLMAnalyzer error: %s", exc)
             self.logger.debug("LLMAnalyzer._query_llm end")
             return f"LLM response placeholder for: {user_prompt[:50]}"
+
+    def _load_8d_prompt(self) -> str:
+        """Return the 8D system prompt, loading from file if available."""
+        if self._8d_prompt is None:
+            base = Path(__file__).resolve().parents[1] / "Prompts"
+            prompt_path = base / "8D_Prompt.txt"
+            if prompt_path.exists():
+                with open(prompt_path, "r", encoding="utf-8") as file:
+                    self._8d_prompt = file.read()
+            else:
+                self._8d_prompt = DEFAULT_8D_PROMPT
+        return self._8d_prompt
 
     def analyze(
         self,
@@ -152,7 +167,7 @@ class LLMAnalyzer:
                 )
             if language:
                 user_prompt += f"\nRaporu {language} dilinde yaz."
-            answer = self._query_llm(DEFAULT_8D_PROMPT, user_prompt)
+            answer = self._query_llm(self._load_8d_prompt(), user_prompt)
             return {"full_text": answer}
 
         prompt_manager = PromptManager()

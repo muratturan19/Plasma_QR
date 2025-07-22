@@ -136,8 +136,9 @@ modeline gonderilecek tum metinler yer alir. Degiskenler cift suslu parantez
 degistirilir.
 
 Uygulamada `PromptManager.get_text_prompt("A3")` gibi bir cagriyla ilgili
-sablon dosyasi okunur ve `LLMAnalyzer` tarafindan kullanilir. `8D` metodunda
-ayni klasorden `8D_Prompt.txt` dosyasi dogrudan okunur.
+sablon dosyasi okunur ve `LLMAnalyzer` tarafindan kullanilir. `8D` metodunun
+varsayilan metni kod icinde tanimlidir; ancak `Prompts/8D_Prompt.txt` dosyasi
+varsa bu dosya okunarak degistirilmis 8D promptu kullanilir.
 
 ### Sablonlari Ozellestirme
 
