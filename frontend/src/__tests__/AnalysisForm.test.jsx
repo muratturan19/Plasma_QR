@@ -61,6 +61,21 @@ test('shows guide text when method selected', async () => {
   })
 })
 
+test('calls scan 8d endpoint on button click', async () => {
+  fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })
+    .mockResolvedValueOnce({ ok: true, text: async () => '' })
+
+  render(<AnalysisForm />)
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3))
+
+  fireEvent.click(screen.getByRole('button', { name: /8d raporlarını tara/i }))
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4))
+  expect(fetch.mock.calls[3][0]).toMatch(/scan_8d/)
+})
+
 test('fetches filtered claims', async () => {
   fetch
     .mockResolvedValueOnce({ ok: true, json: async () => ({ values: [] }) })

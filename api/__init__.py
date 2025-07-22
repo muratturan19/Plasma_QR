@@ -20,6 +20,7 @@ from LLMAnalyzer import LLMAnalyzer
 from Review import Review
 from ReportGenerator import ReportGenerator
 from ComplaintSearch import ComplaintStore, ExcelClaimsSearcher, normalize_text
+from EightDScanner import EightDScanner
 
 REPORT_DIR = Path(__file__).resolve().parents[1] / "reports"
 REPORT_DIR.mkdir(parents=True, exist_ok=True)
@@ -57,6 +58,7 @@ reviewer = Review()
 reporter = ReportGenerator(_guide_manager)
 _store = ComplaintStore()
 _excel_searcher = ExcelClaimsSearcher()
+_scanner = EightDScanner(Path(__file__).resolve().parents[1] / "eight_d_reports")
 
 
 class AnalyzeBody(BaseModel):
@@ -195,4 +197,18 @@ def guide(method: str, request: Request) -> Dict[str, Any]:
     return result
 
 
-__all__ = ["app"]
+@app.post("/scan_8d")
+def scan_8d() -> Dict[str, Any]:
+    """Scan 8D Excel reports and store rows in SQLite."""
+    logger.info("Scanning 8D reports")
+    try:
+        count = _scanner.scan()
+    except Exception as exc:  # pragma: no cover - unexpected failure
+        logger.exception("Scan failed")
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+    result = {"status": "ok", "count": count}
+    logger.info("Scan result: %s", result)
+    return result
+
+
+__all__ = ["app", "scan_8d"]

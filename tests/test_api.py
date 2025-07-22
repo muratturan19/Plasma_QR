@@ -172,6 +172,13 @@ class APITest(unittest.TestCase):
         self.assertIn("Guide method", logs)
         self.assertIn("Guide result", logs)
 
+    def test_scan_8d_endpoint(self) -> None:
+        with patch.object(api._scanner, "scan", return_value=5) as mock_scan:
+            response = self.client.post("/scan_8d")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"status": "ok", "count": 5})
+        mock_scan.assert_called_once()
+
     def test_add_complaint_endpoint(self) -> None:
         body = {"complaint": "c", "customer": "cust", "subject": "s", "part_code": "p"}
         with patch.object(api._store, "add_complaint") as mock_add:

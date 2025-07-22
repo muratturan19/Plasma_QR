@@ -302,6 +302,22 @@ function AnalysisForm({
       setClaims([]);
     }
   };
+
+  const handleScan8D = async () => {
+    try {
+      setError('');
+      setLoading(true);
+      const res = await fetch(`${API_BASE}/scan_8d`, { method: 'POST' });
+      if (!res.ok) {
+        setError(await res.text());
+      }
+    } catch (err) {
+      console.error(err);
+      setError(err.message || 'Bir hata oluştu');
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <>
         {/* DEBUG: API'den gelen claims veri setini ve kolonlarını ham olarak ekranda göster */}
@@ -587,6 +603,9 @@ function AnalysisForm({
           </Button>
           <Button variant="outlined" color="primary" onClick={handleFetchClaims}>
             Şikayetleri Getir
+          </Button>
+          <Button variant="outlined" color="primary" onClick={handleScan8D}>
+            8D raporlarını tara
           </Button>
         </Box>
         {method && (
