@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import patch, MagicMock
+from pathlib import Path
 import types
 
 from GuideManager import GuideManager
@@ -36,7 +37,8 @@ class LLMAnalyzerTest(unittest.TestCase):
         self.assertEqual(set(result.keys()), {"D1", "D2"})
 
     @patch.object(LLMAnalyzer, "_query_llm", return_value="ok")
-    def test_8d_returns_full_text(self, mock_query) -> None:  # type: ignore
+    @patch.object(LLMAnalyzer, "_load_8d_prompt", return_value=DEFAULT_8D_PROMPT)
+    def test_8d_returns_full_text(self, mock_load, mock_query) -> None:  # type: ignore
         """Method ``8D`` should return a ``full_text`` key with the response."""
         guideline = {"method": "8D", "fields": []}
         details = {"complaint": "c", "subject": "s", "part_code": "p"}
@@ -84,6 +86,19 @@ class LLMAnalyzerTest(unittest.TestCase):
         self.analyzer.analyze(details, guideline, language="İngilizce")
         call_args = mock_query.call_args[0]
         self.assertIn("İngilizce", call_args[1])
+
+    @patch.object(LLMAnalyzer, "_query_llm", return_value="ok")
+    def test_custom_8d_prompt_loaded_from_file(self, mock_query) -> None:  # type: ignore
+        """``8D_Prompt.txt`` should override the default prompt when present."""
+        path = Path(__file__).resolve().parents[1] / "Prompts" / "8D_Prompt.txt"
+        path.write_text("CUSTOM", encoding="utf-8")
+        try:
+            guideline = {"method": "8D", "fields": []}
+            self.analyzer.analyze({"complaint": "c"}, guideline)
+        finally:
+            path.unlink()
+        call_args = mock_query.call_args[0]
+        self.assertEqual(call_args[0], "CUSTOM")
 
     def test_query_llm_fallback(self) -> None:
         """``_query_llm`` should return a placeholder for non-auth errors."""
